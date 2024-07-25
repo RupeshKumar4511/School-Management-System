@@ -8,6 +8,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 import java.sql.*;
 
+
 import rpack.PlaceholderTextField; // This is my own package that is imported
 
 /*
@@ -20,9 +21,10 @@ class Login implements ActionListener {
     // Buttons :
     // submit for submit the entered user name and password
     // clear for clear the entered user name or Password
-    // forgot for create database ,reset user name and password
+    // SignIn for create database , set user name and password
+    // SignIn for reset user name and password
     // connect for connecting the application to database
-    JButton submit, clear, forgot, connect;
+    JButton submit, clear, SignIn, forgot, connect;
 
     JTextField text1; // Textfield that allows the user to enter the user name
 
@@ -32,7 +34,7 @@ class Login implements ActionListener {
 
     String user; // Store the user name entered by the user
 
-    String Password = ""; // Store the password entered by the user
+
 
     // Database to Store the Database name ,
     // DBpassword to store Mysql Password ,
@@ -78,7 +80,7 @@ class Login implements ActionListener {
 
         lab3 = new JLabel();
         lab3.setFont(new Font("Serif", Font.PLAIN, 25));
-        lab3.setBounds(400, 470, 750, 30);
+        lab3.setBounds(400, 485, 750, 30);
 
         lab4 = new JLabel();
         lab4.setFont(new Font("Serif", Font.PLAIN, 25));
@@ -101,8 +103,11 @@ class Login implements ActionListener {
         clear = new JButton("Clear");
         clear.setBounds(650, 350, 200, 30);
 
+        SignIn = new JButton("Sign In");
+        SignIn.setBounds(500, 400, 250, 30);
+
         forgot = new JButton("Forgot  Password");
-        forgot.setBounds(500, 400, 250, 30);
+        forgot.setBounds(500, 450, 250, 30);
 
         connect = new JButton("Connect To Database");
         connect.setBounds(1040, 120, 200, 40);
@@ -122,6 +127,7 @@ class Login implements ActionListener {
         // here add buttons to frame
         frame.add(submit);
         frame.add(clear);
+        frame.add(SignIn);
         frame.add(forgot);
         frame.add(connect);
 
@@ -135,6 +141,7 @@ class Login implements ActionListener {
         // Register the buttons with event Listener
         submit.addActionListener(this);
         clear.addActionListener(this);
+        SignIn.addActionListener(this);
         forgot.addActionListener(this);
         connect.addActionListener(this);
 
@@ -143,6 +150,8 @@ class Login implements ActionListener {
     // All the logic of this class inside this method .
     @Override
     public void actionPerformed(ActionEvent e) {
+
+        String Password = ""; // Store the password entered by the user
 
         // fetch the user name and password from database and then match with the user
         // input
@@ -164,6 +173,7 @@ class Login implements ActionListener {
 
                 else {
                     lab3.setText("User Name or Password is Wrong or Database is not connected");
+
                 }
             }
         } catch (Exception a) {
@@ -174,7 +184,7 @@ class Login implements ActionListener {
             text2.setText(null);
         }
 
-        if (e.getSource() == forgot) {
+        if (e.getSource() == SignIn) {
 
             new CreateDB();
             frame.dispose();
@@ -183,8 +193,13 @@ class Login implements ActionListener {
             new ConnectToDB();
             frame.dispose();
         }
+        if (e.getSource() == forgot) {
+            new ResetPassword();
+            frame.dispose();
+        }
     }
 }
+
 /*
  * This class provides an user interface to create a database.
  * This class implements ActionListener for event handling.
@@ -336,64 +351,59 @@ class CreateDB implements ActionListener {
                 Statement statement1 = connection1.createStatement();
 
                 // Student
-                statement1.execute(
-                        "create table Student_Registration(Student_Id varchar(20) not null ,Student_Name varchar(50) not null, Father_Name varchar(50) not null,Mother_Name varchar(50) not null ,Date_of_Birth Date not null , Gender varchar(10) not null,Mob1 bigint(10) not null, Mob2 bigint(10) not null,Registration_Date Date not null, Address varchar(100) not null,Student_Aadhaar_No bigint(12) not null ,Father_Aadhaar_No bigint(12) not null, Mother_Aadhaar_No bigint(12) not null,Family_ID varchar(20) not null ,Category varchar(10) not null,Father_Occupation varchar(50) ,Mother_Occupation varchar(50) ,School_Leaving_Date date,check(length(Student_Aadhaar_No)=12 and length(Father_Aadhaar_No)=12 and length(Mother_Aadhaar_No)=12), Primary key(Student_Id));");
+                statement1.execute("create table Student_Registration(Student_Id varchar(20) not null ,Student_Name varchar(50) not null, Father_Name varchar(50) not null,Mother_Name varchar(50) not null ,Date_of_Birth Date not null , Gender varchar(10) not null,Mob1 bigint(10) not null, Mob2 bigint(10) not null,Registration_Date Date not null, Address varchar(100) not null,Student_Aadhaar_No bigint(12) not null ,Father_Aadhaar_No bigint(12) not null, Mother_Aadhaar_No bigint(12) not null,Family_ID varchar(20) not null ,Category varchar(10) not null,Father_Occupation varchar(50) ,Mother_Occupation varchar(50) ,School_Leaving_Date date,check(length(Student_Aadhaar_No)=12 and length(Father_Aadhaar_No)=12 and length(Mother_Aadhaar_No)=12),Primary key(Student_Id, Student_Name));");
 
-                statement1.execute(
-                        "create table Enrollment(Student_Id varchar(20) not null,Student_Name varchar(50) not null, Enrollment_No varchar(20) not null,Class varchar(5) not null); ");
+               
+                statement1.execute("create table Enrollment(Student_Id varchar(20) not null,Student_Name varchar(50) not null, Enrollment_No varchar(20) not null,Class varchar(5) not null); ");
 
                 statement1.execute("alter table Enrollment add constraint EnId Primary key(Enrollment_No,Class);");
 
-                statement1.execute(
-                        "alter table Enrollment add Foreign key(Student_Id) references Student_Registration(Student_Id);");
+                statement1.execute("alter table Enrollment add constraint fk_en Foreign key(Student_Id,Student_Name) references Student_Registration(Student_Id,Student_Name) on update cascade;");
+
+                statement1.execute("create table Academic(Serial_No int AUTO_INCREMENT,Student_Id varchar(20) not null, Student_Name varchar(50) not null ,class varchar(5) not null,Subjects varchar(500) not null,Session char(15) not null , Fee int(9) not null, Primary key(Serial_No));");
+                
+                
+                
+                statement1.execute("alter table Academic add constraint fk_ac Foreign key(Student_Id,Student_Name) references Student_Registration(Student_Id,Student_Name) on update cascade;");
 
                 statement1.execute(
-                        "create table Academic(Student_Id varchar(20) not null, Student_Name varchar(50) not null ,class varchar(5) not null,Subjects varchar(500) not null,Session char(15) not null , Fee int(9) not null);");
-                statement1.execute("alter table Academic add constraint EnId Primary key(Student_Id,Session);");
-                statement1.execute(
-                        "alter table Academic add Foreign key(Student_Id) references Student_Registration(Student_Id);");
+                        "create table Fee_Details(Serial_No int AUTO_INCREMENT,Student_Id varchar(20) not null, Student_Name varchar(50) not null, Class varchar(5) not null,Paid_Fee int(8) not null, Balance int(8) not null ,P_date date not null, Primary key(Serial_No)  );");
 
                 statement1.execute(
-                        "create table Fee_Details(Student_Id varchar(20) not null, Student_Name varchar(50) not null, Class varchar(5) not null,Paid_Fee int(8) not null, Balance int(8) not null ,P_date date not null,Sno int AUTO_INCREMENT, Primary key(Sno)  );");
-
-                statement1.execute(
-                        "alter table  Fee_Details add Foreign key(Student_Id) references Student_Registration(Student_Id);");
+                        "alter table  Fee_Details add constraint fk_fd Foreign key(Student_Id,Student_Name) references Student_Registration(Student_Id,Student_Name) on update cascade;");
 
                 // Teacher
                 statement1.execute(
-                        "create table Teacher_Registration(Teacher_Id varchar(20) not null,Teacher_Name varchar(50) not null,Father_Name varchar(50) not null,Mother_Name varchar(50) not null , DOB date not null,Gender varchar(6) not null, Mob1 bigint(10) not null,Mob2 bigint(10) not null,Joining_Date date not null,Address varchar(100) not null, Teacher_Aadhaar_No bigint(12) not null,Family_Id varchar(20),Qualification varchar(50) not null , Experience varchar(50) not null,Account_No varchar(15),Job_Leaving_Date date,check(length(Teacher_Aadhaar_No)=12) ,Primary key(Teacher_Id));");
+                        "create table Teacher_Registration(Teacher_Id varchar(20) not null,Teacher_Name varchar(50) not null,Father_Name varchar(50) not null,Mother_Name varchar(50) not null , DOB date not null,Gender varchar(6) not null, Mob1 bigint(10) not null,Mob2 bigint(10) not null,Joining_Date date not null,Address varchar(100) not null, Teacher_Aadhaar_No bigint(12) not null,Family_Id varchar(20),Qualification varchar(50) not null , Experience varchar(50) not null,Account_No varchar(15),Job_Leaving_Date date,check(length(Teacher_Aadhaar_No)=12),Primary key(Teacher_Id , Teacher_Name) );");
+
+               
+                statement1.execute(
+                        "create table Teacher_Salary_Structure(Serial_No int AUTO_INCREMENT,Teacher_Id varchar(20) not null, Teacher_Name varchar(50) not null, Salary int(9) not null,Month varchar(10) not null, Year int(5) not null,  Primary key(Serial_No)) ;");
+              
+                statement1.execute(
+                        "alter table Teacher_Salary_Structure add constraint fk_ts1 Foreign key(Teacher_Id,Teacher_Name) references Teacher_Registration(Teacher_Id,Teacher_Name) on update cascade;");
 
                 statement1.execute(
-                        "create table Teacher_Salary_Structure(Teacher_Id varchar(20) not null, Teacher_Name varchar(50) not null, Salary int(9) not null,Month varchar(10) not null, Year int(5) not null) ;");
+                        "create table Teacher_Salary_Details(Serial_No int AUTO_INCREMENT,Teacher_Id varchar(20) not null,Teacher_Name varchar(20) not null,Salary_Paid int(9) not null,Month varchar(10) not null , Year int(5) not null,Primary key(Serial_No));");
+                
                 statement1.execute(
-                        "alter table Teacher_Salary_Structure add constraint EnId Primary key(Teacher_Id,Year);");
-                statement1.execute(
-                        "alter table Teacher_Salary_Structure add Foreign key(Teacher_Id) references Teacher_Registration(Teacher_Id);");
-
-                statement1.execute(
-                        "create table Teacher_Salary_Details(Teacher_Id varchar(20) not null,Teacher_Name varchar(20) not null,Salary_Paid int(9) not null,Month varchar(10) not null , Year int(5) not null);");
-                statement1.execute(
-                        "alter table Teacher_Salary_Details add constraint EnId Primary key(Teacher_Id,Month,Year,Salary_Paid);");
-                statement1.execute(
-                        "alter table Teacher_Salary_Details add Foreign key(Teacher_Id) references Teacher_Registration(Teacher_Id);");
+                        "alter table Teacher_Salary_Details add constraint fk_ts2 Foreign key(Teacher_Id,Teacher_Name) references Teacher_Registration(Teacher_Id,Teacher_Name) on update cascade;");
 
                 // Other Employee
                 statement1.execute(
-                        "create table Employee_Registration(Employee_Id varchar(20) not null,Employee_Name varchar(50) not null,Father_Name varchar(50) not null,Mother_Name varchar(50) not null,DOB date not null,Gender varchar(6) not null, Mob1 bigint(10) not null,Mob2 bigint(10) not null,Joining_Date date not null,Address varchar(100) not null, Employee_Aadhaar_No bigint(12) not null,Family_Id varchar(20),Qualification varchar(50) not null , Experience varchar(50) not null,Account_No varchar(15),Job_Leaving_Date date,check(length(Employee_Aadhaar_No)=12),Primary key(Employee_Id));");
+                        "create table Employee_Registration(Employee_Id varchar(20) not null,Employee_Name varchar(50) not null,Father_Name varchar(50) not null,Mother_Name varchar(50) not null,DOB date not null,Gender varchar(6) not null, Mob1 bigint(10) not null,Mob2 bigint(10) not null,Joining_Date date not null,Address varchar(100) not null, Employee_Aadhaar_No bigint(12) not null,Family_Id varchar(20),Qualification varchar(50) not null , Experience varchar(50) not null,Account_No varchar(15),Job_Leaving_Date date,check(length(Employee_Aadhaar_No)=12),Primary key(Employee_Id,Employee_Name));");
 
                 statement1.execute(
-                        "create table Employee_Salary_Structure(Employee_Id varchar(20) not null, Employee_Name varchar(50) not null, Salary int(9) not null,Month varchar(10) not null, Year int(5) not null);");
+                        "create table Employee_Salary_Structure(Serial_No int AUTO_INCREMENT,Employee_Id varchar(20) not null, Employee_Name varchar(50) not null, Salary int(9) not null,Month varchar(10) not null, Year int(5) not null,Primary key(Serial_No));");
+          
                 statement1.execute(
-                        "alter table Employee_Salary_Structure add constraint EnId Primary key(Employee_Id,Year);");
-                statement1.execute(
-                        "alter table Employee_Salary_Structure add Foreign key(Employee_Id) references Employee_Registration(Employee_Id);");
+                        "alter table Employee_Salary_Structure add constraint fk_es1 Foreign key(Employee_Id,Employee_Name) references Employee_Registration(Employee_Id,Employee_Name) on update cascade;");
 
                 statement1.execute(
-                        "create table Employee_Salary_Details(Employee_Id varchar(20) not null,Employee_Name varchar(20) not null,Salary_Paid int(9) not null,Month varchar(10) not null , Year int(5) not null );");
+                        "create table Employee_Salary_Details(Serial_No int AUTO_INCREMENT,Employee_Id varchar(20) not null,Employee_Name varchar(20) not null,Salary_Paid int(9) not null,Month varchar(10) not null , Year int(5) not null,Primary key(Serial_No) );");
+                
                 statement1.execute(
-                        "alter table Employee_Salary_Details add constraint EnId Primary key(Employee_Id,Month,Year,Salary_Paid);");
-                statement1.execute(
-                        "alter table Employee_Salary_Details add Foreign key(Employee_Id) references Employee_Registration(Employee_Id);");
+                        "alter table Employee_Salary_Details add constraint fk_es2 Foreign key(Employee_Id,Employee_Name) references Employee_Registration(Employee_Id,Employee_Name) on update cascade;");
 
                 statement1.execute(
                         "create  table credentials(School_Name varchar(50) not null,User_Name varchar(50) not null,Password varchar(50) not null,SNo int AUTO_INCREMENT ,Primary key(SNo));");
@@ -405,7 +415,7 @@ class CreateDB implements ActionListener {
                 statement1.close();
                 connection1.close();
             } catch (Exception a) {
-
+                System.out.println(a);
                 lab2.setText("Password is Wrong or Database is already existed");
             }
 
@@ -415,7 +425,7 @@ class CreateDB implements ActionListener {
 }
 
 /*
- * This is third class of App which is responsible for reset the password .
+ * This is third class of App which is responsible for set the password .
  * This class implemnts ActionListener for event handling.
  */
 class Forgot implements ActionListener {
@@ -435,8 +445,8 @@ class Forgot implements ActionListener {
     JLabel lab4; // Label for message which shows when the user name and password saved
                  // succesfully or not .
 
-    String database; // database to store the database name
-    String password1; // password1 to store the password of mysql.
+    public String database; // database to store the database name
+    public String password1; // password1 to store the password of mysql.
     JFrame frame; // frame in which all the components are added
 
     // constructor
@@ -583,7 +593,7 @@ class ConnectToDB implements ActionListener {
     // Buttons :
     // submit for submit the database name and mysql password .
     // back for redirect the user to first page of App.
-    private JButton submit, back;
+    JButton submit, back;
 
     JLabel lab2; // label which shows message when user enter the wrong mysql password and
                  // database name
@@ -594,7 +604,6 @@ class ConnectToDB implements ActionListener {
 
     String Database; // Database to store the database name entered by the user
 
-    String Password = ""; // Password to store the mysql password enterd by the user.
 
     String School_Name; // Store the school name from the database
     String User_Name; // store the user name from the database.
@@ -604,7 +613,7 @@ class ConnectToDB implements ActionListener {
 
     // consructor
     ConnectToDB() {
-
+ 
         // Create a frame
         frame = new JFrame();
 
@@ -671,6 +680,7 @@ class ConnectToDB implements ActionListener {
     // All logics for this class is inside this method.
     @Override
     public void actionPerformed(ActionEvent e) {
+        String Password = ""; // Password to store the mysql password enterd by the user.
         if (e.getSource() == submit) {
 
             try {
@@ -719,10 +729,177 @@ class ConnectToDB implements ActionListener {
 }
 
 /*
+ * This class provides an user interface to reset thier password.
+ * This class implements ActionListener for event handling.
+*/
+
+class ResetPassword implements ActionListener {
+
+    JFrame frame; // frame in which all componnets are added
+
+    // Buttons :
+    // submit for submit the database name and mysql password .
+    // back for redirect the user to first page of App.
+    private JButton submit, back;
+
+    JLabel lab2; // label which shows message when user enter the wrong mysql password and
+                 // database name
+
+    // TextField
+    // text1 that allows the user to enter the database name.
+    // text2 hat allows the user to enter the mysql password.
+    // text3 that allows the user to enter new user name.
+    // text4 that allows the user to enter new user password.
+    JTextField text1, text2, text3, text4;
+
+    String User_Name; // store the user name from the database.
+    String User_Password;// store the user password from the database.
+
+    // consructor
+    ResetPassword() {
+
+        // Create a frame
+        frame = new JFrame();
+
+        // Create labels and set their properties
+
+        JLabel label = new JLabel();
+        label.setHorizontalAlignment(JLabel.CENTER);
+        label.setSize(1250, 100);
+        label.setText("SCHOOL  MANAGEMENT  SYSTEM");
+        label.setFont(new Font("Serif", Font.BOLD, 50));
+
+        JLabel label1 = new JLabel("Enter the Database Name you have  created ");
+        label1.setFont(new Font("Serif", Font.PLAIN, 20));
+        label1.setBounds(445, 140, 530, 40);
+
+        JLabel lab1 = new JLabel("Enter the password that you have set during download Mysql ");
+        lab1.setFont(new Font("Serif", Font.PLAIN, 20));
+        lab1.setBounds(385, 250, 530, 40);
+
+        JLabel lab3 = new JLabel("Enter New User Name ");
+        lab3.setFont(new Font("Serif", Font.PLAIN, 20));
+        lab3.setBounds(385, 390, 300, 40);
+
+        JLabel lab4 = new JLabel("Enter New Password ");
+        lab4.setFont(new Font("Serif", Font.PLAIN, 20));
+        lab4.setBounds(385, 440, 350, 40);
+
+        lab2 = new JLabel();
+        lab2.setFont(new Font("Serif", Font.PLAIN, 20));
+        lab2.setBounds(700, 540, 450, 25);
+
+        // create TextFields and set their properties
+
+        text1 = new JTextField();
+        text1.setFont(new Font("Serif", Font.PLAIN, 25));
+        text1.setBounds(470, 200, 320, 30);
+
+        text2 = new JTextField();
+        text2.setFont(new Font("Serif", Font.PLAIN, 25));
+        text2.setBounds(470, 300, 320, 30);
+
+        text3 = new JTextField();
+        text3.setFont(new Font("Serif", Font.PLAIN, 25));
+        text3.setBounds(620, 400, 300, 30);
+
+        text4 = new JTextField();
+        text4.setFont(new Font("Serif", Font.PLAIN, 25));
+        text4.setBounds(620, 450, 300, 30);
+
+        // create buttons and add to frame
+        submit = new JButton("Submit");
+        submit.setBounds(580, 540, 100, 25);
+        frame.add(submit);
+
+        back = new JButton("Back");
+        back.setBounds(30, 30, 100, 30);
+        frame.add(back);
+
+        // add label and textfield to frame
+        frame.add(label);
+        frame.add(label1);
+        frame.add(lab1);
+        frame.add(lab2);
+        frame.add(lab3);
+        frame.add(lab4);
+
+        frame.add(text1);
+        frame.add(text2);
+        frame.add(text3);
+        frame.add(text4);
+
+        // set the frame properties
+        frame.setSize(500, 500); // optional
+        frame.setLayout(null);
+        frame.getContentPane().setBackground(Color.YELLOW);
+        frame.setVisible(true);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+
+        // Register the buttons with eventListener
+        submit.addActionListener(this);
+        back.addActionListener(this);
+
+    }
+
+    // All logics for this class is inside this method.
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == submit) {
+
+            try {
+
+                // connection of App to database to reset user name and password
+                String Database = text1.getText();
+                String Password = text2.getText();
+
+                String url = "jdbc:mysql://localhost:3306/" + Database;
+                String user = "root";
+
+                Connection connection = DriverManager.getConnection(url, user, Password);
+                Statement statement = connection.createStatement();
+
+                ResultSet resultSet = statement.executeQuery("Select * from credentials order by SNo desc limit 1 ;");
+                while (resultSet.next()) {
+
+                    User_Name = resultSet.getString(2);
+                    User_Password = resultSet.getString(3);
+
+                }
+                String query = "update credentials set User_Name = ? where User_Name = ? ;";
+                PreparedStatement pstmt = connection.prepareStatement(query);
+                pstmt.setString(1, text3.getText());
+                pstmt.setString(2, User_Name);
+                pstmt.executeUpdate();
+
+                String query1 = "update credentials set Password = ? where Password = ? ;";
+                PreparedStatement psmt1 = connection.prepareStatement(query1);
+                psmt1.setString(1, text4.getText());
+                psmt1.setString(2, User_Password);
+                psmt1.executeUpdate();
+
+                statement.close();
+                connection.close();
+                lab2.setText("User Name and Password Updated ");
+
+            } catch (Exception a) {
+                lab2.setText("Database name or Password is wrong");
+
+            }
+
+        }
+        if (e.getSource() == back) {
+            new Login(null, null, null, null, null, null);
+            frame.dispose();
+        }
+    }
+}
+
+/*
  * This class provides an user interface which contains some buttons which
  * performs some event when they clicked.
  * This class implements ActionListener for event handling.
- */
+*/
 class First implements ActionListener {
 
     JFrame frame; // frame in which all other components are added
@@ -776,27 +953,27 @@ class First implements ActionListener {
 
         // create buttons and add to frame
         button = new JButton("STUDENT  REGISTRATION");
-        button.setBounds(210, 150, 220, 30);
+        button.setBounds(160, 150, 270, 30);
         frame.add(button);
 
         button3 = new JButton("ENROLLMENT  DETAILS");
-        button3.setBounds(210, 200, 220, 30);
+        button3.setBounds(160, 200, 270, 30);
         frame.add(button3);
 
         button4 = new JButton("ACADEMIC  DETAILS");
-        button4.setBounds(210, 250, 220, 30);
+        button4.setBounds(160, 250, 270, 30);
         frame.add(button4);
 
         button5 = new JButton("STUDENT'S  FEE  DETAILS");
-        button5.setBounds(210, 300, 220, 30);
+        button5.setBounds(160, 300, 270, 30);
         frame.add(button5);
 
         button6 = new JButton("VIEW  STUDENT'S  DETAILS");
-        button6.setBounds(210, 350, 220, 30);
+        button6.setBounds(160, 350, 270, 30);
         frame.add(button6);
 
         update1 = new JButton("UPDATE  STUDENT'S  DETAILS");
-        update1.setBounds(210, 400, 220, 30);
+        update1.setBounds(160, 400, 270, 30);
         frame.add(update1);
 
         button1 = new JButton("TEACHER  REGISTRATION");
@@ -945,17 +1122,17 @@ class First implements ActionListener {
         }
 
         if (e.getSource() == update1) {
-            new StudentUpdate(null, Database, DBPassword, School_Name);
+            new StudentDataUpdate(Database, DBPassword, School_Name);
             frame.dispose();
         }
 
         if (e.getSource() == update2) {
-            new TeacherUpdate(null, Database, DBPassword, School_Name);
+            new TeacherDataUpdate(Database, DBPassword, School_Name);
             frame.dispose();
         }
 
         if (e.getSource() == update3) {
-            new EmployeeUpdate(null, Database, DBPassword, School_Name);
+            new EmployeeDataUpdate(Database, DBPassword, School_Name);
             frame.dispose();
         }
 
@@ -1308,10 +1485,12 @@ class Student extends PlaceholderTextField implements ActionListener {
                 statement.close();
                 connection.close();
 
-                JOptionPane.showMessageDialog(this, "Saved Into Database Successfully."); // showing the message whether the Student
-                                                                          // Details insert into the database or not .
+                JOptionPane.showMessageDialog(this, "Saved Into Database Successfully."); // showing the message whether
+                                                                                          // the Student
+                // Details insert into the database or not .
 
             } catch (Exception a) {
+                System.out.println(a);
                 JOptionPane.showMessageDialog(this, "Something is missing or Incorrect enteries");
 
             }
@@ -1467,12 +1646,13 @@ class Enrollment extends PlaceholderTextField implements ActionListener {
 
                 Connection connection = DriverManager.getConnection(url, user, DBPassword);
                 Statement statement = connection.createStatement();
-                statement.execute("insert into Enrollment values(" + text1.getText() + ", \"" + text2.getText()
+                statement.execute("insert into Enrollment(Student_Id,Student_Name,Enrollment_No,Class) values(" + text1.getText() + ", \"" + text2.getText()
                         + "\", \"" + text3.getText() + "\", \"" + text4.getText() + "\");");
                 statement.close();
                 connection.close();
-                JOptionPane.showMessageDialog(this, "Saved Into Database Successfully."); // showing the message whether the Student
-                                                                          // Details insert into the database or not .
+                JOptionPane.showMessageDialog(this, "Saved Into Database Successfully."); // showing the message whether
+                                                                                          // the Student
+                // Details insert into the database or not .
 
             } catch (Exception a) {
                 JOptionPane.showMessageDialog(this, "Something is missing or Incorrect enteries");
@@ -1656,13 +1836,14 @@ class Academic extends PlaceholderTextField implements ActionListener {
 
                 Connection connection = DriverManager.getConnection(url, user, DBPassword);
                 Statement statement = connection.createStatement();
-                statement.execute("insert into Academic values(" + text1.getText() + ", \"" + text2.getText() + "\", \""
+                statement.execute("insert into Academic(Student_Id,Student_Name,class,Subjects,Session,Fee) values(" + text1.getText() + ", \"" + text2.getText() + "\", \""
                         + text3.getText() + "\", \"" + text4.getText() + "\" , \'" + text5.getText() + "\', "
                         + text6.getText() + ");");
                 statement.close();
                 connection.close();
-                JOptionPane.showMessageDialog(this, "Saved Into Database Successfully."); // showing the message whether the Student
-                                                                          // Details insert into the database or not .
+                JOptionPane.showMessageDialog(this, "Saved Into Database Successfully."); // showing the message whether
+                                                                                          // the Student
+                // Details insert into the database or not .
 
             } catch (Exception a) {
                 JOptionPane.showMessageDialog(this, "Something is missing or Incorrect enteries");
@@ -1850,8 +2031,9 @@ class Fee extends PlaceholderTextField implements ActionListener {
                                 + text4.getText() + " , " + text5.getText() + ", \'" + text6.getText() + "\' );");
                 statement.close();
                 connection.close();
-                JOptionPane.showMessageDialog(this, "Saved Into Database Successfully."); // showing the message whether the Student
-                                                                          // Details insert into the database or not .
+                JOptionPane.showMessageDialog(this, "Saved Into Database Successfully."); // showing the message whether
+                                                                                          // the Student
+                // Details insert into the database or not .
 
             } catch (Exception a) {
                 JOptionPane.showMessageDialog(this, "Something is missing or Incorrect enteries");
@@ -2164,8 +2346,9 @@ class Teacher extends PlaceholderTextField implements ActionListener {
                                 + "\");");
                 statement.close();
                 connection.close();
-                JOptionPane.showMessageDialog(this, "Saved Into Database Successfully."); // showing the message whether the Teacher
-                                                                          // Details insert into the database or not .
+                JOptionPane.showMessageDialog(this, "Saved Into Database Successfully."); // showing the message whether
+                                                                                          // the Teacher
+                // Details insert into the database or not .
 
             } catch (Exception a) {
                 JOptionPane.showMessageDialog(this, "Something is missing or Incorrect enteries");
@@ -2173,6 +2356,8 @@ class Teacher extends PlaceholderTextField implements ActionListener {
         }
     }
 }
+
+
 /*
  * This class provides an user interface that allows the user to insert Teacher
  * Salary Structure into the database.
@@ -2335,13 +2520,14 @@ class TeacherSalaryStructure extends PlaceholderTextField implements ActionListe
 
                 Connection connection = DriverManager.getConnection(url, user, DBPassword);
                 Statement statement = connection.createStatement();
-                statement.execute("insert into Teacher_Salary_Structure values(" + text1.getText() + ", \""
+                statement.execute("insert into Teacher_Salary_Structure(Teacher_Id,Teacher_Name,Salary,Month,Year) values(" + text1.getText() + ", \""
                         + text2.getText() + "\", " + text3.getText() + ", \"" + text4.getText() + "\" , "
                         + text5.getText() + " );");
                 statement.close();
                 connection.close();
-                JOptionPane.showMessageDialog(this, "Saved Into Database Successfully."); // showing the message whether the Teacher
-                                                                          // Details insert into the database or not .
+                JOptionPane.showMessageDialog(this, "Saved Into Database Successfully."); // showing the message whether
+                                                                                          // the Teacher
+                // Details insert into the database or not .
 
             } catch (Exception a) {
                 JOptionPane.showMessageDialog(this, "Something is missing or Incorrect enteries");
@@ -2513,13 +2699,14 @@ class TeacherSalaryDetails extends PlaceholderTextField implements ActionListene
 
                 Connection connection = DriverManager.getConnection(url, user, DBPassword);
                 Statement statement = connection.createStatement();
-                statement.execute("insert into Teacher_Salary_Details values(" + text1.getText() + ", \""
+                statement.execute("insert into Teacher_Salary_Details(Teacher_Id,Teacher_Name,Salary_Paid,Month,Year) values(" + text1.getText() + ", \""
                         + text2.getText() + "\", " + text3.getText() + ", \"" + text4.getText() + "\" , "
                         + text5.getText() + " );");
                 statement.close();
                 connection.close();
-                JOptionPane.showMessageDialog(this, "Saved Into Database Successfully."); // showing the message whether the Teacher
-                                                                          // Details insert into the database or not .
+                JOptionPane.showMessageDialog(this, "Saved Into Database Successfully."); // showing the message whether
+                                                                                          // the Teacher
+                // Details insert into the database or not .
 
             } catch (Exception a) {
                 JOptionPane.showMessageDialog(this, "Something is missing or Incorrect enteries");
@@ -2832,8 +3019,9 @@ class OtherEmployee extends PlaceholderTextField implements ActionListener {
                                 + "\");");
                 statement.close();
                 connection.close();
-                JOptionPane.showMessageDialog(this, "Saved Into Database Successfully."); // showing the message whether the Employee
-                                                                          // Details insert into the database or not .
+                JOptionPane.showMessageDialog(this, "Saved Into Database Successfully."); // showing the message whether
+                                                                                          // the Employee
+                // Details insert into the database or not .
 
             } catch (Exception a) {
                 JOptionPane.showMessageDialog(this, "Something is missing or Incorrect enteries");
@@ -3004,13 +3192,14 @@ class EmployeeSalaryStructure extends PlaceholderTextField implements ActionList
 
                 Connection connection = DriverManager.getConnection(url, user, DBPassword);
                 Statement statement = connection.createStatement();
-                statement.execute("insert into Employee_Salary_Structure values(" + text1.getText() + ", \""
+                statement.execute("insert into Employee_Salary_Structure(Employee_Id,Employee_Name,Salary,Month,Year) values(" + text1.getText() + ", \""
                         + text2.getText() + "\", " + text3.getText() + ", \"" + text4.getText() + "\" , "
                         + text5.getText() + ");");
                 statement.close();
                 connection.close();
-                JOptionPane.showMessageDialog(this, "Saved Into Database Successfully."); // showing the message whether the Employee
-                                                                          // Details insert into the database or not .
+                JOptionPane.showMessageDialog(this, "Saved Into Database Successfully."); // showing the message whether
+                                                                                          // the Employee
+                // Details insert into the database or not .
 
             } catch (Exception a) {
                 JOptionPane.showMessageDialog(this, "Something is missing or Incorrect enteries");
@@ -3181,13 +3370,14 @@ class EmployeeSalaryDetails extends PlaceholderTextField implements ActionListen
 
                 Connection connection = DriverManager.getConnection(url, user, DBPassword);
                 Statement statement = connection.createStatement();
-                statement.execute("insert into Employee_Salary_Details values(" + text1.getText() + ", \""
+                statement.execute("insert into Employee_Salary_Details(Employee_Id , Employee_Name,Salary_Paid,Month,Year) values(" + text1.getText() + ", \""
                         + text2.getText() + "\", " + text3.getText() + ", \"" + text4.getText() + "\" , "
                         + text5.getText() + " );");
                 statement.close();
                 connection.close();
-                JOptionPane.showMessageDialog(this, "Saved Into Database Successfully."); // showing the message whether the Employee
-                                                                          // Details insert into the database or not .
+                JOptionPane.showMessageDialog(this, "Saved Into Database Successfully."); // showing the message whether
+                                                                                          // the Employee
+                // Details insert into the database or not .
 
             } catch (Exception a) {
                 JOptionPane.showMessageDialog(this, "Something is missing or Incorrect enteries");
@@ -3553,7 +3743,7 @@ class AcademicView implements ActionListener, KeyListener {
             Connection connection = DriverManager.getConnection(url, user, DBPassword);
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(
-                    "select a.Student_Id,a.Student_Name,a.Class,a.Subjects,a.Session,a.fee,e.Enrollment_No from Academic as a ,Enrollment as e where a.Student_Id = e.Student_Id;");
+                    "select a.Serial_No, a.Student_Id,a.Student_Name,a.Class,a.Subjects,a.Session,a.fee,e.Enrollment_No, e.Enrolled_Class from Academic as a ,Enrollment as e where a.Student_Id = e.Student_Id;");
             ResultSetMetaData rsmd = resultSet.getMetaData();
 
             // create a default table model
@@ -3588,7 +3778,7 @@ class AcademicView implements ActionListener, KeyListener {
             tableData = new JTable(model);
 
             // set the column width of table
-            int[] columnWidths = { 200, 200, 200, 500, 200, 200, 200 };
+            int[] columnWidths = { 200,200, 200, 200, 500, 200, 200, 200,200 };
             for (int i = 0; i < columns; i++) {
                 TableColumn column = tableData.getColumnModel().getColumn(i);
                 column.setPreferredWidth(columnWidths[i]);
@@ -3766,7 +3956,7 @@ class FeeView implements ActionListener, KeyListener {
             tableData = new JTable(model);
 
             // Increase the column width of table
-            int[] columnWidths = { 200, 200, 200, 500, 200, 200, 200 };
+            int[] columnWidths = { 200,200, 200, 200, 300, 200, 200, 200 };
             for (int i = 0; i < columns; i++) {
                 TableColumn column = tableData.getColumnModel().getColumn(i);
                 column.setPreferredWidth(columnWidths[i]);
@@ -3956,9 +4146,9 @@ class TeacherData implements ActionListener {
 
 class TeacherView implements ActionListener, KeyListener {
 
-    JFrame frame;  // frame in which all other components are added
+    JFrame frame; // frame in which all other components are added
 
-    JButton back;  // back buttons for redirect the user to Teacher Data page
+    JButton back; // back buttons for redirect the user to Teacher Data page
 
     JTextField text1; // textfield for search data
 
@@ -3967,9 +4157,9 @@ class TeacherView implements ActionListener, KeyListener {
     // School_Name to store the School name
     String Database, DBPassword, School_Name;
 
-    private JTable tableData;   // table to store teacher data.
- 
-    private DefaultTableModel model;  // default table model
+    private JTable tableData; // table to store teacher data.
+
+    private DefaultTableModel model; // default table model
 
     // constructor
     TeacherView(String database, String password, String school) {
@@ -4050,15 +4240,13 @@ class TeacherView implements ActionListener, KeyListener {
             // create table using default table model
             tableData = new JTable(model);
 
-
-            // set the column width of table 
+            // set the column width of table
             int[] columnWidths = { 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 250, 250, 250, 200, 200, 250 };
             for (int i = 0; i < columns; i++) {
                 TableColumn column = tableData.getColumnModel().getColumn(i);
                 column.setPreferredWidth(columnWidths[i]);
             }
 
-            
             tableData.setAutoResizeMode(JTable.AUTO_RESIZE_OFF); // change the auto resize property of table.
             // create JScrollPane and add table to it and set its properties
             JScrollPane sp = new JScrollPane(tableData);
@@ -4077,7 +4265,7 @@ class TeacherView implements ActionListener, KeyListener {
         }
 
         // Set the properties of frame
-        frame.setSize(1500, 800);  // optional
+        frame.setSize(1500, 800); // optional
         frame.setLayout(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setBackground(Color.YELLOW);
@@ -4092,7 +4280,7 @@ class TeacherView implements ActionListener, KeyListener {
 
     }
 
-    // All logics for this class are inside these 4  method.
+    // All logics for this class are inside these 4 method.
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -4133,17 +4321,17 @@ class TeacherView implements ActionListener, KeyListener {
 class SalaryStructureView implements ActionListener, KeyListener {
 
     JFrame frame; // frame in which all other components are added
-    
+
     JButton back; // back buttons for redirect the user to Teacher Data page
 
-    JTextField text1;  // textfield  for search data
+    JTextField text1; // textfield for search data
 
     // Database to Store the database name
     // DBPassword to store the mysql password
     // School_Name to store the School name
     String Database, DBPassword, School_Name;
 
-    private JTable tableData;   //table to store Teacher Salary Structure details.
+    private JTable tableData; // table to store Teacher Salary Structure details.
 
     private DefaultTableModel model; // default table model
 
@@ -4186,7 +4374,7 @@ class SalaryStructureView implements ActionListener, KeyListener {
             frame.add(lab1);
             frame.add(text1);
 
-            // connect app to mysql to fetch Teacher Salary Structure 
+            // connect app to mysql to fetch Teacher Salary Structure
             String url = "jdbc:mysql://localhost:3306/" + Database;
             String user = "root";
 
@@ -4210,7 +4398,7 @@ class SalaryStructureView implements ActionListener, KeyListener {
                 colname[i] = rsmd.getColumnName(i + 1);
             }
 
-            // set the column name to  the default model
+            // set the column name to the default model
             model.setColumnIdentifiers(colname);
 
             // store rows into an array named row
@@ -4223,27 +4411,26 @@ class SalaryStructureView implements ActionListener, KeyListener {
                 model.addRow(row);
             }
 
-            // create a table 
+            // create a table
             tableData = new JTable(model);
 
             // set the column width of table
-            int[] columnWidths = { 200, 200, 200, 500, 200 };
+            int[] columnWidths = { 200,200, 200, 200, 500, 200 };
             for (int i = 0; i < columns; i++) {
                 TableColumn column = tableData.getColumnModel().getColumn(i);
                 column.setPreferredWidth(columnWidths[i]);
             }
 
-
             tableData.setAutoResizeMode(JTable.AUTO_RESIZE_OFF); // change auto resize property of table
-            
-            // create JScrollPane add  table to it and set its properties
+
+            // create JScrollPane add table to it and set its properties
             JScrollPane sp = new JScrollPane(tableData);
             sp.setBounds(30, 150, 1200, 500);
 
             sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
             sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
-            // add Scrollpane to frame 
+            // add Scrollpane to frame
             frame.add(sp);
 
             statement.close();
@@ -4254,7 +4441,7 @@ class SalaryStructureView implements ActionListener, KeyListener {
         }
 
         // Set the properties of frame
-        frame.setSize(1500, 800);   // optional
+        frame.setSize(1500, 800); // optional
         frame.setLayout(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setBackground(Color.YELLOW);
@@ -4300,7 +4487,6 @@ class SalaryStructureView implements ActionListener, KeyListener {
     }
 }
 
-
 /*
  * This class provides an user interface that allows the user to view Teacher
  * Salary details.
@@ -4308,23 +4494,20 @@ class SalaryStructureView implements ActionListener, KeyListener {
  */
 class SalaryView implements ActionListener, KeyListener {
 
-    JFrame frame;    // frame in which all other components are added 
+    JFrame frame; // frame in which all other components are added
 
-    JButton back;   // back button for redirect the user to Teacher data page
+    JButton back; // back button for redirect the user to Teacher data page
 
     JTextField text1; // textfield to search data
 
-
-    
     // Database to Store the database name
     // DBPassword to store the mysql password
     // School_Name to store the School name
     String Database, DBPassword, School_Name;
 
+    private JTable tableData; // table to store the teacher Salary details
 
-    private JTable tableData;  // table to store the teacher Salary details
-
-    private DefaultTableModel model;  // default table model
+    private DefaultTableModel model; // default table model
 
     // constructor
     SalaryView(String database, String password, String school) {
@@ -4333,7 +4516,7 @@ class SalaryView implements ActionListener, KeyListener {
         School_Name = school;
     }
 
-    // method 
+    // method
     public void view() {
         try {
             // Create a frame
@@ -4407,16 +4590,15 @@ class SalaryView implements ActionListener, KeyListener {
             tableData = new JTable(model);
 
             // set the column width of the table
-            int[] columnWidths = { 200, 200, 200, 500, 200 };
+            int[] columnWidths = { 200,200, 200, 200, 500, 200 };
 
             for (int i = 0; i < columns; i++) {
                 TableColumn column = tableData.getColumnModel().getColumn(i);
                 column.setPreferredWidth(columnWidths[i]);
             }
 
-
             tableData.setAutoResizeMode(JTable.AUTO_RESIZE_OFF); // change the auto resize property of table
-            
+
             // create a JScrollPane and add table to it and set its properties
             JScrollPane sp = new JScrollPane(tableData);
 
@@ -4436,7 +4618,7 @@ class SalaryView implements ActionListener, KeyListener {
         }
 
         // Set the properties of frame
-        frame.setSize(1500, 800);   // optional
+        frame.setSize(1500, 800); // optional
         frame.setLayout(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setBackground(Color.YELLOW);
@@ -4482,14 +4664,13 @@ class SalaryView implements ActionListener, KeyListener {
     }
 }
 
-
 /*
  * This class provides an user interface that contains three buttons which
  * allows the user to view Employee details when they clicked.
  * This class extends ActionListener for event handling.
  */
 
- class EmployeeData implements ActionListener {
+class EmployeeData implements ActionListener {
 
     JFrame frame; // frame in which all other components are added.
 
@@ -4545,7 +4726,7 @@ class SalaryView implements ActionListener, KeyListener {
         frame.add(label);
 
         // set the properties of frame
-        frame.setSize(500, 500);    /// optional
+        frame.setSize(500, 500); /// optional
         frame.setLayout(null);
         frame.getContentPane().setBackground(Color.YELLOW);
         frame.setVisible(true);
@@ -4602,9 +4783,9 @@ class SalaryView implements ActionListener, KeyListener {
 
 class EmployeeView implements ActionListener, KeyListener {
 
-    JFrame frame;  // frame in which all other components are added
+    JFrame frame; // frame in which all other components are added
 
-    JButton back;  // back buttons for redirect the user to Teacher Data page
+    JButton back; // back buttons for redirect the user to Teacher Data page
 
     JTextField text1; // textfield for search data
 
@@ -4613,9 +4794,9 @@ class EmployeeView implements ActionListener, KeyListener {
     // School_Name to store the School name
     String Database, DBPassword, School_Name;
 
-    private JTable tableData;   // table to store teacher data.
- 
-    private DefaultTableModel model;  // default table model
+    private JTable tableData; // table to store teacher data.
+
+    private DefaultTableModel model; // default table model
 
     // constructor
     EmployeeView(String database, String password, String school) {
@@ -4704,9 +4885,8 @@ class EmployeeView implements ActionListener, KeyListener {
                 column.setPreferredWidth(columnWidths[i]);
             }
 
+            tableData.setAutoResizeMode(JTable.AUTO_RESIZE_OFF); // change the auto resize property of table
 
-            tableData.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);  // change the auto resize property of table 
-            
             // Create JScrollPane and add table to it and set its properties
             JScrollPane sp = new JScrollPane(tableData);
             sp.setBounds(30, 150, 1200, 500);
@@ -4725,7 +4905,7 @@ class EmployeeView implements ActionListener, KeyListener {
         }
 
         // Set the properties of frame
-        frame.setSize(1500, 800);  // optional
+        frame.setSize(1500, 800); // optional
         frame.setLayout(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setBackground(Color.YELLOW);
@@ -4777,21 +4957,20 @@ class EmployeeView implements ActionListener, KeyListener {
  * This class extends ActionListener and KeyListener for event handling.
  */
 
-
 class EmployeeSalaryStructureView implements ActionListener, KeyListener {
 
     JFrame frame; // frame in which all other components are added
-    
+
     JButton back; // back buttons for redirect the user to Teacher Data page
 
-    JTextField text1;  // textfield  for search data
+    JTextField text1; // textfield for search data
 
     // Database to Store the database name
     // DBPassword to store the mysql password
     // School_Name to store the School name
     String Database, DBPassword, School_Name;
 
-    private JTable tableData;   //table to store Teacher Salary Structure details.
+    private JTable tableData; // table to store Teacher Salary Structure details.
 
     private DefaultTableModel model; // default table model
 
@@ -4875,14 +5054,14 @@ class EmployeeSalaryStructureView implements ActionListener, KeyListener {
             tableData = new JTable(model);
 
             // set the column width of the table
-            int[] columnWidths = { 200, 200, 200, 500, 200 };
+            int[] columnWidths = {200, 200, 200, 200, 500, 200 };
 
             for (int i = 0; i < columns; i++) {
                 TableColumn column = tableData.getColumnModel().getColumn(i);
                 column.setPreferredWidth(columnWidths[i]);
             }
 
-            tableData.setAutoResizeMode(JTable.AUTO_RESIZE_OFF); //change auto resize property of table 
+            tableData.setAutoResizeMode(JTable.AUTO_RESIZE_OFF); // change auto resize property of table
 
             // Create a JScrollPane and add table to it and set its properties
             JScrollPane sp = new JScrollPane(tableData);
@@ -4902,7 +5081,7 @@ class EmployeeSalaryStructureView implements ActionListener, KeyListener {
         }
 
         // Set the properties of frame
-        frame.setSize(1500, 800);  // optional
+        frame.setSize(1500, 800); // optional
         frame.setLayout(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setBackground(Color.YELLOW);
@@ -4957,24 +5136,20 @@ class EmployeeSalaryStructureView implements ActionListener, KeyListener {
 
 class EmployeeSalaryView implements ActionListener, KeyListener {
 
-    JFrame frame;    // frame in which all other components are added 
+    JFrame frame; // frame in which all other components are added
 
-    JButton back;   // back button for redirect the user to Teacher data page
+    JButton back; // back button for redirect the user to Teacher data page
 
     JTextField text1; // textfield to search data
 
-
-    
     // Database to Store the database name
     // DBPassword to store the mysql password
     // School_Name to store the School name
     String Database, DBPassword, School_Name;
 
+    private JTable tableData; // table to store the teacher Salary details
 
-    private JTable tableData;  // table to store the teacher Salary details
-
-    private DefaultTableModel model;  // default table model
-
+    private DefaultTableModel model; // default table model
 
     // constructor
     EmployeeSalaryView(String database, String password, String school) {
@@ -5057,14 +5232,13 @@ class EmployeeSalaryView implements ActionListener, KeyListener {
             tableData = new JTable(model);
 
             // set the column width of table
-            int[] columnWidths = { 200, 200, 200, 500, 200 };
+            int[] columnWidths = {200, 200, 200, 200, 500, 200 };
             for (int i = 0; i < columns; i++) {
                 TableColumn column = tableData.getColumnModel().getColumn(i);
                 column.setPreferredWidth(columnWidths[i]);
             }
 
-
-            tableData.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);   // change Auto resize property of table
+            tableData.setAutoResizeMode(JTable.AUTO_RESIZE_OFF); // change Auto resize property of table
 
             // create a JScrollPane and add table to it and set its prperties
             JScrollPane sp = new JScrollPane(tableData);
@@ -5084,7 +5258,7 @@ class EmployeeSalaryView implements ActionListener, KeyListener {
         }
 
         // Set the properties of frame
-        frame.setSize(1500, 800);     // optional
+        frame.setSize(1500, 800); // optional
         frame.setLayout(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setBackground(Color.YELLOW);
@@ -5131,15 +5305,127 @@ class EmployeeSalaryView implements ActionListener, KeyListener {
 }
 
 
+/*
+ * This class provides an user interface that contains three buttons which
+ * allows the user to update Student details when they clicked.
+ * This class extends ActionListener for event handling.
+ */
+
+ class StudentDataUpdate implements ActionListener {
+
+    JFrame frame; // frame in which all other components are added.
+
+    // Buttons :
+    // button to update Student Basic details,
+    // button1 to update Student's Academic details,
+    // button 2 to update the student Fee Details,
+    // back for redirect the user to Home page of App
+    JButton button, button1, button2, back;
+
+    // Database to Store the database name
+    // DBPassword to store the mysql password
+    // School_Name to store the School name
+    String Database, DBPassword, School_Name;
+
+    // constructor
+    StudentDataUpdate(String database, String Password, String School) {
+
+        Database = database;
+        DBPassword = Password;
+        School_Name = School;
+
+        // Create a frame
+        frame = new JFrame();
+
+        // Create a label and set its properties
+
+        JLabel label = new JLabel();
+        label.setHorizontalAlignment(JLabel.CENTER);
+        label.setSize(1250, 100);
+        label.setText(School_Name);
+        label.setFont(new Font("Serif", Font.BOLD, 50));
+
+        // create buttons and add to frame
+
+        button = new JButton("Update Student Basic and Enrollment Details");
+        button.setBounds(420, 150, 410, 30);
+        frame.add(button);
+
+        button1 = new JButton("Update/Delete Student Academic Details ");
+        button1.setBounds(420, 200, 410, 30);
+        frame.add(button1);
+
+        button2 = new JButton("Update/Delete Student Fee Details");
+        button2.setBounds(420, 250, 410, 30);
+        frame.add(button2);
+
+        back = new JButton("Back");
+        back.setBounds(30, 30, 100, 30);
+        frame.add(back);
+
+        // Here add label in frame
+        frame.add(label);
+
+        // set the properties of frame
+        frame.setSize(500, 500);
+        frame.setLayout(null);
+        frame.getContentPane().setBackground(Color.YELLOW);
+        frame.setVisible(true);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+
+        // Registraton of buttons with action listener
+        button.addActionListener(this);
+        button1.addActionListener(this);
+        button2.addActionListener(this);
+        back.addActionListener(this);
+
+    }
+
+    // All logics for this class are inside this method.
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+        if (e.getSource() == button) {
+
+            new StudentUpdate(DBPassword, Database, DBPassword, School_Name);
+            frame.dispose();
+
+        }
+
+        if (e.getSource() == button1) {
+
+            new AcademicUpdate(null,Database, DBPassword, School_Name);
+            
+            frame.dispose();
+        }
+        if (e.getSource() == button2) {
+
+            new FeeUpdate(null,Database, DBPassword, School_Name);
+            frame.dispose();
+        }
+        if (e.getSource() == back) {
+
+            new First(Database, DBPassword, School_Name);
+            frame.dispose();
+        }
+
+    }
+}
+
+
+
+
+
+
+
 
 /*
  * This class provides an user interface that allows the user to update
  * Student Basic details .
  * This class extends ActionListenerfor event handling.
- */
+*/
 
 class StudentUpdate extends PlaceholderTextField implements ActionListener {
-
 
     // Buttons :
     // sub to insert the Student basic details into the database,
@@ -5169,14 +5455,15 @@ class StudentUpdate extends PlaceholderTextField implements ActionListener {
     // text15 allows the user to enter Student's Father's Occupation,
     // text16 allows the user to enter Student's Mother's Ocupation,
     // text17 allows the user to enter Student's School Leaving date
-    JTextField text, text1, text2, text3, text4,text5, text7, text8, text9 ,text10, text11, text12, text13, text14, text15, text16,
-            text17;
-    
-    final JComboBox<String> ch1;    // JComboBox ch1 to select the gender of Student
+    // text18 allows the user to enter Student Enrolled class
+    JTextField text, text1, text2, text3, text4, text5, text7, text8, text9, text10, text11, text12, text13, text14,
+            text15, text16,text17,text18;
 
-    final JComboBox<String> ch2;    // JCommboBox ch2 to select the category of Student
-    
-    boolean message = false;    // for showing the message 
+    final JComboBox<String> ch1; // JComboBox ch1 to select the gender of Student
+
+    final JComboBox<String> ch2; // JCommboBox ch2 to select the category of Student
+
+    boolean message = false; // for showing the message
 
     String[] gender = { "Male", "Female", "Other" };
     String[] category = { "General", "OBC", "SC/ST" };
@@ -5187,32 +5474,32 @@ class StudentUpdate extends PlaceholderTextField implements ActionListener {
     // placeholder for background text of textfield
     String placeholder, Database, DBPassword, School_Name;
 
-    // Student_Id store the student id of student 
+    // Student_Id store the student id of student
     String Student_Id;
 
-    // String  
+    // String
     // Enrollment store Student's Enrollment No,
     // Sname store Student Name,
-    // Fname  store  Student's Father Name,
-    // Mname store  Student's Mother Name,
-    // Dob  store  Student's Date of Birth,
+    // Fname store Student's Father Name,
+    // Mname store Student's Mother Name,
+    // Dob store Student's Date of Birth,
     // gender store select Student's Gender,
-    //  Mob1 store  Student's Mobile Number1 ,
-    //  Mob2  store  Student's Mobile Number2,
-    //  RDate  store  Student's Registration Date,
-    //  Address  store  Student's Address,
-    //   student_Aadhaar_No store  Student's Aadhaar No,
-    //   Father_Aadhaar_No store  Student's Father Aadhaar No,
-    //   Mother_Aadhaar store  Student's Mother Aadhaar No,
-    //   Family_Id store  Student's Family ID,
+    // Mob1 store Student's Mobile Number1 ,
+    // Mob2 store Student's Mobile Number2,
+    // RDate store Student's Registration Date,
+    // Address store Student's Address,
+    // student_Aadhaar_No store Student's Aadhaar No,
+    // Father_Aadhaar_No store Student's Father Aadhaar No,
+    // Mother_Aadhaar store Student's Mother Aadhaar No,
+    // Family_Id store Student's Family ID,
     // Category store select Student's Category ,
-    //  Father_Occupation  store  Student's Father's Occupation,
-    //  Mother_Occupation  store  Student's Mother's Ocupation,
-    //   School_Leaving_Date store  Student's School Leaving date
+    // Father_Occupation store Student's Father's Occupation,
+    // Mother_Occupation store Student's Mother's Ocupation,
+    // School_Leaving_Date store Student's School Leaving date
 
     String ENROLLMENT, Sname, Fname, Mname, Dob, Gender, Mob1, Mob2, RDate, Address, student_Aadhaar_No,
             Father_Aadhaar_No, Mother_Aadhaar_No, Family_Id, Category, Father_Occupation,
-            Mother_Occupation, School_Leaving_Date;
+            Mother_Occupation, School_Leaving_Date,EnrolledClass;
 
     // constructor
     StudentUpdate(String placeholder, String database, String Password, String School) {
@@ -5311,6 +5598,10 @@ class StudentUpdate extends PlaceholderTextField implements ActionListener {
         lab19.setFont(new Font("Serif", Font.PLAIN, 25));
         lab19.setBounds(700, 440, 250, 30);
 
+        JLabel lab20 = new JLabel("Enrolled Class");
+        lab20.setFont(new Font("Serif", Font.PLAIN, 25));
+        lab20.setBounds(700, 480, 250, 30);
+
 
         // create TextField and set its properties
         text = new JTextField();
@@ -5337,8 +5628,7 @@ class StudentUpdate extends PlaceholderTextField implements ActionListener {
         text5.setFont(new Font("Serif", Font.PLAIN, 25));
         text5.setBounds(300, 325, 300, 30);
 
-
-        ch1 = new JComboBox<>(gender);                     // ComboBox for gender
+        ch1 = new JComboBox<>(gender); // ComboBox for gender
         ch1.setBounds(300, 365, 300, 30);
         ch1.setSelectedIndex(-1);
 
@@ -5374,8 +5664,7 @@ class StudentUpdate extends PlaceholderTextField implements ActionListener {
         text14.setFont(new Font("Serif", Font.PLAIN, 25));
         text14.setBounds(950, 285, 300, 30);
 
-
-        ch2 = new JComboBox<>(category);                     // ComboBox for category
+        ch2 = new JComboBox<>(category); // ComboBox for category
         ch2.setBounds(950, 325, 300, 30);
         ch2.setSelectedIndex(-1);
 
@@ -5391,6 +5680,10 @@ class StudentUpdate extends PlaceholderTextField implements ActionListener {
         text17.setFont(new Font("Serif", Font.PLAIN, 25));
         text17.setBounds(950, 445, 300, 30);
 
+        text18 = new PlaceholderTextField("eg : 5th");
+        text18.setFont(new Font("Serif", Font.PLAIN, 25));
+        text18.setBounds(950, 485, 300, 30);
+
         // create buttons for submit ,clear and back
 
         sub = new JButton(" UPDATE ");
@@ -5399,7 +5692,9 @@ class StudentUpdate extends PlaceholderTextField implements ActionListener {
         clear = new JButton(" CLEAR ");
         clear.setBounds(650, 600, 200, 30);
 
-        back = new JButton("Home");
+        
+
+        back = new JButton("Back");
         back.setBounds(30, 30, 100, 30);
 
         // Here add labels in frame
@@ -5424,8 +5719,9 @@ class StudentUpdate extends PlaceholderTextField implements ActionListener {
         frame1.add(lab16);
         frame1.add(lab17);
         frame1.add(lab19);
+        frame1.add(lab20);
 
-        // here add textfields and JCombobox  in frame
+        // here add textfields and JCombobox in frame
 
         frame1.add(text1);
         frame1.add(text);
@@ -5446,14 +5742,14 @@ class StudentUpdate extends PlaceholderTextField implements ActionListener {
         frame1.add(text16);
         frame1.add(text17);
         frame1.add(ch2);
-
+        frame1.add(text18);
         // here add buttons to frame
         frame1.add(sub);
         frame1.add(clear);
         frame1.add(back);
 
         // set the properties of frame
-        frame1.setSize(1500, 1500);  //optional
+        frame1.setSize(1500, 1500); // optional
         frame1.setLayout(null);
         frame1.getContentPane().setBackground(Color.YELLOW);
         frame1.setVisible(true);
@@ -5474,7 +5770,7 @@ class StudentUpdate extends PlaceholderTextField implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == back) {
 
-            new First(Database, DBPassword, School_Name);
+            new StudentDataUpdate(Database, DBPassword, School_Name);
             frame1.dispose();
         }
 
@@ -5496,17 +5792,17 @@ class StudentUpdate extends PlaceholderTextField implements ActionListener {
             text15.setText(null);
             text16.setText(null);
             text17.setText(null);
+            text18.setText(null);
 
             ch1.setSelectedIndex(-1);
             ch2.setSelectedIndex(-1);
 
-           
         }
 
         if (e.getSource() == sub) {
 
             try {
-                // connect app to mysql to update Student Basic details 
+                // connect app to mysql to update Student Basic details
 
                 Student_Id = text.getText();
                 String url = "jdbc:mysql://localhost:3306/" + Database;
@@ -5529,7 +5825,7 @@ class StudentUpdate extends PlaceholderTextField implements ActionListener {
                     pstmt.setString(1, text1.getText());
                     pstmt.setString(2, ENROLLMENT);
                     pstmt.executeUpdate();
-  
+
                     message = true;
                 }
 
@@ -5695,7 +5991,7 @@ class StudentUpdate extends PlaceholderTextField implements ActionListener {
                     message = true;
                 }
 
-                //Student Aadhaar no
+                // Student Aadhaar no
                 if (text11.getText() != null && !text11.getText().trim().isEmpty()) {
 
                     ResultSet resultSet = statement.executeQuery(
@@ -5806,7 +6102,7 @@ class StudentUpdate extends PlaceholderTextField implements ActionListener {
                     message = true;
                 }
 
-                // Mother Occupation 
+                // Mother Occupation
                 if (text16.getText() != null && !text16.getText().trim().isEmpty()) {
 
                     ResultSet resultSet = statement.executeQuery(
@@ -5836,35 +6132,52 @@ class StudentUpdate extends PlaceholderTextField implements ActionListener {
                     message = true;
                 }
 
+                if (text18.getText() != null && !text1.getText().trim().isEmpty()) {
+
+                    ResultSet resultSet = statement.executeQuery(
+                            "select * from Enrollment where Student_Id = " + (String) text.getText() + " limit 1;");
+                    while (resultSet.next()) {
+                        EnrolledClass = resultSet.getString(4);
+                    }
+
+                    String query = "UPDATE Enrollment SET Class = ? WHERE Class = ?";
+                    PreparedStatement pstmt = connection.prepareStatement(query);
+                    pstmt.setString(1, text18.getText());
+                    pstmt.setString(2, EnrolledClass);
+                    pstmt.executeUpdate();
+
+                    message = true;
+                }
+
                 // if ((text1.getText() == null || text1.getText().trim().isEmpty())
-                //         && (text2.getText() == null || text2.getText().trim().isEmpty())
-                //         && (text3.getText() == null || text3.getText().trim().isEmpty())
-                //         && (text4.getText() == null || text4.getText().trim().isEmpty())
-                //         && (text5.getText() == null || text5.getText().trim().isEmpty())
-                //         && (ch1.getSelectedIndex() == -1)
-                //         && (text7.getText() == null || text7.getText().trim().isEmpty())
-                //         && (text8.getText() == null || text8.getText().trim().isEmpty())
-                //         && (text9.getText() == null || text9.getText().trim().isEmpty())
-                //         && (text10.getText() == null || text10.getText().trim().isEmpty())
-                //         && (text11.getText() == null || text11.getText().trim().isEmpty())
-                //         && (text12.getText() == null || text12.getText().trim().isEmpty())
-                //         && (text13.getText() == null || text13.getText().trim().isEmpty())
-                //         && (text14.getText() == null || text14.getText().trim().isEmpty())
-                //         && (ch2.getSelectedIndex() == -1)
-                //         && (text15.getText() == null || text15.getText().trim().isEmpty())
-                //         && (text16.getText() == null || text16.getText().trim().isEmpty())
-                //         && (text17.getText() == null || text17.getText().trim().isEmpty())) {
-                //             JOptionPane.showMessageDialog(this, "Nothing is updated");
-                    
+                // && (text2.getText() == null || text2.getText().trim().isEmpty())
+                // && (text3.getText() == null || text3.getText().trim().isEmpty())
+                // && (text4.getText() == null || text4.getText().trim().isEmpty())
+                // && (text5.getText() == null || text5.getText().trim().isEmpty())
+                // && (ch1.getSelectedIndex() == -1)
+                // && (text7.getText() == null || text7.getText().trim().isEmpty())
+                // && (text8.getText() == null || text8.getText().trim().isEmpty())
+                // && (text9.getText() == null || text9.getText().trim().isEmpty())
+                // && (text10.getText() == null || text10.getText().trim().isEmpty())
+                // && (text11.getText() == null || text11.getText().trim().isEmpty())
+                // && (text12.getText() == null || text12.getText().trim().isEmpty())
+                // && (text13.getText() == null || text13.getText().trim().isEmpty())
+                // && (text14.getText() == null || text14.getText().trim().isEmpty())
+                // && (ch2.getSelectedIndex() == -1)
+                // && (text15.getText() == null || text15.getText().trim().isEmpty())
+                // && (text16.getText() == null || text16.getText().trim().isEmpty())
+                // && (text17.getText() == null || text17.getText().trim().isEmpty())) {
+                // JOptionPane.showMessageDialog(this, "Nothing is updated");
+
                 // }
 
-                if(message== true){
+                if (message == true) {
                     JOptionPane.showMessageDialog(this, "Student Data Updated ");
 
                 }
 
-                if(message == false){
-                 JOptionPane.showMessageDialog(this, "Nothing is updated");
+                if (message == false) {
+                    JOptionPane.showMessageDialog(this, "Nothing is updated");
 
                 }
 
@@ -5874,8 +6187,6 @@ class StudentUpdate extends PlaceholderTextField implements ActionListener {
             } catch (Exception a) {
 
                 JOptionPane.showMessageDialog(this, "Student_Id is not filled or Wrong Enteries");
-            
-                
 
             }
 
@@ -5884,6 +6195,782 @@ class StudentUpdate extends PlaceholderTextField implements ActionListener {
     }
 
 }
+
+
+class AcademicUpdate extends PlaceholderTextField implements ActionListener {
+
+    // Buttons :
+    // sub to update the Student Academic details into the database,
+    // clear for clear the information that are filled,
+    // back for redirect the user to Home page of App
+    // Delete for delete the Academic data
+    JButton back, sub,Delete, clear;
+
+    // Textfields:
+    // text1 allows user to enter serial Number ,
+    // text2 allows user to enter Student ID,
+    // text3 allows user to enter Student class,
+    // text4 allows user to enter Student Subject,
+    // text5 allows user to enter Student Session,
+    // text6 allows user to enter Student Fee,
+    JTextField text1, text2, text5, text3, text4, text6;
+
+    JFrame frame; // frame in which all other components are added .
+
+    // Database to Store the database name
+    // DBPassword to store the mysql password
+    // School_Name to store the School name
+    // placeholder for background text of textfield
+    String placeholder, Database, DBPassword, School_Name;
+
+
+    // Serial No to store serial no of data
+    // Student Id to store student id
+    // Class to store class of student
+    // Subject to store subjects of student
+    // Session to store the session of Student
+    // Fee to store the Fee of Student
+    String Serial_No , Student_Id, Student_Name, Class, Subject, Session, Fee;
+
+
+    boolean message = false; // message to store the message that shows whether the Student database updated or not.
+
+    // constructor
+    AcademicUpdate(String placeholder, String database, String Password, String School) {
+
+        super(placeholder);
+        Database = database;
+        DBPassword = Password;
+        School_Name = School;
+
+        // create a frame
+
+        frame = new JFrame();
+
+        // create labels and set their properties
+        JLabel label = new JLabel();
+        label.setHorizontalAlignment(JLabel.CENTER);
+        label.setSize(1250, 100);
+        label.setText("UPDATE/DELETE  ACADEMIC  DETAILS");
+        label.setFont(new Font("Serif", Font.BOLD, 50));
+
+        JLabel label2 = new JLabel("Note : Admin can update/Delete student data using student id and Serial No");
+        label2.setFont(new Font("Serif", Font.PLAIN, 22));
+        label2.setBounds(330, 75, 700, 25);
+
+        JLabel label3 = new JLabel("Note : Admin can find the Serial Number by click on View Student details button");
+        label3.setFont(new Font("Serif", Font.PLAIN, 22));
+        label3.setBounds(300, 110, 720, 25);
+
+        JLabel lab1 = new JLabel("Serial Number :");
+        lab1.setFont(new Font("Serif", Font.PLAIN, 25));
+        lab1.setBounds(150, 160, 250, 30);
+
+        JLabel lab2 = new JLabel("Student Id :");
+        lab2.setFont(new Font("Serif", Font.PLAIN, 25));
+        lab2.setBounds(150, 200, 250, 30);
+
+        JLabel lab3 = new JLabel("Class :");
+        lab3.setFont(new Font("Serif", Font.PLAIN, 25));
+        lab3.setBounds(150, 240, 250, 30);
+
+        JLabel lab4 = new JLabel("Subject :");
+        lab4.setFont(new Font("Serif", Font.PLAIN, 25));
+        lab4.setBounds(150, 280, 250, 30);
+
+        JLabel lab5 = new JLabel("Session :");
+        lab5.setFont(new Font("Serif", Font.PLAIN, 25));
+        lab5.setBounds(150, 320, 250, 30);
+
+        JLabel lab6 = new JLabel("Fee :");
+        lab6.setFont(new Font("Serif", Font.PLAIN, 25));
+        lab6.setBounds(150, 360, 250, 30);
+
+
+
+        // Here add label in frame
+        frame.add(label);
+        frame.add(label2);
+        frame.add(label3);
+        frame.add(lab1);
+        frame.add(lab2);
+        frame.add(lab3);
+        frame.add(lab4);
+        frame.add(lab5);
+        frame.add(lab6);
+        
+
+        // create TextFields and set their properties
+
+        text1 = new JTextField();
+        text1.setFont(new Font("Serif", Font.PLAIN, 25));
+        text1.setBounds(450, 165, 300, 30);
+
+        text2 = new JTextField();
+        text2.setFont(new Font("Serif", Font.PLAIN, 25));
+        text2.setBounds(450, 205, 300, 30);
+
+        text3 = new PlaceholderTextField("eg:5th");
+        text3.setFont(new Font("Serif", Font.PLAIN, 25));
+        text3.setBounds(450, 245, 300, 30);
+
+        text4 = new PlaceholderTextField("eg : Math,English,Science");
+        text4.setFont(new Font("Serif", Font.PLAIN, 25));
+        text4.setBounds(450, 285, 300, 30);
+
+        text5 = new JTextField();
+        text5.setFont(new Font("Serif", Font.PLAIN, 25));
+        text5.setBounds(450, 325, 300, 30);
+
+        text6 = new JTextField();
+        text6.setFont(new Font("Serif", Font.PLAIN, 25));
+        text6.setBounds(450, 365, 300, 30);
+
+ 
+
+        // add submit,clear and back buttons
+
+        sub = new JButton(" UPDATE ");
+        sub.setBounds(250, 600, 200, 30);
+
+        clear = new JButton(" CLEAR ");
+        clear.setBounds(500, 600, 200, 30);
+
+        Delete = new JButton(" DELETE ");
+        Delete.setBounds(750, 600, 200, 30);
+
+        back = new JButton("Back");
+        back.setBounds(30, 30, 100, 30);
+
+        // here add textfields to frame
+        frame.add(text1);
+        frame.add(text2);
+        frame.add(text3);
+        frame.add(text4);
+        frame.add(text5);
+        frame.add(text6);
+
+        // here add buttons to frame
+        frame.add(sub);
+        frame.add(clear);
+        frame.add(Delete);
+        frame.add(back);
+
+        // set the properties of frame
+        frame.setSize(500, 500);
+        frame.setLayout(null);
+        frame.getContentPane().setBackground(Color.YELLOW);
+        frame.setVisible(true);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+
+        // Register buttons with event Listener
+        back.addActionListener(this);
+        sub.addActionListener(this);
+        Delete.addActionListener(this);
+        clear.addActionListener(this);
+
+    }
+
+    // All Logics for this class are inside this method.
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == back) {
+
+            new StudentDataUpdate(Database, DBPassword, School_Name);
+            frame.dispose();
+        }
+        if (e.getSource() == clear) {
+            text1.setText(null);
+            text2.setText(null);
+            text3.setText(null);
+            text4.setText(null);
+            text5.setText(null);
+            text6.setText(null);
+        
+
+        }
+        if(e.getSource()== Delete){
+            try{
+                // connect app to mysql to delete Student Academic details from the database.
+
+            
+                String url = "jdbc:mysql://localhost:3306/" + Database;
+                String user = "root";
+
+                Connection connection = DriverManager.getConnection(url, user, DBPassword);
+                PreparedStatement pstmt = connection.prepareStatement("delete from Academic where Student_Id = ? and Serial_No = ? ");
+                pstmt.setString(1, text2.getText());
+                pstmt.setString(2, text1.getText());
+                pstmt.executeUpdate();
+                JOptionPane.showMessageDialog(this, "Data Deleted Successfully.");
+                connection.close();
+            }
+            catch(Exception b){
+                
+                JOptionPane.showMessageDialog(this, "No Data Deleted.");
+            }
+        }
+        if (e.getSource() == sub) {
+            try {
+                // connect app to mysql to update Student Academic details into the database.
+                String url = "jdbc:mysql://localhost:3306/" + Database;
+                String user = "root";
+
+                Connection connection = DriverManager.getConnection(url, user, DBPassword);
+                
+                // Class
+                if (text3.getText() != null && !text3.getText().trim().isEmpty()) {
+
+                    String selectQuery = "SELECT * FROM Academic WHERE Student_Id = ? AND Serial_No = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text2.getText());
+                    selectStmt.setString(2, text1.getText());
+                
+                    ResultSet resultSet = selectStmt.executeQuery();
+                
+                    while (resultSet.next()) {
+                        Class = resultSet.getString(4);
+                    }
+
+                    String query = "UPDATE  Academic  SET class  = ? WHERE class = ? ;";
+                    PreparedStatement pstmt = connection.prepareStatement(query);
+                    pstmt.setString(1, text3.getText());
+                    pstmt.setString(2,Class);
+                    pstmt.executeUpdate();
+
+                    message = true;
+                }
+
+                // Subjects
+                if (text4.getText() != null && !text4.getText().trim().isEmpty()) {
+
+                
+                    String selectQuery = "SELECT * FROM Academic WHERE Student_Id = ? AND Serial_No = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text2.getText());
+                    selectStmt.setString(2, text1.getText());
+                
+                    ResultSet resultSet = selectStmt.executeQuery();
+                while (resultSet.next()) {
+                        Subject = resultSet.getString(5);
+                    }
+
+                    String query = "UPDATE Academic SET Subjects = ? WHERE Subjects = ?";
+                    PreparedStatement pstmt = connection.prepareStatement(query);
+                    pstmt.setString(1, text4.getText());
+                    pstmt.setString(2, Subject);
+                    pstmt.executeUpdate();
+                    message = true;
+                }
+
+                // Session 
+                if (text5.getText() != null && !text5.getText().trim().isEmpty()) {
+
+                    String selectQuery = "SELECT * FROM Academic WHERE Student_Id = ? AND Serial_No = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text2.getText());
+                    selectStmt.setString(2, text1.getText());
+                
+                    ResultSet resultSet = selectStmt.executeQuery();
+                    while (resultSet.next()) {
+                    Session = resultSet.getString(6);
+                }
+
+                    String query = "UPDATE Academic SET Session = ? WHERE Session = ?";
+                    PreparedStatement pstmt = connection.prepareStatement(query);
+                    pstmt.setString(1, text5.getText());
+                    pstmt.setString(2, Session);
+                    pstmt.executeUpdate();
+                    message = true;
+                }
+
+                // Fee
+                if (text6.getText() != null && !text6.getText().trim().isEmpty()) {
+
+                    String selectQuery = "SELECT * FROM Academic WHERE Student_Id = ? AND Serial_No = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text2.getText());
+                    selectStmt.setString(2, text1.getText());
+                
+                    ResultSet resultSet = selectStmt.executeQuery();
+                    while (resultSet.next()) {
+                    Fee = resultSet.getString(7);
+                }
+
+                    String query = "UPDATE Academic SET Fee = ? WHERE Fee = ?";
+                    PreparedStatement pstmt = connection.prepareStatement(query);
+                    pstmt.setString(1, text6.getText());
+                    pstmt.setString(2, Fee);
+                    pstmt.executeUpdate();
+                    message = true;
+                }
+
+              
+
+
+
+
+                if(message == true){
+                JOptionPane.showMessageDialog(this, "Student Data Updated."); // showing the message whether
+                }
+                                                                                       // the Student Details insert into the database or not .
+                if(message == false){
+                    JOptionPane.showMessageDialog(this, "Nothing is Updated.");
+                }
+                
+            
+                connection.close();
+
+            } catch (Exception a) {
+                System.out.println(a);
+                JOptionPane.showMessageDialog(this, "Something is missing or Incorrect enteries");
+            }
+        }
+    }
+}
+
+
+
+
+/*
+ * This class provides an user interface that allows the user to update Fee details.
+ * This class extends PlaceholderTextField to fill the background of textfield
+ * that shows how to enter date and which textfield is optional.
+ * This class extends ActionListener for event handling.
+ */
+
+ class FeeUpdate extends PlaceholderTextField implements ActionListener {
+
+    JFrame frame; // frame in which all other components are added .
+
+    // Buttons :
+    // sub to insert the Student Fee details into the database,
+    // clear for clear the information that are filled,
+    // Delete for delete the fee data of Student
+    // back for redirect the user to Home page of App
+    JButton back, clear,Delete, sub;
+
+    // Textfields:
+    // text1 allows user to enter serial no ,
+    // text2 allows user to enter Student id,
+    // text3 allows user to enter Student Class,
+    // text4 allows user to enter Student Paid Fee,
+    // text5 allows user to enter Student Balance,
+    // text6 allows user to enter Student Date.
+    JTextField text1, text2, text3, text4, text5, text6;
+
+    // Database to Store the database name
+    // DBPassword to store the mysql password
+    // School_Name to store the School name
+    // placeholder for background text of textfield
+    String placeholder, Database, DBPassword, School_Name;
+
+    boolean message = false;  // for message that shows whether the fee details updated or not.
+
+    // class to store the class of student to update
+    // Paid_Fee to store the fees paid by Student to update
+    // Balance to store the balance left to update
+    // Date to store the Data to be updated
+    String Class,Paid_Fee,Balance,Date;
+
+    // constructor
+    FeeUpdate(String placeholder, String database, String Password, String School) {
+        super(placeholder);
+        Database = database;
+        DBPassword = Password;
+        School_Name = School;
+
+        // create a Frame
+        frame = new JFrame();
+
+        // create labels and set their properties
+        JLabel label = new JLabel();
+        label.setHorizontalAlignment(JLabel.CENTER);
+        label.setSize(1250, 100);
+        label.setText("UPDATE/DELETE  FEE  DETAILS");
+        label.setFont(new Font("Serif", Font.BOLD, 50));
+
+
+        JLabel label2 = new JLabel("Note : Admin can update/Delete student data using student id and Serial No");
+        label2.setFont(new Font("Serif", Font.PLAIN, 22));
+        label2.setBounds(330, 75, 700, 25);
+
+        JLabel label3 = new JLabel("Note : Admin can find the Serial Number by click on View Student details button");
+        label3.setFont(new Font("Serif", Font.PLAIN, 22));
+        label3.setBounds(300, 110, 720, 25);
+
+        JLabel lab1 = new JLabel("Serial No :");
+        lab1.setFont(new Font("Serif", Font.PLAIN, 25));
+        lab1.setBounds(150, 160, 250, 30);
+
+        JLabel lab2 = new JLabel("Student ID :");
+        lab2.setFont(new Font("Serif", Font.PLAIN, 25));
+        lab2.setBounds(150, 200, 250, 30);
+
+        JLabel lab3 = new JLabel("Class:");
+        lab3.setFont(new Font("Serif", Font.PLAIN, 25));
+        lab3.setBounds(150, 240, 250, 30);
+
+        JLabel lab4 = new JLabel("Paid Fee :");
+        lab4.setFont(new Font("Serif", Font.PLAIN, 25));
+        lab4.setBounds(150, 280, 250, 30);
+
+        JLabel lab5 = new JLabel("Balance :");
+        lab5.setFont(new Font("Serif", Font.PLAIN, 25));
+        lab5.setBounds(150, 320, 250, 30);
+
+        JLabel lab6 = new JLabel("Date");
+        lab6.setFont(new Font("Serif", Font.PLAIN, 25));
+        lab6.setBounds(150, 360, 250, 30);
+
+        // Here add label in frame
+        frame.add(label);
+        frame.add(label2);
+        frame.add(label3);
+        frame.add(lab1);
+        frame.add(lab2);
+        frame.add(lab3);
+        frame.add(lab4);
+        frame.add(lab5);
+        frame.add(lab6);
+
+        // create TextFields and set their properties
+
+        text1 = new JTextField();
+        text1.setFont(new Font("Serif", Font.PLAIN, 25));
+        text1.setBounds(450, 165, 300, 30);
+
+        text2 = new JTextField();
+        text2.setFont(new Font("Serif", Font.PLAIN, 25));
+        text2.setBounds(450, 205, 300, 30);
+
+        text3 = new PlaceholderTextField("eg : 5th");
+        text3.setFont(new Font("Serif", Font.PLAIN, 25));
+        text3.setBounds(450, 245, 300, 30);
+
+        text4 = new JTextField();
+        text4.setFont(new Font("Serif", Font.PLAIN, 25));
+        text4.setBounds(450, 285, 300, 30);
+
+        text5 = new JTextField();
+        text5.setFont(new Font("Serif", Font.PLAIN, 25));
+        text5.setBounds(450, 325, 300, 30);
+
+        text6 = new PlaceholderTextField("YYYY-MM-DD");
+        text6.setFont(new Font("Serif", Font.PLAIN, 25));
+        text6.setBounds(450, 365, 300, 30);
+
+        // create button and set its properties
+
+        sub = new JButton(" UPDATE ");
+        sub.setBounds(250, 600, 200, 30);
+
+        clear = new JButton(" CLEAR ");
+        clear.setBounds(500, 600, 200, 30);
+
+        Delete = new JButton(" DELETE ");
+        Delete.setBounds(750, 600, 200, 30);
+
+        back = new JButton("Back");
+        back.setBounds(30, 30, 100, 30);
+
+        // here add textfields to frame
+        frame.add(text1);
+        frame.add(text2);
+        frame.add(text3);
+        frame.add(text4);
+        frame.add(text5);
+        frame.add(text6);
+
+        // here add buttons to frame
+        frame.add(sub);
+        frame.add(clear);
+        frame.add(Delete);
+        frame.add(back);
+
+        // set the properties of frame
+        frame.setSize(500, 500);
+        frame.setLayout(null);
+        frame.getContentPane().setBackground(Color.YELLOW);
+        frame.setVisible(true);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+
+        // Register the buttons with event Listener
+        back.addActionListener(this);
+        clear.addActionListener(this);
+        Delete.addActionListener(this);
+        sub.addActionListener(this);
+    }
+
+    // All the logics for this class are inside this method.
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == back) {
+
+            new StudentDataUpdate(Database, DBPassword, School_Name);
+            frame.dispose();
+        }
+
+        if (e.getSource() == clear) {
+            text1.setText(null);
+            text2.setText(null);
+            text3.setText(null);
+            text4.setText(null);
+            text5.setText(null);
+            text6.setText(null);
+
+        }
+        if(e.getSource()== Delete){
+            try{
+                // connect app to mysql to delete Student Academic details from the database.
+
+            
+                String url = "jdbc:mysql://localhost:3306/" + Database;
+                String user = "root";
+
+                Connection connection = DriverManager.getConnection(url, user, DBPassword);
+                PreparedStatement pstmt = connection.prepareStatement("delete from Fee_Details where Student_Id = ? and Serial_No = ? ");
+                pstmt.setString(1, text2.getText());
+                pstmt.setString(2, text1.getText());
+                pstmt.executeUpdate();
+                JOptionPane.showMessageDialog(this, "Data Deleted Successfully.");
+                connection.close();
+            }
+            catch(Exception b){
+                
+                JOptionPane.showMessageDialog(this, "No Data Deleted.");
+            }
+        }
+        if (e.getSource() == sub) {
+            try {
+                // connect app to mysql to update Student Academic details into the database.
+                String url = "jdbc:mysql://localhost:3306/" + Database;
+                String user = "root";
+
+                Connection connection = DriverManager.getConnection(url, user, DBPassword);
+               
+               
+                // Classw
+                if (text3.getText() != null && !text3.getText().trim().isEmpty()) {
+                    String selectQuery = "SELECT * FROM Fee_Details WHERE Student_Id = ? AND Serial_No = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text2.getText());
+                    selectStmt.setString(2, text1.getText());
+                
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    while (resultSet.next()) {
+                        Class = resultSet.getString(4);
+                    }
+
+                    String query = "UPDATE  Fee_Details  SET Class  = ? WHERE Class = ?";
+                    PreparedStatement pstmt = connection.prepareStatement(query);
+                    pstmt.setString(1, text3.getText());
+                    pstmt.setString(2,Class);
+                    pstmt.executeUpdate();
+
+                    message = true;
+                }
+
+                // Subjects
+                if (text4.getText() != null && !text4.getText().trim().isEmpty()) {
+
+                    String selectQuery = "SELECT * FROM Fee_Details WHERE Student_Id = ? AND Serial_No = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text2.getText());
+                    selectStmt.setString(2, text1.getText());
+                
+                    ResultSet resultSet = selectStmt.executeQuery();
+                while (resultSet.next()) {
+                        Paid_Fee = resultSet.getString(5);
+                    }
+
+                    String query = "UPDATE Fee_Details SET Paid_Fee = ? WHERE Paid_Fee = ?";
+                    PreparedStatement pstmt = connection.prepareStatement(query);
+                    pstmt.setString(1, text4.getText());
+                    pstmt.setString(2, Paid_Fee);
+                    pstmt.executeUpdate();
+                    message = true;
+                }
+
+                // Session 
+                if (text5.getText() != null && !text5.getText().trim().isEmpty()) {
+
+                    String selectQuery = "SELECT * FROM Fee_Details WHERE Student_Id = ? AND Serial_No = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text2.getText());
+                    selectStmt.setString(2, text1.getText());
+                
+                    ResultSet resultSet = selectStmt.executeQuery();
+                while (resultSet.next()) {
+                    Balance = resultSet.getString(6);
+                }
+
+                    String query = "UPDATE Fee_Details SET Balance = ? WHERE Balance = ?";
+                    PreparedStatement pstmt = connection.prepareStatement(query);
+                    pstmt.setString(1, text5.getText());
+                    pstmt.setString(2, Balance);
+                    pstmt.executeUpdate();
+                    message = true;
+                }
+
+                // Fee
+                if (text6.getText() != null && !text6.getText().trim().isEmpty()) {
+
+                    String selectQuery = "SELECT * FROM Fee_Details WHERE Student_Id = ? AND Serial_No = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text2.getText());
+                    selectStmt.setString(2, text1.getText());
+                
+                    ResultSet resultSet = selectStmt.executeQuery();
+                while (resultSet.next()) {
+                    Date = resultSet.getString(7);
+                }
+
+                    String query = "UPDATE Fee_Details SET Date = ? WHERE Date = ?";
+                    PreparedStatement pstmt = connection.prepareStatement(query);
+                    pstmt.setString(1, text6.getText());
+                    pstmt.setString(2, Date);
+                    pstmt.executeUpdate();
+                    message = true;
+                }
+
+              
+                
+                connection.close();
+
+                if(message == true){
+                JOptionPane.showMessageDialog(this, "Student Data Updated."); // showing the message whether
+                }
+                                                                                       // the Student Details insert into the database or not .
+                if(message == false){
+                    JOptionPane.showMessageDialog(this, "Nothing is Updated.");
+                }
+
+            } catch (Exception a) {
+                JOptionPane.showMessageDialog(this, "Something is missing or Incorrect enteries");
+            }
+        }
+    }
+}
+
+
+/*
+ * This class provides an user interface that contains three buttons which
+ * allows the user to update Teacher details when they clicked.
+ * This class extends ActionListener for event handling.
+ */
+
+class TeacherDataUpdate implements ActionListener {
+
+    JFrame frame; // frame in which all other components are added.
+
+    // Buttons :
+    // button to update Teacher Basic details,
+    // button1 to update Teacher's Salary Structure details,
+    // button 2 to update the Teacher's Salary Details,
+    // back for redirect the user to Home page of App
+    JButton button, button1, button2, back;
+
+    // Database to Store the database name
+    // DBPassword to store the mysql password
+    // School_Name to store the School name
+    String Database, DBPassword, School_Name;
+
+    // constructor
+    TeacherDataUpdate(String database, String Password, String School) {
+
+        Database = database;
+        DBPassword = Password;
+        School_Name = School;
+
+        // Create a frame
+        frame = new JFrame();
+
+        // Create a label and set its properties
+
+        JLabel label = new JLabel();
+        label.setHorizontalAlignment(JLabel.CENTER);
+        label.setSize(1250, 100);
+        label.setText(School_Name);
+        label.setFont(new Font("Serif", Font.BOLD, 50));
+
+        // create buttons and add to frame
+
+        button = new JButton("Update Teacher Basic Details");
+        button.setBounds(480, 150, 350, 30);
+        frame.add(button);
+
+        button1 = new JButton("Update/Delete Teacher Salary Structure ");
+        button1.setBounds(480, 200, 350, 30);
+        frame.add(button1);
+
+        button2 = new JButton("Update/Delete Teacher Salary Details");
+        button2.setBounds(480, 250, 350, 30);
+        frame.add(button2);
+
+        back = new JButton("Back");
+        back.setBounds(30, 30, 100, 30);
+        frame.add(back);
+
+        // Here add label in frame
+        frame.add(label);
+
+        // set the properties of frame
+        frame.setSize(500, 500); // Optional
+        frame.setLayout(null);
+        frame.getContentPane().setBackground(Color.YELLOW);
+        frame.setVisible(true);
+
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+
+        // Registraton of buttons with action listener
+        button.addActionListener(this);
+        button1.addActionListener(this);
+        button2.addActionListener(this);
+        back.addActionListener(this);
+
+    }
+
+    // All logics for this class are inside this method.
+
+    // @Override
+    public void actionPerformed(ActionEvent e) {
+
+        if (e.getSource() == button) {
+
+            new TeacherUpdate(null,Database, DBPassword, School_Name);
+            
+            frame.dispose();
+
+        }
+
+        if (e.getSource() == button1) {
+
+            new TeacherSalaryStructureUpdate(null,Database, DBPassword, School_Name);
+            
+            frame.dispose();
+        }
+        if (e.getSource() == button2) {
+
+            new TeacherSalaryUpdate(null,Database, DBPassword, School_Name);
+        
+            frame.dispose();
+        }
+        if (e.getSource() == back) {
+
+            new First(Database, DBPassword, School_Name);
+            frame.dispose();
+        }
+
+    }
+}
+
+
+
+
+
+
 
 
 /*
@@ -5900,7 +6987,7 @@ class TeacherUpdate extends PlaceholderTextField implements ActionListener {
     // back for redirect the user to Home page of App
     JButton back, sub, clear;
 
-        // TextField:
+    // TextField:
     // text allows the user to enter Teacher ID,
     // text1 allows the user to enter Teacher Name,
     // text2 allows the user to enter Teacher's Father Name,
@@ -5911,40 +6998,37 @@ class TeacherUpdate extends PlaceholderTextField implements ActionListener {
     // text7 allows the user to enter Teacher's Mobile Number2,
     // text8 allows the user to enter Teacher's Joining Date,
     // text9 allows the user to enter Teacher's Address,
-    // text11 allows the user to enter Teacher's Aadhaar No  ,
-    // text12 allows the user to enter Teacher's  ,Family Id
-    // text13 allows the user to enter Teacher's  ,
+    // text11 allows the user to enter Teacher's Aadhaar No ,
+    // text12 allows the user to enter Teacher's ,Family Id
+    // text13 allows the user to enter Teacher's ,
     // text14 allows the user to enter Teacher's Experience ,
     // text15 allows the user to enter Teacher's Account No,
     // text16 allows the user to enter Teacher's Job Leaving date
     JTextField text, text1, text2, text3, text4, text5, text7, text8, text9, text11, text12, text13, text14, text15,
             text16;
 
-    
- 
-    JComboBox<String> ch1;   // JComboBox ch1 to select gender of teacher
+    JComboBox<String> ch1; // JComboBox ch1 to select gender of teacher
 
-    String gender[] = { "Male", "Female", "Other" };  // options to select the gender of teacher
+    String gender[] = { "Male", "Female", "Other" }; // options to select the gender of teacher
 
+    JFrame frame2; // frame in which all other components are added
 
-    JFrame frame2;   // frame in which all other components are added
-
-        // String  
-    // Teacher_Id  store Teacher's Id,
+    // String
+    // Teacher_Id store Teacher's Id,
     // Teacher_Name store Teacher Name,
-    // Father_Name store  Teacher's Father Name,
-    // Mother_Name store  Teacher's Mother Name,
-    // Dob  store  Teacher's Date of Birth,
+    // Father_Name store Teacher's Father Name,
+    // Mother_Name store Teacher's Mother Name,
+    // Dob store Teacher's Date of Birth,
     // Gender store select Teacher's Gender,
-    //  Mob1 store  Teacher's Mobile Number1 ,
-    //  Mob2  store  Teacher's Mobile Number2,
-    //  Joining_Date  store  Teacher's Joining Date,
-    //  Address  store  Teacher's Address,
-    //   Family_Id store  Teacher's Family ID,
+    // Mob1 store Teacher's Mobile Number1 ,
+    // Mob2 store Teacher's Mobile Number2,
+    // Joining_Date store Teacher's Joining Date,
+    // Address store Teacher's Address,
+    // Family_Id store Teacher's Family ID,
     // Qualification store select Teacher's Qualification ,
-    //  Experience  store  Teacher's Experience,
-    //  Account_No  store  Teacher's Mother's Account No,
-    //  Job_Leaving_Date store  Teacher's Job Leaving date
+    // Experience store Teacher's Experience,
+    // Account_No store Teacher's Mother's Account No,
+    // Job_Leaving_Date store Teacher's Job Leaving date
     String Teacher_Id, Teacher_Name, Father_Name, Mother_Name, Dob, Gender, Mob1, Mob2, Joining_Date, Address,
             Teacher_Aadhaar_No, Family_Id, Qualification, Experience, Account_No, Job_Leaving_Date;
 
@@ -5954,7 +7038,7 @@ class TeacherUpdate extends PlaceholderTextField implements ActionListener {
     // placeholder for background text of textfield
     String placeholder, Database, DBPassword, School_Name;
 
-    boolean message = false;   // for message that shows Teacher Data Updated or not
+    boolean message = false; // for message that shows Teacher Data Updated or not
 
     // constructor
     TeacherUpdate(String placeholder, String database, String Password, String School) {
@@ -6041,8 +7125,7 @@ class TeacherUpdate extends PlaceholderTextField implements ActionListener {
         lab17.setFont(new Font("Serif", Font.PLAIN, 25));
         lab17.setBounds(700, 360, 250, 30);
 
-
-        // create TextFields and set  their properties
+        // create TextFields and set their properties
 
         text = new JTextField();
         text.setFont(new Font("Serif", Font.PLAIN, 25));
@@ -6064,9 +7147,7 @@ class TeacherUpdate extends PlaceholderTextField implements ActionListener {
         text4.setFont(new Font("Serif", Font.PLAIN, 25));
         text4.setBounds(300, 285, 300, 30);
 
-       
-
-        ch1 = new JComboBox<>(gender);        // ComboBox for gender
+        ch1 = new JComboBox<>(gender); // ComboBox for gender
         ch1.setBounds(300, 325, 300, 30);
         ch1.setSelectedIndex(-1);
 
@@ -6156,7 +7237,7 @@ class TeacherUpdate extends PlaceholderTextField implements ActionListener {
         clear = new JButton(" CLEAR ");
         clear.setBounds(650, 600, 200, 30);
 
-        back = new JButton("Home");
+        back = new JButton("Back");
         back.setBounds(30, 30, 100, 30);
 
         // here add buttons to frame
@@ -6165,7 +7246,7 @@ class TeacherUpdate extends PlaceholderTextField implements ActionListener {
         frame2.add(back);
 
         // set the properties of frame
-        frame2.setSize(500, 500);   // optional
+        frame2.setSize(500, 500); // optional
         frame2.setLayout(null);
         frame2.getContentPane().setBackground(Color.YELLOW);
         frame2.setVisible(true);
@@ -6183,7 +7264,7 @@ class TeacherUpdate extends PlaceholderTextField implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == back) {
 
-            new First(Database, DBPassword, School_Name);
+            new TeacherDataUpdate(Database, DBPassword, School_Name);
             frame2.dispose();
         }
         if (e.getSource() == clear) {
@@ -6288,7 +7369,6 @@ class TeacherUpdate extends PlaceholderTextField implements ActionListener {
                     pstmt.executeUpdate();
                     message = true;
                 }
-
 
                 // Gender
                 if (ch1.getSelectedIndex() != -1) {
@@ -6489,29 +7569,29 @@ class TeacherUpdate extends PlaceholderTextField implements ActionListener {
                 }
 
                 // if ((text1.getText() == null || text1.getText().trim().isEmpty())
-                //         && (text2.getText() == null || text2.getText().trim().isEmpty())
-                //         && (text3.getText() == null || text3.getText().trim().isEmpty())
-                //         && (text4.getText() == null || text4.getText().trim().isEmpty())
-                //         && (ch1.getSelectedIndex() == -1)
-                //         && (text5.getText() == null || text5.getText().trim().isEmpty())
-                //         && (text7.getText() == null || text7.getText().trim().isEmpty())
-                //         && (text8.getText() == null || text8.getText().trim().isEmpty())
-                //         && (text9.getText() == null || text9.getText().trim().isEmpty())
-                //         && (text11.getText() == null || text11.getText().trim().isEmpty())
-                //         && (text12.getText() == null || text12.getText().trim().isEmpty())
-                //         && (text13.getText() == null || text13.getText().trim().isEmpty())
-                //         && (text14.getText() == null || text14.getText().trim().isEmpty())
-                //         && (text15.getText() == null || text15.getText().trim().isEmpty())
-                //         && (text16.getText() == null || text16.getText().trim().isEmpty())) {
-                //     lab16.setText("Nothing is updated");
+                // && (text2.getText() == null || text2.getText().trim().isEmpty())
+                // && (text3.getText() == null || text3.getText().trim().isEmpty())
+                // && (text4.getText() == null || text4.getText().trim().isEmpty())
+                // && (ch1.getSelectedIndex() == -1)
+                // && (text5.getText() == null || text5.getText().trim().isEmpty())
+                // && (text7.getText() == null || text7.getText().trim().isEmpty())
+                // && (text8.getText() == null || text8.getText().trim().isEmpty())
+                // && (text9.getText() == null || text9.getText().trim().isEmpty())
+                // && (text11.getText() == null || text11.getText().trim().isEmpty())
+                // && (text12.getText() == null || text12.getText().trim().isEmpty())
+                // && (text13.getText() == null || text13.getText().trim().isEmpty())
+                // && (text14.getText() == null || text14.getText().trim().isEmpty())
+                // && (text15.getText() == null || text15.getText().trim().isEmpty())
+                // && (text16.getText() == null || text16.getText().trim().isEmpty())) {
+                // lab16.setText("Nothing is updated");
                 // }
 
-                if(message == true){
+                if (message == true) {
                     JOptionPane.showMessageDialog(this, "Teacher Data Updated");
 
                 }
 
-                if(message == false){
+                if (message == false) {
                     JOptionPane.showMessageDialog(this, "Nothing is Updated");
 
                 }
@@ -6521,13 +7601,1295 @@ class TeacherUpdate extends PlaceholderTextField implements ActionListener {
             } catch (Exception a) {
                 JOptionPane.showMessageDialog(this, "Teacher_Id is not filled or Wrong Enteries");
 
-               
-
             }
 
         }
     }
 }
+
+/*
+ * This class provides an user interface that allows the user to update Teacher
+ * Salary Structure .
+ * This class extends PlaceholderTextField to fill the background of textfield
+ * that shows how to enter date and which textfield is optional.
+ * This class extends ActionListener for event handling.
+ */
+
+
+
+class TeacherSalaryStructureUpdate extends PlaceholderTextField implements ActionListener {
+
+    // Buttons :
+    // sub to update the Teacher Salary Structure,
+    // clear for clear the information that are filled,
+    // Delete for delete the Teacher Salary Structure,
+    // back for redirect the user to Home page of App
+    JButton back, clear,Delete, sub;
+
+    // TextField:
+    // text1 allows the user to enter Teacher ID,
+    // text2 allows the user to enter Teacher Name,
+    // text3 allows the user to enter Teacher's Salary,
+    // text4 allows the user to enter Month,
+    // text5 allows the user to enter Year
+    JTextField text1, text2, text3, text4, text5;
+
+    // Database to Store the database name
+    // DBPassword to store the mysql password
+    // School_Name to store the School name
+    // placeholder for background text of textfield
+    String placeholder, Database, DBPassword, School_Name;
+
+
+    // Salary to store salary of the Teacher from database,
+    // Month to store month from database
+    // Year to store year from daabase
+    String Salary,Month,Year;
+
+    boolean message = false; // message for the message that shows whether the data updated or not.
+
+    JFrame frame; // frame in which all other components are added
+
+    // constructor
+    TeacherSalaryStructureUpdate(String placeholder, String database, String Password, String School) {
+
+        super(placeholder);
+        Database = database;
+        DBPassword = Password;
+        School_Name = School;
+
+        // create a frame
+        frame = new JFrame();
+
+        // create labels and set their properties
+        JLabel label = new JLabel();
+        label.setHorizontalAlignment(JLabel.CENTER);
+        label.setSize(1250, 100);
+        label.setText("UPDATE/DELETE  SALARY  STRUCTURE");
+        label.setFont(new Font("Serif", Font.BOLD, 50));
+
+        JLabel label2 = new JLabel("Note : Admin can update/Delete Teacher data using Teacher Id and Serial No");
+        label2.setFont(new Font("Serif", Font.PLAIN, 22));
+        label2.setBounds(330, 75, 700, 25);
+
+        JLabel label3 = new JLabel("Note : Admin can find the Serial Number by click on View Teacher details button");
+        label3.setFont(new Font("Serif", Font.PLAIN, 22));
+        label3.setBounds(300, 110, 720, 25);
+
+
+        JLabel lab1 = new JLabel("Serial No :");
+        lab1.setFont(new Font("Serif", Font.PLAIN, 25));
+        lab1.setBounds(150, 160, 250, 30);
+
+        JLabel lab2 = new JLabel("Teacher Id :");
+        lab2.setFont(new Font("Serif", Font.PLAIN, 25));
+        lab2.setBounds(150, 200, 250, 30);
+
+        JLabel lab3 = new JLabel("Salary :");
+        lab3.setFont(new Font("Serif", Font.PLAIN, 25));
+        lab3.setBounds(150, 240, 250, 30);
+
+        JLabel lab4 = new JLabel("Month :");
+        lab4.setFont(new Font("Serif", Font.PLAIN, 25));
+        lab4.setBounds(150, 280, 250, 30);
+
+        JLabel lab5 = new JLabel("Year :");
+        lab5.setFont(new Font("Serif", Font.PLAIN, 25));
+        lab5.setBounds(150, 320, 250, 30);
+
+        // Here add label in frame
+        frame.add(label);
+        frame.add(label2);
+        frame.add(label3);
+        frame.add(lab1);
+        frame.add(lab2);
+        frame.add(lab3);
+        frame.add(lab4);
+        frame.add(lab5);
+
+        // create TextFields and set their properties
+
+        text1 = new JTextField();
+        text1.setFont(new Font("Serif", Font.PLAIN, 25));
+        text1.setBounds(450, 165, 300, 30);
+
+        text2 = new JTextField();
+        text2.setFont(new Font("Serif", Font.PLAIN, 25));
+        text2.setBounds(450, 205, 300, 30);
+
+        text3 = new JTextField();
+        text3.setFont(new Font("Serif", Font.PLAIN, 25));
+        text3.setBounds(450, 245, 300, 30);
+
+        text4 = new PlaceholderTextField("eg : January");
+        text4.setFont(new Font("Serif", Font.PLAIN, 25));
+        text4.setBounds(450, 285, 300, 30);
+
+        text5 = new JTextField();
+        text5.setFont(new Font("Serif", Font.PLAIN, 25));
+        text5.setBounds(450, 325, 300, 30);
+
+        // create submit, clear and back button
+
+        sub = new JButton(" UPDATE ");
+        sub.setBounds(250, 600, 200, 30);
+
+        clear = new JButton(" CLEAR ");
+        clear.setBounds(500, 600, 200, 30);
+
+        Delete = new JButton(" DELETE ");
+        Delete.setBounds(750, 600, 200, 30);
+
+        back = new JButton("Back");
+        back.setBounds(30, 30, 100, 30);
+
+        // here add textfields to frame
+        frame.add(text1);
+        frame.add(text2);
+        frame.add(text3);
+        frame.add(text4);
+        frame.add(text5);
+
+        // here add buttons to frame
+        frame.add(sub);
+        frame.add(clear);
+        frame.add(Delete);
+        frame.add(back);
+
+        // set the properties of frame
+        frame.setSize(500, 500);
+        frame.setLayout(null);
+        frame.getContentPane().setBackground(Color.YELLOW);
+        frame.setVisible(true);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+
+        // Register the component with EventListener
+        back.addActionListener(this);
+        clear.addActionListener(this);
+        Delete.addActionListener(this);
+        sub.addActionListener(this);
+    }
+
+    // All logics for this class are inside this method
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == back) {
+
+            new TeacherDataUpdate(Database, DBPassword, School_Name);
+            frame.dispose();
+        }
+        if (e.getSource() == clear) {
+            text1.setText(null);
+            text2.setText(null);
+            text3.setText(null);
+            text4.setText(null);
+            text5.setText(null);
+
+        }
+
+        if(e.getSource()== Delete){
+            try{
+            
+                String url = "jdbc:mysql://localhost:3306/" + Database;
+                String user = "root";
+
+                Connection connection = DriverManager.getConnection(url, user, DBPassword);
+                PreparedStatement pstmt = connection.prepareStatement("delete from Teacher_Salary_Structure where Teacher_Id = ? and Serial_No = ? ");
+                pstmt.setString(1, text2.getText());
+                pstmt.setString(2, text1.getText());
+                pstmt.executeUpdate();
+                JOptionPane.showMessageDialog(this, "Data Deleted Successfully.");
+                connection.close();
+            }
+            catch(Exception b){
+                
+                JOptionPane.showMessageDialog(this, "No Data Deleted.");
+            }
+        }
+        if (e.getSource() == sub) {
+            try {
+                // connect app to mysql to update Student Academic details into the database.
+                String url = "jdbc:mysql://localhost:3306/" + Database;
+                String user = "root";
+
+                Connection connection = DriverManager.getConnection(url, user, DBPassword);
+                
+               
+                // Classw
+                if (text3.getText() != null && !text3.getText().trim().isEmpty()) {
+
+                    String selectQuery = "SELECT * FROM Teacher_Salary_Structure WHERE Teacher_Id = ? AND Serial_No = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text2.getText());
+                    selectStmt.setString(2, text1.getText());
+                
+                    ResultSet resultSet = selectStmt.executeQuery();
+                    while (resultSet.next()) {
+                        Salary = resultSet.getString(4);
+                    }
+
+                    String query = "UPDATE  Teacher_Salary_Structure  SET Salary  = ? WHERE Salary = ?";
+                    PreparedStatement pstmt = connection.prepareStatement(query);
+                    pstmt.setString(1, text3.getText());
+                    pstmt.setString(2,Salary);
+                    pstmt.executeUpdate();
+
+                    message = true;
+                }
+
+                // Subjects
+                if (text4.getText() != null && !text4.getText().trim().isEmpty()) {
+
+                    String selectQuery = "SELECT * FROM Teacher_Salary_Structure WHERE Teacher_Id = ? AND Serial_No = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text2.getText());
+                    selectStmt.setString(2, text1.getText());
+                
+                    ResultSet resultSet = selectStmt.executeQuery();
+                while (resultSet.next()) {
+                    Month = resultSet.getString(5);
+                }
+
+                    String query = "UPDATE Teacher_Salary_Structure SET Month = ? WHERE Month = ?";
+                    PreparedStatement pstmt = connection.prepareStatement(query);
+                    pstmt.setString(1, text4.getText());
+                    pstmt.setString(2, Month);
+                    pstmt.executeUpdate();
+                    message = true;
+                }
+
+                // Year
+                if (text5.getText() != null && !text5.getText().trim().isEmpty()) {
+
+                    String selectQuery = "SELECT * FROM Teacher_Salary_Structure WHERE Teacher_Id = ? AND Serial_No = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text2.getText());
+                    selectStmt.setString(2, text1.getText());
+                
+                    ResultSet resultSet = selectStmt.executeQuery();
+                while (resultSet.next()) {
+                    Year = resultSet.getString(6);
+                }
+                    String query = "UPDATE Teacher_Salary_Structure SET Year = ? WHERE Year = ?";
+                    PreparedStatement pstmt = connection.prepareStatement(query);
+                    pstmt.setString(1, text5.getText());
+                    pstmt.setString(2, Year);
+                    pstmt.executeUpdate();
+                    message = true;
+                }
+
+
+
+              
+                
+                connection.close();
+
+                if(message == true){
+                JOptionPane.showMessageDialog(this, "Teacher Data Updated."); // showing the message whether
+                }
+                                                                                       // the Student Details insert into the database or not .
+                if(message == false){
+                    JOptionPane.showMessageDialog(this, "Nothing is Updated.");
+                }
+
+            } catch (Exception a) {
+                JOptionPane.showMessageDialog(this, "Something is missing or Incorrect enteries");
+            }
+        }
+
+    }
+}
+
+/*
+ * This class provides an user interface that allows the user to update Teacher
+ * Salary details .
+ * This class extends PlaceholderTextField to fill the background of textfield
+ * that shows how to enter date and which textfield is optional.
+ * This class extends ActionListener for event handling.
+ */
+
+
+
+ class TeacherSalaryUpdate extends PlaceholderTextField implements ActionListener {
+
+    // Buttons :
+    // sub to update the Teacher Salary Details,
+    // clear for clear the information that are filled,
+    // Delete for delete the Teacher Salary Structure,
+    // back for redirect the user to Home page of App
+    JButton back, clear,Delete, sub;
+
+    // TextField:
+    // text1 allows the user to enter Teacher ID,
+    // text2 allows the user to enter Teacher Name,
+    // text3 allows the user to enter Teacher's Salary,
+    // text4 allows the user to enter Month,
+    // text5 allows the user to enter Year
+    JTextField text1, text2, text3, text4, text5;
+
+    // Database to Store the database name
+    // DBPassword to store the mysql password
+    // School_Name to store the School name
+    // placeholder for background text of textfield
+    String placeholder, Database, DBPassword, School_Name;
+
+
+    // Salary_Paid to store paid salary details of the Teacher from database,
+    // Month to store month from database
+    // Year to store year from daabase
+    String Salary_Paid,Month,Year;
+
+    boolean message = false; // message for the message that shows whether the data updated or not.
+
+    JFrame frame; // frame in which all other components are added
+
+    // constructor
+    TeacherSalaryUpdate(String placeholder, String database, String Password, String School) {
+
+        super(placeholder);
+        Database = database;
+        DBPassword = Password;
+        School_Name = School;
+
+        // create a frame
+        frame = new JFrame();
+
+        // create labels and set their properties
+        JLabel label = new JLabel();
+        label.setHorizontalAlignment(JLabel.CENTER);
+        label.setSize(1250, 100);
+        label.setText("UPDATE/DELETE  SALARY  DETAILS");
+        label.setFont(new Font("Serif", Font.BOLD, 50));
+
+        JLabel label2 = new JLabel("Note : Admin can update/Delete Teacher data using Teacher Id and Serial No");
+        label2.setFont(new Font("Serif", Font.PLAIN, 22));
+        label2.setBounds(330, 75, 700, 25);
+
+
+        
+        JLabel label3 = new JLabel("Note : Admin can find the Serial Number by click on View Teacher details button");
+        label3.setFont(new Font("Serif", Font.PLAIN, 22));
+        label3.setBounds(300, 110, 720, 25);
+
+
+        JLabel lab1 = new JLabel("Serial No :");
+        lab1.setFont(new Font("Serif", Font.PLAIN, 25));
+        lab1.setBounds(150, 160, 250, 30);
+
+        JLabel lab2 = new JLabel("Teacher Id :");
+        lab2.setFont(new Font("Serif", Font.PLAIN, 25));
+        lab2.setBounds(150, 200, 250, 30);
+
+        JLabel lab3 = new JLabel("Paid Salary :");
+        lab3.setFont(new Font("Serif", Font.PLAIN, 25));
+        lab3.setBounds(150, 240, 250, 30);
+
+        JLabel lab4 = new JLabel("Month :");
+        lab4.setFont(new Font("Serif", Font.PLAIN, 25));
+        lab4.setBounds(150, 280, 250, 30);
+
+        JLabel lab5 = new JLabel("Year :");
+        lab5.setFont(new Font("Serif", Font.PLAIN, 25));
+        lab5.setBounds(150, 320, 250, 30);
+
+        // Here add label in frame
+        frame.add(label);
+        frame.add(label2);
+        frame.add(label3);
+        frame.add(lab1);
+        frame.add(lab2);
+        frame.add(lab3);
+        frame.add(lab4);
+        frame.add(lab5);
+
+        // create TextFields and set their properties
+
+        text1 = new JTextField();
+        text1.setFont(new Font("Serif", Font.PLAIN, 25));
+        text1.setBounds(450, 165, 300, 30);
+
+        text2 = new JTextField();
+        text2.setFont(new Font("Serif", Font.PLAIN, 25));
+        text2.setBounds(450, 205, 300, 30);
+
+        text3 = new JTextField();
+        text3.setFont(new Font("Serif", Font.PLAIN, 25));
+        text3.setBounds(450, 245, 300, 30);
+
+        text4 = new PlaceholderTextField("eg : January");
+        text4.setFont(new Font("Serif", Font.PLAIN, 25));
+        text4.setBounds(450, 285, 300, 30);
+
+        text5 = new JTextField();
+        text5.setFont(new Font("Serif", Font.PLAIN, 25));
+        text5.setBounds(450, 325, 300, 30);
+
+        // create submit, clear and back button
+
+        sub = new JButton(" UPDATE ");
+        sub.setBounds(250, 600, 200, 30);
+
+        clear = new JButton(" CLEAR ");
+        clear.setBounds(500, 600, 200, 30);
+
+        Delete = new JButton(" DELETE ");
+        Delete.setBounds(750, 600, 200, 30);
+
+        back = new JButton("Back");
+        back.setBounds(30, 30, 100, 30);
+
+        // here add textfields to frame
+        frame.add(text1);
+        frame.add(text2);
+        frame.add(text3);
+        frame.add(text4);
+        frame.add(text5);
+
+        // here add buttons to frame
+        frame.add(sub);
+        frame.add(clear);
+        frame.add(Delete);
+        frame.add(back);
+
+        // set the properties of frame
+        frame.setSize(500, 500);
+        frame.setLayout(null);
+        frame.getContentPane().setBackground(Color.YELLOW);
+        frame.setVisible(true);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+
+        // Register the component with EventListener
+        back.addActionListener(this);
+        clear.addActionListener(this);
+        Delete.addActionListener(this);
+        sub.addActionListener(this);
+    }
+
+    // All logics for this class are inside this method
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == back) {
+
+            new TeacherDataUpdate(Database, DBPassword, School_Name);
+            frame.dispose();
+        }
+        if (e.getSource() == clear) {
+            text1.setText(null);
+            text2.setText(null);
+            text3.setText(null);
+            text4.setText(null);
+            text5.setText(null);
+
+        }
+
+        if(e.getSource()== Delete){
+            try{
+            
+                String url = "jdbc:mysql://localhost:3306/" + Database;
+                String user = "root";
+
+                Connection connection = DriverManager.getConnection(url, user, DBPassword);
+                PreparedStatement pstmt = connection.prepareStatement("delete from Teacher_Salary_Details where Teacher_Id = ? and Serial_No = ? ");
+                pstmt.setString(1, text2.getText());
+                pstmt.setString(2, text1.getText());
+                pstmt.executeUpdate();
+                JOptionPane.showMessageDialog(this, "Data Deleted Successfully.");
+                connection.close();
+            }
+            catch(Exception b){
+                
+                JOptionPane.showMessageDialog(this, "No Data Deleted.");
+            }
+        }
+        if (e.getSource() == sub) {
+            try {
+                // connect app to mysql to update Student Academic details into the database.
+                String url = "jdbc:mysql://localhost:3306/" + Database;
+                String user = "root";
+
+                Connection connection = DriverManager.getConnection(url, user, DBPassword);
+                
+               
+                // Classw
+                if (text3.getText() != null && !text3.getText().trim().isEmpty()) {
+
+                    String selectQuery = "SELECT * FROM Teacher_Salary_Details WHERE Teacher_Id = ? AND Serial_No = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text2.getText());
+                    selectStmt.setString(2, text1.getText());
+                
+                    ResultSet resultSet = selectStmt.executeQuery();
+                    while (resultSet.next()) {
+                        Salary_Paid = resultSet.getString(4);
+                    }
+
+                    String query = "UPDATE  Teacher_Salary_Details  SET Salary_Paid  = ? WHERE Salary_Paid = ?";
+                    PreparedStatement pstmt = connection.prepareStatement(query);
+                    pstmt.setString(1, text3.getText());
+                    pstmt.setString(2,Salary_Paid);
+                    pstmt.executeUpdate();
+
+                    message = true;
+                }
+
+                // Subjects
+                if (text4.getText() != null && !text4.getText().trim().isEmpty()) {
+
+                    String selectQuery = "SELECT * FROM Teacher_Salary_Details WHERE Teacher_Id = ? AND Serial_No = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text2.getText());
+                    selectStmt.setString(2, text1.getText());
+                
+                    ResultSet resultSet = selectStmt.executeQuery();
+                while (resultSet.next()) {
+                    Month = resultSet.getString(5);
+                }
+
+                    String query = "UPDATE Teacher_Salary_Details SET Month = ? WHERE Month = ?";
+                    PreparedStatement pstmt = connection.prepareStatement(query);
+                    pstmt.setString(1, text4.getText());
+                    pstmt.setString(2, Month);
+                    pstmt.executeUpdate();
+                    message = true;
+                }
+
+                // Year
+                if (text5.getText() != null && !text5.getText().trim().isEmpty()) {
+
+                    String selectQuery = "SELECT * FROM Teacher_Salary_Details WHERE Teacher_Id = ? AND Serial_No = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text2.getText());
+                    selectStmt.setString(2, text1.getText());
+                
+                    ResultSet resultSet = selectStmt.executeQuery();
+                while (resultSet.next()) {
+                    Year = resultSet.getString(6);
+                }
+                    String query = "UPDATE Teacher_Salary_Details SET Year = ? WHERE Year = ?";
+                    PreparedStatement pstmt = connection.prepareStatement(query);
+                    pstmt.setString(1, text5.getText());
+                    pstmt.setString(2, Year);
+                    pstmt.executeUpdate();
+                    message = true;
+                }
+
+                connection.close();
+
+                if(message == true){
+                JOptionPane.showMessageDialog(this, "Teacher Data Updated."); // showing the message whether
+                }
+                                                                                       // the Student Details insert into the database or not .
+                if(message == false){
+                    JOptionPane.showMessageDialog(this, "Nothing is Updated.");
+                }
+
+            } catch (Exception a) {
+                JOptionPane.showMessageDialog(this, "Something is missing or Incorrect enteries");
+            }
+        }
+
+    }
+}
+
+
+/*
+ * This class provides an user interface that contains three buttons which
+ * allows the user to update Employee details when they clicked.
+ * This class extends ActionListener for event handling.
+ */
+
+ class EmployeeDataUpdate implements ActionListener {
+
+    JFrame frame; // frame in which all other components are added.
+
+    // Buttons :
+    // button to update Employee Basic details,
+    // button1 to update Employee's Salary Structure details,
+    // button 2 to update the Employee's Salary Details,
+    // back for redirect the user to Home page of App
+    JButton button, button1, button2, back;
+
+    // Database to Store the database name
+    // DBPassword to store the mysql password
+    // School_Name to store the School name
+    String Database, DBPassword, School_Name;
+
+    // constructor
+    EmployeeDataUpdate(String database, String Password, String School) {
+
+        Database = database;
+        DBPassword = Password;
+        School_Name = School;
+
+        // Create a frame
+        frame = new JFrame();
+
+        // Create a label and set its properties
+
+        JLabel label = new JLabel();
+        label.setHorizontalAlignment(JLabel.CENTER);
+        label.setSize(1250, 100);
+        label.setText(School_Name);
+        label.setFont(new Font("Serif", Font.BOLD, 50));
+
+        // create buttons and add to frame
+
+        button = new JButton("Update Employee Basic Details");
+        button.setBounds(480, 150, 350, 30);
+        frame.add(button);
+
+        button1 = new JButton("Update/Delete Employee Salary Structure ");
+        button1.setBounds(480, 200, 350, 30);
+        frame.add(button1);
+
+        button2 = new JButton("Update/Delete Employee Salary Details");
+        button2.setBounds(480, 250, 350, 30);
+        frame.add(button2);
+
+        back = new JButton("Back");
+        back.setBounds(30, 30, 100, 30);
+        frame.add(back);
+
+        // Here add label in frame
+        frame.add(label);
+
+        // set the properties of frame
+        frame.setSize(500, 500); // Optional
+        frame.setLayout(null);
+        frame.getContentPane().setBackground(Color.YELLOW);
+        frame.setVisible(true);
+
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+
+        // Registraton of buttons with action listener
+        button.addActionListener(this);
+        button1.addActionListener(this);
+        button2.addActionListener(this);
+        back.addActionListener(this);
+
+    }
+
+    // All logics for this class are inside this method.
+
+    // @Override
+    public void actionPerformed(ActionEvent e) {
+
+        if (e.getSource() == button) {
+
+            new EmployeeUpdate(null,Database, DBPassword, School_Name);
+            
+            frame.dispose();
+
+        }
+
+        if (e.getSource() == button1) {
+
+            new EmployeeSalaryStructureUpdate(null,Database, DBPassword, School_Name);
+            
+            frame.dispose();
+        }
+        if (e.getSource() == button2) {
+
+            new EmployeeSalaryUpdate(null,Database, DBPassword, School_Name);
+        
+            frame.dispose();
+        }
+        if (e.getSource() == back) {
+
+            new First(Database, DBPassword, School_Name);
+            frame.dispose();
+        }
+
+    }
+}
+
+
+/*
+ * This class provides an user interface that allows the user to update Employee
+ * Salary Structure .
+ * This class extends PlaceholderTextField to fill the background of textfield
+ * that shows how to enter date and which textfield is optional.
+ * This class extends ActionListener for event handling.
+ */
+
+
+
+ class EmployeeSalaryStructureUpdate extends PlaceholderTextField implements ActionListener {
+
+    // Buttons :
+    // sub to update the Employee Salary Structure,
+    // clear for clear the information that are filled,
+    // Delete for delete the Employee Salary Structure,
+    // back for redirect the user to Home page of App
+    JButton back, clear,Delete, sub;
+
+    // TextField:
+    // text1 allows the user to enter Employee ID,
+    // text2 allows the user to enter Employee Name,
+    // text3 allows the user to enter Employee's Salary,
+    // text4 allows the user to enter Month,
+    // text5 allows the user to enter Year
+    JTextField text1, text2, text3, text4, text5;
+
+    // Database to Store the database name
+    // DBPassword to store the mysql password
+    // School_Name to store the School name
+    // placeholder for background text of textfield
+    String placeholder, Database, DBPassword, School_Name;
+
+
+    // Salary to store salary of the Employee from database,
+    // Month to store month from database
+    // Year to store year from daabase
+    String Salary,Month,Year;
+
+    boolean message = false; // message for the message that shows whether the data updated or not.
+
+    JFrame frame; // frame in which all other components are added
+
+    // constructor
+    EmployeeSalaryStructureUpdate(String placeholder, String database, String Password, String School) {
+
+        super(placeholder);
+        Database = database;
+        DBPassword = Password;
+        School_Name = School;
+
+        // create a frame
+        frame = new JFrame();
+
+        // create labels and set their properties
+        JLabel label = new JLabel();
+        label.setHorizontalAlignment(JLabel.CENTER);
+        label.setSize(1250, 100);
+        label.setText("UPDATE/DELETE  SALARY  STRUCTURE");
+        label.setFont(new Font("Serif", Font.BOLD, 50));
+
+        JLabel label2 = new JLabel("Note : Admin can update/Delete Employee data using Employee Id and Serial No");
+        label2.setFont(new Font("Serif", Font.PLAIN, 22));
+        label2.setBounds(300, 75, 720, 25);
+
+        
+        JLabel label3 = new JLabel("Note : Admin can find the Serial Number by click on View Employee details button");
+        label3.setFont(new Font("Serif", Font.PLAIN, 22));
+        label3.setBounds(330, 110, 700, 25);
+
+
+        JLabel lab1 = new JLabel("Serial No :");
+        lab1.setFont(new Font("Serif", Font.PLAIN, 25));
+        lab1.setBounds(150, 160, 250, 30);
+
+        JLabel lab2 = new JLabel("Employee Id :");
+        lab2.setFont(new Font("Serif", Font.PLAIN, 25));
+        lab2.setBounds(150, 200, 250, 30);
+
+        JLabel lab3 = new JLabel("Salary :");
+        lab3.setFont(new Font("Serif", Font.PLAIN, 25));
+        lab3.setBounds(150, 240, 250, 30);
+
+        JLabel lab4 = new JLabel("Month :");
+        lab4.setFont(new Font("Serif", Font.PLAIN, 25));
+        lab4.setBounds(150, 280, 250, 30);
+
+        JLabel lab5 = new JLabel("Year :");
+        lab5.setFont(new Font("Serif", Font.PLAIN, 25));
+        lab5.setBounds(150, 320, 250, 30);
+
+        // Here add label in frame
+        frame.add(label);
+        frame.add(label2);
+        frame.add(label3);
+        frame.add(lab1);
+        frame.add(lab2);
+        frame.add(lab3);
+        frame.add(lab4);
+        frame.add(lab5);
+
+        // create TextFields and set their properties
+
+        text1 = new JTextField();
+        text1.setFont(new Font("Serif", Font.PLAIN, 25));
+        text1.setBounds(450, 165, 300, 30);
+
+        text2 = new JTextField();
+        text2.setFont(new Font("Serif", Font.PLAIN, 25));
+        text2.setBounds(450, 205, 300, 30);
+
+        text3 = new JTextField();
+        text3.setFont(new Font("Serif", Font.PLAIN, 25));
+        text3.setBounds(450, 245, 300, 30);
+
+        text4 = new PlaceholderTextField("eg : January");
+        text4.setFont(new Font("Serif", Font.PLAIN, 25));
+        text4.setBounds(450, 285, 300, 30);
+
+        text5 = new JTextField();
+        text5.setFont(new Font("Serif", Font.PLAIN, 25));
+        text5.setBounds(450, 325, 300, 30);
+
+        // create submit, clear and back button
+
+        sub = new JButton(" UPDATE ");
+        sub.setBounds(250, 600, 200, 30);
+
+        clear = new JButton(" CLEAR ");
+        clear.setBounds(500, 600, 200, 30);
+
+        Delete = new JButton(" DELETE ");
+        Delete.setBounds(750, 600, 200, 30);
+
+        back = new JButton("Back");
+        back.setBounds(30, 30, 100, 30);
+
+        // here add textfields to frame
+        frame.add(text1);
+        frame.add(text2);
+        frame.add(text3);
+        frame.add(text4);
+        frame.add(text5);
+
+        // here add buttons to frame
+        frame.add(sub);
+        frame.add(clear);
+        frame.add(Delete);
+        frame.add(back);
+
+        // set the properties of frame
+        frame.setSize(500, 500);
+        frame.setLayout(null);
+        frame.getContentPane().setBackground(Color.YELLOW);
+        frame.setVisible(true);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+
+        // Register the component with EventListener
+        back.addActionListener(this);
+        clear.addActionListener(this);
+        Delete.addActionListener(this);
+        sub.addActionListener(this);
+    }
+
+    // All logics for this class are inside this method
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == back) {
+
+            new EmployeeDataUpdate(Database, DBPassword, School_Name);
+            frame.dispose();
+        }
+        if (e.getSource() == clear) {
+            text1.setText(null);
+            text2.setText(null);
+            text3.setText(null);
+            text4.setText(null);
+            text5.setText(null);
+
+        }
+
+        if(e.getSource()== Delete){
+            try{
+            
+                String url = "jdbc:mysql://localhost:3306/" + Database;
+                String user = "root";
+
+                Connection connection = DriverManager.getConnection(url, user, DBPassword);
+                PreparedStatement pstmt = connection.prepareStatement("delete from Employee_Salary_Structure where Employee_Id = ? and Serial_No = ? ");
+                pstmt.setString(1, text2.getText());
+                pstmt.setString(2, text1.getText());
+                pstmt.executeUpdate();
+                JOptionPane.showMessageDialog(this, "Data Deleted Successfully.");
+                connection.close();
+            }
+            catch(Exception b){
+                
+                JOptionPane.showMessageDialog(this, "No Data Deleted.");
+            }
+        }
+        if (e.getSource() == sub) {
+            try {
+                // connect app to mysql to update Student Academic details into the database.
+                String url = "jdbc:mysql://localhost:3306/" + Database;
+                String user = "root";
+
+                Connection connection = DriverManager.getConnection(url, user, DBPassword);
+                Statement statement = connection.createStatement();
+               
+                // Classw
+                if (text3.getText() != null && !text3.getText().trim().isEmpty()) {
+
+                    String selectQuery = "SELECT * FROM Employee_Salary_Structure WHERE Employee_Id = ? AND Serial_No = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text2.getText());
+                    selectStmt.setString(2, text1.getText());
+                
+                    ResultSet resultSet = selectStmt.executeQuery();
+                    while (resultSet.next()) {
+                        Salary = resultSet.getString(4);
+                    }
+
+                    String query = "UPDATE  Employee_Salary_Structure  SET Salary  = ? WHERE Salary = ?";
+                    PreparedStatement pstmt = connection.prepareStatement(query);
+                    pstmt.setString(1, text3.getText());
+                    pstmt.setString(2,Salary);
+                    pstmt.executeUpdate();
+
+                    message = true;
+                }
+
+                // Subjects
+                if (text4.getText() != null && !text4.getText().trim().isEmpty()) {
+
+                    String selectQuery = "SELECT * FROM Employee_Salary_Structure WHERE Employee_Id = ? AND Serial_No = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text2.getText());
+                    selectStmt.setString(2, text1.getText());
+                
+                    ResultSet resultSet = selectStmt.executeQuery();
+                while (resultSet.next()) {
+                    Month = resultSet.getString(5);
+                }
+
+                    String query = "UPDATE Employee_Salary_Structure SET Month = ? WHERE Month = ?";
+                    PreparedStatement pstmt = connection.prepareStatement(query);
+                    pstmt.setString(1, text4.getText());
+                    pstmt.setString(2, Month);
+                    pstmt.executeUpdate();
+                    message = true;
+                }
+
+                // Year
+                if (text5.getText() != null && !text5.getText().trim().isEmpty()) {
+                    String selectQuery = "SELECT * FROM Employee_Salary_Structure WHERE Employee_Id = ? AND Serial_No = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text2.getText());
+                    selectStmt.setString(2, text1.getText());
+                
+                    ResultSet resultSet = selectStmt.executeQuery();
+                while (resultSet.next()) {
+                    Year = resultSet.getString(6);
+                }
+                    String query = "UPDATE Employee_Salary_Structure SET Year = ? WHERE Year = ?";
+                    PreparedStatement pstmt = connection.prepareStatement(query);
+                    pstmt.setString(1, text5.getText());
+                    pstmt.setString(2, Year);
+                    pstmt.executeUpdate();
+                    message = true;
+                }
+
+
+
+              
+                statement.close();
+                connection.close();
+
+                if(message == true){
+                JOptionPane.showMessageDialog(this, "Employee Data Updated."); // showing the message whether
+                }
+                                                                                       // the Student Details insert into the database or not .
+                if(message == false){
+                    JOptionPane.showMessageDialog(this, "Nothing is Updated.");
+                }
+
+            } catch (Exception a) {
+                JOptionPane.showMessageDialog(this, "Something is missing or Incorrect enteries");
+            }
+        }
+
+    }
+}
+
+/*
+ * This class provides an user interface that allows the user to update Employee
+ * Salary details .
+ * This class extends PlaceholderTextField to fill the background of textfield
+ * that shows how to enter date and which textfield is optional.
+ * This class extends ActionListener for event handling.
+ */
+
+
+
+ class EmployeeSalaryUpdate extends PlaceholderTextField implements ActionListener {
+
+    // Buttons :
+    // sub to update the Employee Salary Details,
+    // clear for clear the information that are filled,
+    // Delete for delete the Employee Salary Structure,
+    // back for redirect the user to Home page of App
+    JButton back, clear,Delete, sub;
+
+    // TextField:
+    // text1 allows the user to enter Employee ID,
+    // text2 allows the user to enter Employee Name,
+    // text3 allows the user to enter Employee's Salary,
+    // text4 allows the user to enter Month,
+    // text5 allows the user to enter Year
+    JTextField text1, text2, text3, text4, text5;
+
+    // Database to Store the database name
+    // DBPassword to store the mysql password
+    // School_Name to store the School name
+    // placeholder for background text of textfield
+    String placeholder, Database, DBPassword, School_Name;
+
+
+    // Salary_Paid to store paid salary details of the Employee from database,
+    // Month to store month from database
+    // Year to store year from daabase
+    String Salary_Paid,Month,Year;
+
+    boolean message = false; // message for the message that shows whether the data updated or not.
+
+    JFrame frame; // frame in which all other components are added
+
+    // constructor
+    EmployeeSalaryUpdate(String placeholder, String database, String Password, String School) {
+
+        super(placeholder);
+        Database = database;
+        DBPassword = Password;
+        School_Name = School;
+
+        // create a frame
+        frame = new JFrame();
+
+        // create labels and set their properties
+        JLabel label = new JLabel();
+        label.setHorizontalAlignment(JLabel.CENTER);
+        label.setSize(1250, 100);
+        label.setText("UPDATE/DELETE SALARY  DETAILS");
+        label.setFont(new Font("Serif", Font.BOLD, 50));
+
+        JLabel label2 = new JLabel("Note : Admin can update/Delete Employee data using Employee Id and Serial No");
+        label2.setFont(new Font("Serif", Font.PLAIN, 22));
+        label2.setBounds(300, 75, 720, 25);
+
+        
+        JLabel label3 = new JLabel("Note : Admin can find the Serial Number by click on View Employee details button");
+        label3.setFont(new Font("Serif", Font.PLAIN, 22));
+        label3.setBounds(330, 110, 700, 25);
+
+
+        JLabel lab1 = new JLabel("Serial No :");
+        lab1.setFont(new Font("Serif", Font.PLAIN, 25));
+        lab1.setBounds(150, 160, 250, 30);
+
+        JLabel lab2 = new JLabel("Employee Id :");
+        lab2.setFont(new Font("Serif", Font.PLAIN, 25));
+        lab2.setBounds(150, 200, 250, 30);
+
+        JLabel lab3 = new JLabel("Paid Salary :");
+        lab3.setFont(new Font("Serif", Font.PLAIN, 25));
+        lab3.setBounds(150, 240, 250, 30);
+
+        JLabel lab4 = new JLabel("Month :");
+        lab4.setFont(new Font("Serif", Font.PLAIN, 25));
+        lab4.setBounds(150, 280, 250, 30);
+
+        JLabel lab5 = new JLabel("Year :");
+        lab5.setFont(new Font("Serif", Font.PLAIN, 25));
+        lab5.setBounds(150, 320, 250, 30);
+
+        // Here add label in frame
+        frame.add(label);
+        frame.add(label2);
+        frame.add(label3);
+        frame.add(lab1);
+        frame.add(lab2);
+        frame.add(lab3);
+        frame.add(lab4);
+        frame.add(lab5);
+
+        // create TextFields and set their properties
+
+        text1 = new JTextField();
+        text1.setFont(new Font("Serif", Font.PLAIN, 25));
+        text1.setBounds(450, 165, 300, 30);
+
+        text2 = new JTextField();
+        text2.setFont(new Font("Serif", Font.PLAIN, 25));
+        text2.setBounds(450, 205, 300, 30);
+
+        text3 = new JTextField();
+        text3.setFont(new Font("Serif", Font.PLAIN, 25));
+        text3.setBounds(450, 245, 300, 30);
+
+        text4 = new PlaceholderTextField("eg : January");
+        text4.setFont(new Font("Serif", Font.PLAIN, 25));
+        text4.setBounds(450, 285, 300, 30);
+
+        text5 = new JTextField();
+        text5.setFont(new Font("Serif", Font.PLAIN, 25));
+        text5.setBounds(450, 325, 300, 30);
+
+        // create submit, clear and back button
+
+        sub = new JButton(" UPDATE ");
+        sub.setBounds(250, 600, 200, 30);
+
+        clear = new JButton(" CLEAR ");
+        clear.setBounds(500, 600, 200, 30);
+
+        Delete = new JButton(" DELETE ");
+        Delete.setBounds(750, 600, 200, 30);
+
+        back = new JButton("Back");
+        back.setBounds(30, 30, 100, 30);
+
+        // here add textfields to frame
+        frame.add(text1);
+        frame.add(text2);
+        frame.add(text3);
+        frame.add(text4);
+        frame.add(text5);
+
+        // here add buttons to frame
+        frame.add(sub);
+        frame.add(clear);
+        frame.add(Delete);
+        frame.add(back);
+
+        // set the properties of frame
+        frame.setSize(500, 500);
+        frame.setLayout(null);
+        frame.getContentPane().setBackground(Color.YELLOW);
+        frame.setVisible(true);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+
+        // Register the component with EventListener
+        back.addActionListener(this);
+        clear.addActionListener(this);
+        Delete.addActionListener(this);
+        sub.addActionListener(this);
+    }
+
+    // All logics for this class are inside this method
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == back) {
+
+            new EmployeeDataUpdate(Database, DBPassword, School_Name);
+            frame.dispose();
+        }
+        if (e.getSource() == clear) {
+            text1.setText(null);
+            text2.setText(null);
+            text3.setText(null);
+            text4.setText(null);
+            text5.setText(null);
+
+        }
+
+        if(e.getSource()== Delete){
+            try{
+            
+                String url = "jdbc:mysql://localhost:3306/" + Database;
+                String user = "root";
+
+                Connection connection = DriverManager.getConnection(url, user, DBPassword);
+                PreparedStatement pstmt = connection.prepareStatement("delete from Employee_Salary_Details where Employee_Id = ? and Serial_No = ? ");
+                pstmt.setString(1, text2.getText());
+                pstmt.setString(2, text1.getText());
+                pstmt.executeUpdate();
+                JOptionPane.showMessageDialog(this, "Data Deleted Successfully.");
+                connection.close();
+            }
+            catch(Exception b){
+                
+                JOptionPane.showMessageDialog(this, "No Data Deleted.");
+            }
+        }
+        if (e.getSource() == sub) {
+            try {
+                // connect app to mysql to update Student Academic details into the database.
+                String url = "jdbc:mysql://localhost:3306/" + Database;
+                String user = "root";
+
+                Connection connection = DriverManager.getConnection(url, user, DBPassword);
+                
+               
+                // Classw
+                if (text3.getText() != null && !text3.getText().trim().isEmpty()) {
+
+                    String selectQuery = "SELECT * FROM Employee_Salary_Details WHERE Employee_Id = ? AND Serial_No = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text2.getText());
+                    selectStmt.setString(2, text1.getText());
+                
+                    ResultSet resultSet = selectStmt.executeQuery();
+                    while (resultSet.next()) {
+                        Salary_Paid = resultSet.getString(4);
+                    }
+
+                    String query = "UPDATE  Employee_Salary_Details  SET Salary_Paid  = ? WHERE Salary_Paid = ?";
+                    PreparedStatement pstmt = connection.prepareStatement(query);
+                    pstmt.setString(1, text3.getText());
+                    pstmt.setString(2,Salary_Paid);
+                    pstmt.executeUpdate();
+
+                    message = true;
+                }
+
+                // Subjects
+                if (text4.getText() != null && !text4.getText().trim().isEmpty()) {
+
+                    String selectQuery = "SELECT * FROM Employee_Salary_Details WHERE Employee_Id = ? AND Serial_No = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text2.getText());
+                    selectStmt.setString(2, text1.getText());
+                
+                    ResultSet resultSet = selectStmt.executeQuery();
+                while (resultSet.next()) {
+                    Month = resultSet.getString(5);
+                }
+
+                    String query = "UPDATE Employee_Salary_Details SET Month = ? WHERE Month = ?";
+                    PreparedStatement pstmt = connection.prepareStatement(query);
+                    pstmt.setString(1, text4.getText());
+                    pstmt.setString(2, Month);
+                    pstmt.executeUpdate();
+                    message = true;
+                }
+
+                // Year
+                if (text5.getText() != null && !text5.getText().trim().isEmpty()) {
+
+                    String selectQuery = "SELECT * FROM Employee_Salary_Details WHERE Employee_Id = ? AND Serial_No = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text2.getText());
+                    selectStmt.setString(2, text1.getText());
+                
+                    ResultSet resultSet = selectStmt.executeQuery();
+                while (resultSet.next()) {
+                    Year = resultSet.getString(6);
+                }
+                    String query = "UPDATE Employee_Salary_Details SET Year = ? WHERE Year = ?";
+                    PreparedStatement pstmt = connection.prepareStatement(query);
+                    pstmt.setString(1, text5.getText());
+                    pstmt.setString(2, Year);
+                    pstmt.executeUpdate();
+                    message = true;
+                }
+
+                connection.close();
+
+                if(message == true){
+                JOptionPane.showMessageDialog(this, "Employee Data Updated."); // showing the message whether
+                }
+                                                                                       // the Student Details insert into the database or not .
+                if(message == false){
+                    JOptionPane.showMessageDialog(this, "Nothing is Updated.");
+                }
+
+            } catch (Exception a) {
+                JOptionPane.showMessageDialog(this, "Something is missing or Incorrect enteries");
+            }
+        }
+
+    }
+}
+
+
+
+
 
 
 /*
@@ -6554,51 +8916,49 @@ class EmployeeUpdate extends PlaceholderTextField implements ActionListener {
     // text7 allows the user to enter Employee's Mobile Number2,
     // text8 allows the user to enter Employee's Joining Date,
     // text9 allows the user to enter Employee's Address,
-    // text11 allows the user to enter Employee's Aadhaar No  ,
-    // text12 allows the user to enter Employee's  ,Family Id
-    // text13 allows the user to enter Employee's  ,
+    // text11 allows the user to enter Employee's Aadhaar No ,
+    // text12 allows the user to enter Employee's ,Family Id
+    // text13 allows the user to enter Employee's ,
     // text14 allows the user to enter Employee's Experience ,
     // text15 allows the user to enter Employee's Account No,
     // text16 allows the user to enter Employee's Job Leaving date
     JTextField text, text1, text2, text3, text4, text5, text7, text8, text9, text11, text12, text13, text14, text15,
             text16;
 
-    
     String gender[] = { "Male", "Female", "Other" };
 
-    JComboBox<String> ch1;   // JComboBox ch1 to select the gender of Employee
+    JComboBox<String> ch1; // JComboBox ch1 to select the gender of Employee
 
-    JFrame frame3;   // frame in which all other componenets are added 
+    JFrame frame3; // frame in which all other componenets are added
 
-    
     // Database to Store the database name
     // DBPassword to store the mysql password
     // School_Name to store the School name
     // placeholder for background text of textfield
     String placeholder, Database, DBPassword, School_Name;
 
-    // String  
-    // Employee_Id  store Employee's Id,
+    // String
+    // Employee_Id store Employee's Id,
     // Employee_Name store Employee Name,
-    // Father_Name store  Employee's Father Name,
-    // Mother_Name store  Employee's Mother Name,
-    // Dob  store  Employee's Date of Birth,
+    // Father_Name store Employee's Father Name,
+    // Mother_Name store Employee's Mother Name,
+    // Dob store Employee's Date of Birth,
     // Gender store select Employee's Gender,
-    //  Mob1 store  Employee's Mobile Number1 ,
-    //  Mob2  store  Employee's Mobile Number2,
-    //  Joining_Date  store  Employee's Joining Date,
-    //  Address  store  Employee's Address,
-    //   Family_Id store  Employee's Family ID,
+    // Mob1 store Employee's Mobile Number1 ,
+    // Mob2 store Employee's Mobile Number2,
+    // Joining_Date store Employee's Joining Date,
+    // Address store Employee's Address,
+    // Family_Id store Employee's Family ID,
     // Qualification store select Employee's Qualification ,
-    //  Experience  store  Employee's Experience,
-    //  Account_No  store  Employee's Mother's Account No,
-    //  Job_Leaving_Date store  Employee's Job Leaving date
+    // Experience store Employee's Experience,
+    // Account_No store Employee's Mother's Account No,
+    // Job_Leaving_Date store Employee's Job Leaving date
     String Employee_Id, Employee_Name, Father_Name, Mother_Name, Dob, Gender, Mob1, Mob2, Joining_Date, Address,
             Employee_Aadhaar_No, Family_Id, Qualification, Experience, Account_No, Job_Leaving_Date;
 
-
-    boolean message = false;  // for message that shows employee data updated or not 
+    boolean message = false; // for message that shows employee data updated or not
     // constructor
+
     EmployeeUpdate(String placeholder, String database, String Password, String School) {
 
         super(placeholder);
@@ -6684,8 +9044,6 @@ class EmployeeUpdate extends PlaceholderTextField implements ActionListener {
         lab17.setFont(new Font("Serif", Font.PLAIN, 25));
         lab17.setBounds(700, 360, 250, 30);
 
-
-
         // create TextFields and set their properties
 
         text = new JTextField();
@@ -6708,7 +9066,6 @@ class EmployeeUpdate extends PlaceholderTextField implements ActionListener {
         text4.setFont(new Font("Serif", Font.PLAIN, 25));
         text4.setBounds(300, 285, 300, 30);
 
-        
         ch1 = new JComboBox<>(gender); // ComboBox for gender
         ch1.setBounds(300, 325, 300, 30);
         ch1.setSelectedIndex(-1);
@@ -6799,7 +9156,7 @@ class EmployeeUpdate extends PlaceholderTextField implements ActionListener {
         clear = new JButton(" CLEAR ");
         clear.setBounds(650, 600, 200, 30);
 
-        back = new JButton("Home");
+        back = new JButton("Back");
         back.setBounds(30, 30, 100, 30);
 
         // here add buttons to frame
@@ -6808,7 +9165,7 @@ class EmployeeUpdate extends PlaceholderTextField implements ActionListener {
         frame3.add(back);
 
         // set the properties of frame
-        frame3.setSize(500, 500);  //optional
+        frame3.setSize(500, 500); // optional
         frame3.setLayout(null);
         frame3.getContentPane().setBackground(Color.YELLOW);
         frame3.setVisible(true);
@@ -6826,7 +9183,7 @@ class EmployeeUpdate extends PlaceholderTextField implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == back) {
 
-            new First(Database, DBPassword, School_Name);
+            new EmployeeDataUpdate(Database, DBPassword, School_Name);
             frame3.dispose();
         }
         if (e.getSource() == clear) {
@@ -6877,7 +9234,6 @@ class EmployeeUpdate extends PlaceholderTextField implements ActionListener {
                     message = true;
                 }
 
-
                 // Father Name
                 if (text2.getText() != null && !text2.getText().trim().isEmpty()) {
 
@@ -6896,7 +9252,7 @@ class EmployeeUpdate extends PlaceholderTextField implements ActionListener {
                     message = true;
                 }
 
-                // Mother Name 
+                // Mother Name
                 if (text3.getText() != null && !text3.getText().trim().isEmpty()) {
 
                     ResultSet resultSet = statement.executeQuery(
@@ -6914,7 +9270,7 @@ class EmployeeUpdate extends PlaceholderTextField implements ActionListener {
                     message = true;
                 }
 
-                //dob
+                // dob
                 if (text4.getText() != null && !text4.getText().trim().isEmpty()) {
 
                     ResultSet resultSet = statement.executeQuery(
@@ -7112,7 +9468,7 @@ class EmployeeUpdate extends PlaceholderTextField implements ActionListener {
                     message = true;
                 }
 
-                //Job Leaving Date
+                // Job Leaving Date
                 if (text16.getText() != null && !text16.getText().trim().isEmpty()) {
 
                     ResultSet resultSet6 = statement.executeQuery(
@@ -7130,12 +9486,12 @@ class EmployeeUpdate extends PlaceholderTextField implements ActionListener {
                     message = true;
                 }
 
-                // 
-                if(message == true){
-                    JOptionPane.showMessageDialog(this,"Employee Data Updated");
+                //
+                if (message == true) {
+                    JOptionPane.showMessageDialog(this, "Employee Data Updated");
                 }
-                if(message == false){
-                    JOptionPane.showMessageDialog(this,"Nothing is Updated");
+                if (message == false) {
+                    JOptionPane.showMessageDialog(this, "Nothing is Updated");
                 }
 
                 statement.close();
@@ -7143,7 +9499,7 @@ class EmployeeUpdate extends PlaceholderTextField implements ActionListener {
 
             } catch (Exception a) {
 
-                JOptionPane.showMessageDialog(this,"Employee_Id is not filled or Wrong Enteries");
+                JOptionPane.showMessageDialog(this, "Employee_Id is not filled or Wrong Enteries");
 
             }
 
@@ -7152,9 +9508,8 @@ class EmployeeUpdate extends PlaceholderTextField implements ActionListener {
     }
 }
 
-
 /*
- * This is the main class of application 
+ * This is the main class of application
  */
 public class App {
 
