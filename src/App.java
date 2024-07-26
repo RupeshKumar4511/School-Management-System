@@ -6149,27 +6149,6 @@ class StudentUpdate extends PlaceholderTextField implements ActionListener {
                     message = true;
                 }
 
-                // if ((text1.getText() == null || text1.getText().trim().isEmpty())
-                // && (text2.getText() == null || text2.getText().trim().isEmpty())
-                // && (text3.getText() == null || text3.getText().trim().isEmpty())
-                // && (text4.getText() == null || text4.getText().trim().isEmpty())
-                // && (text5.getText() == null || text5.getText().trim().isEmpty())
-                // && (ch1.getSelectedIndex() == -1)
-                // && (text7.getText() == null || text7.getText().trim().isEmpty())
-                // && (text8.getText() == null || text8.getText().trim().isEmpty())
-                // && (text9.getText() == null || text9.getText().trim().isEmpty())
-                // && (text10.getText() == null || text10.getText().trim().isEmpty())
-                // && (text11.getText() == null || text11.getText().trim().isEmpty())
-                // && (text12.getText() == null || text12.getText().trim().isEmpty())
-                // && (text13.getText() == null || text13.getText().trim().isEmpty())
-                // && (text14.getText() == null || text14.getText().trim().isEmpty())
-                // && (ch2.getSelectedIndex() == -1)
-                // && (text15.getText() == null || text15.getText().trim().isEmpty())
-                // && (text16.getText() == null || text16.getText().trim().isEmpty())
-                // && (text17.getText() == null || text17.getText().trim().isEmpty())) {
-                // JOptionPane.showMessageDialog(this, "Nothing is updated");
-
-                // }
 
                 if (message == true) {
                     JOptionPane.showMessageDialog(this, "Student Data Updated ");
@@ -7568,23 +7547,7 @@ class TeacherUpdate extends PlaceholderTextField implements ActionListener {
                     message = true;
                 }
 
-                // if ((text1.getText() == null || text1.getText().trim().isEmpty())
-                // && (text2.getText() == null || text2.getText().trim().isEmpty())
-                // && (text3.getText() == null || text3.getText().trim().isEmpty())
-                // && (text4.getText() == null || text4.getText().trim().isEmpty())
-                // && (ch1.getSelectedIndex() == -1)
-                // && (text5.getText() == null || text5.getText().trim().isEmpty())
-                // && (text7.getText() == null || text7.getText().trim().isEmpty())
-                // && (text8.getText() == null || text8.getText().trim().isEmpty())
-                // && (text9.getText() == null || text9.getText().trim().isEmpty())
-                // && (text11.getText() == null || text11.getText().trim().isEmpty())
-                // && (text12.getText() == null || text12.getText().trim().isEmpty())
-                // && (text13.getText() == null || text13.getText().trim().isEmpty())
-                // && (text14.getText() == null || text14.getText().trim().isEmpty())
-                // && (text15.getText() == null || text15.getText().trim().isEmpty())
-                // && (text16.getText() == null || text16.getText().trim().isEmpty())) {
-                // lab16.setText("Nothing is updated");
-                // }
+              
 
                 if (message == true) {
                     JOptionPane.showMessageDialog(this, "Teacher Data Updated");
