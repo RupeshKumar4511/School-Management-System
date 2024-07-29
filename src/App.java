@@ -12,7 +12,7 @@ import java.sql.*;
 import rpack.PlaceholderTextField; // This is my own package that is imported
 
 /*
- * This is First page of Application which allows the user to connect to database and enter the user name and password .
+ * This is First window of Application which allows the user to connect to database and enter the user name and password .
  * This class implements ActionListener for event Handling.
  */
 
@@ -208,7 +208,7 @@ class Login implements ActionListener {
 class CreateDB implements ActionListener {
 
     // Buttons:
-    // back for redirect the user to first page of Application.
+    // back for redirect the user to first window of Application.
     // create for creating the database.
     JButton back, create;
 
@@ -432,7 +432,7 @@ class Forgot implements ActionListener {
     // Buttons :
     // submit for submit the entered user name and password
     // clear for clear the entered user name or Password
-    // back for redirect the user to first page of App
+    // back for redirect the user to first window of App
     JButton submit, clear, back;
 
     JTextField text1; // Textfield that allows the user enter the school name
@@ -592,7 +592,7 @@ class ConnectToDB implements ActionListener {
 
     // Buttons :
     // submit for submit the database name and mysql password .
-    // back for redirect the user to first page of App.
+    // back for redirect the user to first window of App.
     JButton submit, back;
 
     JLabel lab2; // label which shows message when user enter the wrong mysql password and
@@ -608,7 +608,7 @@ class ConnectToDB implements ActionListener {
     String School_Name; // Store the school name from the database
     String User_Name; // store the user name from the database.
     String User_Password;// store the user password from the database.
-    String Message; // store the message to send it to login page that shows whether App is
+    String Message; // store the message to send it to login window that shows whether App is
                     // connected to database or not.
 
     // consructor
@@ -739,7 +739,7 @@ class ResetPassword implements ActionListener {
 
     // Buttons :
     // submit for submit the database name and mysql password .
-    // back for redirect the user to first page of App.
+    // back for redirect the user to first window of App.
     private JButton submit, back;
 
     JLabel lab2; // label which shows message when user enter the wrong mysql password and
@@ -908,23 +908,23 @@ class First implements ActionListener {
     // button is responsible for opening the Student Registration Form,
     // button1 is responsible for opening the Teacher Registration Form,
     // buuton2 is responsible for opening the Other Employee Registration Form,
-    // button3 is responsible for opening the Enrollment Details page,
-    // button4 is responsible for opening the Academic Details page,
-    // button5 is responsible for opening the Student's Fee Details page,
-    // button6 is responsible for opening the page which contains three buttons that
+    // button3 is responsible for opening the Enrollment Details window,
+    // button4 is responsible for opening the Academic Details window,
+    // button5 is responsible for opening the Student's Fee Details window,
+    // button6 is responsible for opening the window which contains three buttons that
     // shows all the student details when they clicked,
-    // b7 is responsible for opening the Teacher Salary Structure page,
-    // b8 is responsible for opening the Teacher Salary details page ,
-    // b9 is responsible for opening the page which contains three buttons that all
+    // b7 is responsible for opening the Teacher Salary Structure window,
+    // b8 is responsible for opening the Teacher Salary details window ,
+    // b9 is responsible for opening the window which contains three buttons that all
     // the Teacher Details when they clicked,
-    // b10 is responsible for opening the Other Employee Salary Structure page ,
-    // b11 is responsible for opening the Other Employee Salary Details page,
-    // b12 is responsibe for opening the page in which three buttons are available
+    // b10 is responsible for opening the Other Employee Salary Structure window ,
+    // b11 is responsible for opening the Other Employee Salary Details window,
+    // b12 is responsibe for opening the window in which three buttons are available
     // that shows all Other employee details when they clicked,
-    // update1 is responsible for opening the Update Student's Details page,
-    // update2 is responsible for openening the Update Teacher's Details page,
-    // update3 is reponsible for opening the Other's Employee's Details page,
-    // back for redirect the user to first page
+    // update1 is responsible for opening the Update Student's Details window,
+    // update2 is responsible for openening the Update Teacher's Details window,
+    // update3 is reponsible for opening the Other's Employee's Details window,
+    // back for redirect the user to first window
     private JButton button, button1, button2, button3, button4, button5, button6, b7, b8, b9, b10, b11, b12, update1,
             update2, update3, back;
 
@@ -1155,7 +1155,7 @@ class Student extends PlaceholderTextField implements ActionListener {
     // Buttons :
     // sub to insert the Student basic details into the database,
     // clear for clear the information that are filled,
-    // back for redirect the user to Home page of App
+    // back for redirect the user to Home window of App
     JButton back, sub, clear;
 
     JFrame frame1; // frame in which all other components are added
@@ -1510,7 +1510,7 @@ class Enrollment extends PlaceholderTextField implements ActionListener {
     // Buttons :
     // sub to insert the Student Enrollment details into the database,
     // clear for clear the information that are filled,
-    // back for redirect the user to Home page of App
+    // back for redirect the user to Home window of App
 
     JButton back, sub, clear;
 
@@ -1673,7 +1673,7 @@ class Academic extends PlaceholderTextField implements ActionListener {
     // Buttons :
     // sub to insert the Student Academic details into the database,
     // clear for clear the information that are filled,
-    // back for redirect the user to Home page of App
+    // back for redirect the user to Home window of App
     JButton back, sub, clear;
 
     // Textfields:
@@ -1867,7 +1867,7 @@ class Fee extends PlaceholderTextField implements ActionListener {
     // Buttons :
     // sub to insert the Student Fee details into the database,
     // clear for clear the information that are filled,
-    // back for redirect the user to Home page of App
+    // back for redirect the user to Home window of App
     JButton back, clear, sub;
 
     // Textfields:
@@ -2054,7 +2054,7 @@ class Teacher extends PlaceholderTextField implements ActionListener {
     // Buttons :
     // sub to insert the Teacher Basic details into the database,
     // clear for clear the information that are filled,
-    // back for redirect the user to Home page of App
+    // back for redirect the user to Home window of App
     JButton back, sub, clear;
 
     // TextField:
@@ -2371,7 +2371,7 @@ class TeacherSalaryStructure extends PlaceholderTextField implements ActionListe
     // Buttons :
     // sub to insert the Teacher Salary Structure into the database,
     // clear for clear the information that are filled,
-    // back for redirect the user to Home page of App
+    // back for redirect the user to Home window of App
     JButton back, clear, sub;
 
     // TextField:
@@ -2549,7 +2549,7 @@ class TeacherSalaryDetails extends PlaceholderTextField implements ActionListene
     // Buttons :
     // sub to insert the Teacher Salary details into the database,
     // clear for clear the information that are filled,
-    // back for redirect the user to Home page of App
+    // back for redirect the user to Home window of App
     JButton back, sub, clear;
 
     // TextField:
@@ -2727,7 +2727,7 @@ class OtherEmployee extends PlaceholderTextField implements ActionListener {
     // Buttons :
     // sub to insert Other Employee Basic details into the database,
     // clear for clear the information that are filled,
-    // back for redirect the user to Home page of App
+    // back for redirect the user to Home window of App
     JButton back, sub, clear;
 
     // TextField:
@@ -3042,7 +3042,7 @@ class EmployeeSalaryStructure extends PlaceholderTextField implements ActionList
     // Buttons :
     // sub to insert Other Employee Salary Structure into the database,
     // clear for clear the information that are filled,
-    // back for redirect the user to Home page of App
+    // back for redirect the user to Home window of App
     JButton back, sub, clear;
 
     // TextField:
@@ -3220,7 +3220,7 @@ class EmployeeSalaryDetails extends PlaceholderTextField implements ActionListen
     // Buttons :
     // sub to insert Other Employee Salary details into the database,
     // clear for clear the information that are filled,
-    // back for redirect the user to Home page of App
+    // back for redirect the user to Home window of App
     JButton back, sub, clear;
 
     // TextField:
@@ -3400,7 +3400,7 @@ class StudentData implements ActionListener {
     // button to show Student Basic details,
     // button1 to show Student's Academic details,
     // button 2 to show the student Fee Details,
-    // back for redirect the user to Home page of App
+    // back for redirect the user to Home window of App
     JButton button, button1, button2, back;
 
     // Database to Store the database name
@@ -3505,7 +3505,7 @@ class StudentView implements ActionListener, KeyListener {
 
     JFrame frame; // frame in which all other componenets are added.
 
-    JButton back; // button back redirects the user to Student data page.
+    JButton back; // button back redirects the user to Student data window.
 
     JTextField text1; // textfield to search data .
 
@@ -3682,7 +3682,7 @@ class AcademicView implements ActionListener, KeyListener {
 
     JFrame frame; // frame in which all other components are added
 
-    JButton back; // back button for redirects the user to the Student Data page
+    JButton back; // back button for redirects the user to the Student Data window
 
     JTextField text1; // textfield to search data
 
@@ -3862,7 +3862,7 @@ class FeeView implements ActionListener, KeyListener {
 
     JFrame frame; // frame in which all other components are added.
 
-    JButton back; // back button for redirects the user to the Student Data page.
+    JButton back; // back button for redirects the user to the Student Data window.
 
     JTextField text1; // textfield to search data.
 
@@ -4041,7 +4041,7 @@ class TeacherData implements ActionListener {
     // button to show Teacher Basic details,
     // button1 to show Teacher's Salary Structure details,
     // button 2 to show the Teacher's Salary Details,
-    // back for redirect the user to Home page of App
+    // back for redirect the user to Home window of App
     JButton button, button1, button2, back;
 
     // Database to Store the database name
@@ -4148,7 +4148,7 @@ class TeacherView implements ActionListener, KeyListener {
 
     JFrame frame; // frame in which all other components are added
 
-    JButton back; // back buttons for redirect the user to Teacher Data page
+    JButton back; // back buttons for redirect the user to Teacher Data window
 
     JTextField text1; // textfield for search data
 
@@ -4322,7 +4322,7 @@ class SalaryStructureView implements ActionListener, KeyListener {
 
     JFrame frame; // frame in which all other components are added
 
-    JButton back; // back buttons for redirect the user to Teacher Data page
+    JButton back; // back buttons for redirect the user to Teacher Data window
 
     JTextField text1; // textfield for search data
 
@@ -4496,7 +4496,7 @@ class SalaryView implements ActionListener, KeyListener {
 
     JFrame frame; // frame in which all other components are added
 
-    JButton back; // back button for redirect the user to Teacher data page
+    JButton back; // back button for redirect the user to Teacher data window
 
     JTextField text1; // textfield to search data
 
@@ -4678,7 +4678,7 @@ class EmployeeData implements ActionListener {
     // button to show Employee Basic details,
     // button1 to show Employee's Salary Structure details,
     // button 2 to show the Employee's Salary Details,
-    // back for redirect the user to Home page of App
+    // back for redirect the user to Home window of App
     JButton button, button1, button2, back;
 
     // Database to Store the database name
@@ -4785,7 +4785,7 @@ class EmployeeView implements ActionListener, KeyListener {
 
     JFrame frame; // frame in which all other components are added
 
-    JButton back; // back buttons for redirect the user to Teacher Data page
+    JButton back; // back buttons for redirect the user to Teacher Data window
 
     JTextField text1; // textfield for search data
 
@@ -4961,7 +4961,7 @@ class EmployeeSalaryStructureView implements ActionListener, KeyListener {
 
     JFrame frame; // frame in which all other components are added
 
-    JButton back; // back buttons for redirect the user to Teacher Data page
+    JButton back; // back buttons for redirect the user to Teacher Data window
 
     JTextField text1; // textfield for search data
 
@@ -5138,7 +5138,7 @@ class EmployeeSalaryView implements ActionListener, KeyListener {
 
     JFrame frame; // frame in which all other components are added
 
-    JButton back; // back button for redirect the user to Teacher data page
+    JButton back; // back button for redirect the user to Teacher data window
 
     JTextField text1; // textfield to search data
 
@@ -5319,7 +5319,7 @@ class EmployeeSalaryView implements ActionListener, KeyListener {
     // button to update Student Basic details,
     // button1 to update Student's Academic details,
     // button 2 to update the student Fee Details,
-    // back for redirect the user to Home page of App
+    // back for redirect the user to Home window of App
     JButton button, button1, button2, back;
 
     // Database to Store the database name
@@ -5430,7 +5430,7 @@ class StudentUpdate extends PlaceholderTextField implements ActionListener {
     // Buttons :
     // sub to insert the Student basic details into the database,
     // clear for clear the information that are filled,
-    // back for redirect the user to Home page of App
+    // back for redirect the user to Home window of App
     JButton back, sub, clear;
 
     JFrame frame1; // frame in which all other components are added
@@ -6181,7 +6181,7 @@ class AcademicUpdate extends PlaceholderTextField implements ActionListener {
     // Buttons :
     // sub to update the Student Academic details into the database,
     // clear for clear the information that are filled,
-    // back for redirect the user to Home page of App
+    // back for redirect the user to Home window of App
     // Delete for delete the Academic data
     JButton back, sub,Delete, clear;
 
@@ -6526,7 +6526,7 @@ class AcademicUpdate extends PlaceholderTextField implements ActionListener {
     // sub to insert the Student Fee details into the database,
     // clear for clear the information that are filled,
     // Delete for delete the fee data of Student
-    // back for redirect the user to Home page of App
+    // back for redirect the user to Home window of App
     JButton back, clear,Delete, sub;
 
     // Textfields:
@@ -6848,7 +6848,7 @@ class TeacherDataUpdate implements ActionListener {
     // button to update Teacher Basic details,
     // button1 to update Teacher's Salary Structure details,
     // button 2 to update the Teacher's Salary Details,
-    // back for redirect the user to Home page of App
+    // back for redirect the user to Home window of App
     JButton button, button1, button2, back;
 
     // Database to Store the database name
@@ -6963,7 +6963,7 @@ class TeacherUpdate extends PlaceholderTextField implements ActionListener {
     // Buttons :
     // sub to insert the Teacher basic details into the database,
     // clear for clear the information that are filled,
-    // back for redirect the user to Home page of App
+    // back for redirect the user to Home window of App
     JButton back, sub, clear;
 
     // TextField:
@@ -7586,7 +7586,7 @@ class TeacherSalaryStructureUpdate extends PlaceholderTextField implements Actio
     // sub to update the Teacher Salary Structure,
     // clear for clear the information that are filled,
     // Delete for delete the Teacher Salary Structure,
-    // back for redirect the user to Home page of App
+    // back for redirect the user to Home window of App
     JButton back, clear,Delete, sub;
 
     // TextField:
@@ -7879,7 +7879,7 @@ class TeacherSalaryStructureUpdate extends PlaceholderTextField implements Actio
     // sub to update the Teacher Salary Details,
     // clear for clear the information that are filled,
     // Delete for delete the Teacher Salary Structure,
-    // back for redirect the user to Home page of App
+    // back for redirect the user to Home window of App
     JButton back, clear,Delete, sub;
 
     // TextField:
@@ -8169,7 +8169,7 @@ class TeacherSalaryStructureUpdate extends PlaceholderTextField implements Actio
     // button to update Employee Basic details,
     // button1 to update Employee's Salary Structure details,
     // button 2 to update the Employee's Salary Details,
-    // back for redirect the user to Home page of App
+    // back for redirect the user to Home window of App
     JButton button, button1, button2, back;
 
     // Database to Store the database name
@@ -8283,7 +8283,7 @@ class TeacherSalaryStructureUpdate extends PlaceholderTextField implements Actio
     // sub to update the Employee Salary Structure,
     // clear for clear the information that are filled,
     // Delete for delete the Employee Salary Structure,
-    // back for redirect the user to Home page of App
+    // back for redirect the user to Home window of App
     JButton back, clear,Delete, sub;
 
     // TextField:
@@ -8576,7 +8576,7 @@ class TeacherSalaryStructureUpdate extends PlaceholderTextField implements Actio
     // sub to update the Employee Salary Details,
     // clear for clear the information that are filled,
     // Delete for delete the Employee Salary Structure,
-    // back for redirect the user to Home page of App
+    // back for redirect the user to Home window of App
     JButton back, clear,Delete, sub;
 
     // TextField:
@@ -8865,7 +8865,7 @@ class EmployeeUpdate extends PlaceholderTextField implements ActionListener {
     // Buttons :
     // sub to insert the Employee basic details into the database,
     // clear for clear the information that are filled,
-    // back for redirect the user to Home page of App
+    // back for redirect the user to Home window of App
     JButton back, sub, clear;
 
     // TextField:
