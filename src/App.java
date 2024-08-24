@@ -1,3 +1,4 @@
+
 // Built-in packages that are imported
 import java.awt.Color;
 import java.awt.Font;
@@ -7,7 +8,6 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 import java.sql.*;
-
 
 import rpack.PlaceholderTextField; // This is my own package that is imported
 
@@ -33,8 +33,6 @@ class Login implements ActionListener {
     JFrame frame; // frame in which every component is added
 
     String user; // Store the user name entered by the user
-
-
 
     // Database to Store the Database name ,
     // DBpassword to store Mysql Password ,
@@ -184,16 +182,14 @@ class Login implements ActionListener {
             text2.setText(null);
         }
 
-        if (e.getSource() == SignIn) {
+        else if (e.getSource() == SignIn) {
 
             new CreateDB();
             frame.dispose();
-        }
-        if (e.getSource() == connect) {
+        } else if (e.getSource() == connect) {
             new ConnectToDB();
             frame.dispose();
-        }
-        if (e.getSource() == forgot) {
+        } else if (e.getSource() == forgot) {
             new ResetPassword();
             frame.dispose();
         }
@@ -326,7 +322,7 @@ class CreateDB implements ActionListener {
             frame.dispose();
         }
 
-        if (e.getSource() == create) {
+        else if (e.getSource() == create) {
 
             // First connection of Application to Mysql to create a database.
             try {
@@ -351,43 +347,44 @@ class CreateDB implements ActionListener {
                 Statement statement1 = connection1.createStatement();
 
                 // Student
-                statement1.execute("create table Student_Registration(Student_Id varchar(20) not null ,Student_Name varchar(50) not null, Father_Name varchar(50) not null,Mother_Name varchar(50) not null ,Date_of_Birth Date not null , Gender varchar(10) not null,Mob1 bigint(10) not null, Mob2 bigint(10) not null,Registration_Date Date not null, Address varchar(100) not null,Student_Aadhaar_No bigint(12) not null ,Father_Aadhaar_No bigint(12) not null, Mother_Aadhaar_No bigint(12) not null,Family_ID varchar(20) not null ,Category varchar(10) not null,Father_Occupation varchar(50) ,Mother_Occupation varchar(50) ,School_Leaving_Date date,check(length(Student_Aadhaar_No)=12 and length(Father_Aadhaar_No)=12 and length(Mother_Aadhaar_No)=12),Primary key(Student_Id, Student_Name));");
+                statement1.execute(
+                        "create table Student_Registration(Student_Id varchar(20) not null ,Student_Name varchar(50) not null, Father_Name varchar(50) not null,Mother_Name varchar(50) not null ,Date_of_Birth Date not null , Gender varchar(10) not null,Mob1 bigint(10) not null, Mob2 bigint(10) not null,Registration_Date Date not null, Address varchar(100) not null,Student_Aadhaar_No bigint(12) not null ,Father_Aadhaar_No bigint(12) not null, Mother_Aadhaar_No bigint(12) not null,Family_ID varchar(20) not null ,Category varchar(10) not null,Father_Occupation varchar(50) ,Mother_Occupation varchar(50) ,School_Leaving_Date date,check(length(Student_Aadhaar_No)=12 and length(Father_Aadhaar_No)=12 and length(Mother_Aadhaar_No)=12),Primary key(Student_Id, Student_Name));");
 
-               
-                statement1.execute("create table Enrollment(Student_Id varchar(20) not null,Student_Name varchar(50) not null, Enrollment_No varchar(20) not null,Class varchar(5) not null); ");
+                statement1.execute(
+                        "create table Enrollment(Student_Id varchar(20) not null,Student_Name varchar(50) not null, Enrollment_No varchar(20) not null,Class varchar(5) not null); ");
 
                 statement1.execute("alter table Enrollment add constraint EnId Primary key(Enrollment_No,Class);");
 
-                statement1.execute("alter table Enrollment add constraint fk_en Foreign key(Student_Id,Student_Name) references Student_Registration(Student_Id,Student_Name) on update cascade;");
+                statement1.execute(
+                        "alter table Enrollment add constraint fk_en Foreign key(Student_Id,Student_Name) references Student_Registration(Student_Id,Student_Name) on update cascade  on delete cascade;");
 
-                statement1.execute("create table Academic(Serial_No int AUTO_INCREMENT,Student_Id varchar(20) not null, Student_Name varchar(50) not null ,class varchar(5) not null,Subjects varchar(500) not null,Session char(15) not null , Fee int(9) not null, Primary key(Serial_No));");
-                
-                
-                
-                statement1.execute("alter table Academic add constraint fk_ac Foreign key(Student_Id,Student_Name) references Student_Registration(Student_Id,Student_Name) on update cascade;");
+                statement1.execute(
+                        "create table Academic(Serial_No int AUTO_INCREMENT,Student_Id varchar(20) not null, Student_Name varchar(50) not null ,class varchar(5) not null,Subjects varchar(500) not null,Session char(15) not null , Fee int(9) not null, Primary key(Serial_No));");
+
+                statement1.execute(
+                        "alter table Academic add constraint fk_ac Foreign key(Student_Id,Student_Name) references Student_Registration(Student_Id,Student_Name) on update cascade  on delete cascade;");
 
                 statement1.execute(
                         "create table Fee_Details(Serial_No int AUTO_INCREMENT,Student_Id varchar(20) not null, Student_Name varchar(50) not null, Class varchar(5) not null,Paid_Fee int(8) not null, Balance int(8) not null ,P_date date not null, Primary key(Serial_No)  );");
 
                 statement1.execute(
-                        "alter table  Fee_Details add constraint fk_fd Foreign key(Student_Id,Student_Name) references Student_Registration(Student_Id,Student_Name) on update cascade;");
+                        "alter table  Fee_Details add constraint fk_fd Foreign key(Student_Id,Student_Name) references Student_Registration(Student_Id,Student_Name) on update cascade on delete cascade;");
 
                 // Teacher
                 statement1.execute(
                         "create table Teacher_Registration(Teacher_Id varchar(20) not null,Teacher_Name varchar(50) not null,Father_Name varchar(50) not null,Mother_Name varchar(50) not null , DOB date not null,Gender varchar(6) not null, Mob1 bigint(10) not null,Mob2 bigint(10) not null,Joining_Date date not null,Address varchar(100) not null, Teacher_Aadhaar_No bigint(12) not null,Family_Id varchar(20),Qualification varchar(50) not null , Experience varchar(50) not null,Account_No varchar(15),Job_Leaving_Date date,check(length(Teacher_Aadhaar_No)=12),Primary key(Teacher_Id , Teacher_Name) );");
 
-               
                 statement1.execute(
                         "create table Teacher_Salary_Structure(Serial_No int AUTO_INCREMENT,Teacher_Id varchar(20) not null, Teacher_Name varchar(50) not null, Salary int(9) not null,Month varchar(10) not null, Year int(5) not null,  Primary key(Serial_No)) ;");
-              
+
                 statement1.execute(
-                        "alter table Teacher_Salary_Structure add constraint fk_ts1 Foreign key(Teacher_Id,Teacher_Name) references Teacher_Registration(Teacher_Id,Teacher_Name) on update cascade;");
+                        "alter table Teacher_Salary_Structure add constraint fk_ts1 Foreign key(Teacher_Id,Teacher_Name) references Teacher_Registration(Teacher_Id,Teacher_Name) on update cascade  on delete cascade;");
 
                 statement1.execute(
                         "create table Teacher_Salary_Details(Serial_No int AUTO_INCREMENT,Teacher_Id varchar(20) not null,Teacher_Name varchar(20) not null,Salary_Paid int(9) not null,Month varchar(10) not null , Year int(5) not null,Primary key(Serial_No));");
-                
+
                 statement1.execute(
-                        "alter table Teacher_Salary_Details add constraint fk_ts2 Foreign key(Teacher_Id,Teacher_Name) references Teacher_Registration(Teacher_Id,Teacher_Name) on update cascade;");
+                        "alter table Teacher_Salary_Details add constraint fk_ts2 Foreign key(Teacher_Id,Teacher_Name) references Teacher_Registration(Teacher_Id,Teacher_Name) on update cascade  on delete cascade;");
 
                 // Other Employee
                 statement1.execute(
@@ -395,22 +392,22 @@ class CreateDB implements ActionListener {
 
                 statement1.execute(
                         "create table Employee_Salary_Structure(Serial_No int AUTO_INCREMENT,Employee_Id varchar(20) not null, Employee_Name varchar(50) not null, Salary int(9) not null,Month varchar(10) not null, Year int(5) not null,Primary key(Serial_No));");
-          
+
                 statement1.execute(
-                        "alter table Employee_Salary_Structure add constraint fk_es1 Foreign key(Employee_Id,Employee_Name) references Employee_Registration(Employee_Id,Employee_Name) on update cascade;");
+                        "alter table Employee_Salary_Structure add constraint fk_es1 Foreign key(Employee_Id,Employee_Name) references Employee_Registration(Employee_Id,Employee_Name) on update cascade  on delete cascade;");
 
                 statement1.execute(
                         "create table Employee_Salary_Details(Serial_No int AUTO_INCREMENT,Employee_Id varchar(20) not null,Employee_Name varchar(20) not null,Salary_Paid int(9) not null,Month varchar(10) not null , Year int(5) not null,Primary key(Serial_No) );");
-                
+
                 statement1.execute(
-                        "alter table Employee_Salary_Details add constraint fk_es2 Foreign key(Employee_Id,Employee_Name) references Employee_Registration(Employee_Id,Employee_Name) on update cascade;");
+                        "alter table Employee_Salary_Details add constraint fk_es2 Foreign key(Employee_Id,Employee_Name) references Employee_Registration(Employee_Id,Employee_Name) on update cascade  on delete cascade;");
 
                 statement1.execute(
                         "create  table credentials(School_Name varchar(50) not null,User_Name varchar(50) not null,Password varchar(50) not null,SNo int AUTO_INCREMENT ,Primary key(SNo));");
 
                 lab2.setText("Database created");
 
-                new Forgot(database, password);
+                new SignUp(database, password);
                 frame.dispose();
                 statement1.close();
                 connection1.close();
@@ -428,7 +425,7 @@ class CreateDB implements ActionListener {
  * This is third class of App which is responsible for set the password .
  * This class implemnts ActionListener for event handling.
  */
-class Forgot implements ActionListener {
+class SignUp implements ActionListener {
     // Buttons :
     // submit for submit the entered user name and password
     // clear for clear the entered user name or Password
@@ -450,7 +447,7 @@ class Forgot implements ActionListener {
     JFrame frame; // frame in which all the components are added
 
     // constructor
-    Forgot(String DB, String password) {
+    SignUp(String DB, String password) {
         database = DB;
         password1 = password;
 
@@ -548,8 +545,7 @@ class Forgot implements ActionListener {
             text1.setText(null);
             text2.setText(null);
             text3.setText(null);
-        }
-        if (e.getSource() == submit) {
+        } else if (e.getSource() == submit) {
 
             // connect app to database to insert School name,User name ,Password into
             // database.
@@ -572,8 +568,7 @@ class Forgot implements ActionListener {
                 lab4.setText("Enter valid User Name and Passsword");
             }
 
-        }
-        if (e.getSource() == back) {
+        } else if (e.getSource() == back) {
             new Login(null, null, null, null, null, null);
             frame.dispose();
         }
@@ -604,7 +599,6 @@ class ConnectToDB implements ActionListener {
 
     String Database; // Database to store the database name entered by the user
 
-
     String School_Name; // Store the school name from the database
     String User_Name; // store the user name from the database.
     String User_Password;// store the user password from the database.
@@ -613,7 +607,7 @@ class ConnectToDB implements ActionListener {
 
     // consructor
     ConnectToDB() {
- 
+
         // Create a frame
         frame = new JFrame();
 
@@ -731,7 +725,7 @@ class ConnectToDB implements ActionListener {
 /*
  * This class provides an user interface to reset thier password.
  * This class implements ActionListener for event handling.
-*/
+ */
 
 class ResetPassword implements ActionListener {
 
@@ -899,7 +893,7 @@ class ResetPassword implements ActionListener {
  * This class provides an user interface which contains some buttons which
  * performs some event when they clicked.
  * This class implements ActionListener for event handling.
-*/
+ */
 class First implements ActionListener {
 
     JFrame frame; // frame in which all other components are added
@@ -911,11 +905,13 @@ class First implements ActionListener {
     // button3 is responsible for opening the Enrollment Details window,
     // button4 is responsible for opening the Academic Details window,
     // button5 is responsible for opening the Student's Fee Details window,
-    // button6 is responsible for opening the window which contains three buttons that
+    // button6 is responsible for opening the window which contains three buttons
+    // that
     // shows all the student details when they clicked,
     // b7 is responsible for opening the Teacher Salary Structure window,
     // b8 is responsible for opening the Teacher Salary details window ,
-    // b9 is responsible for opening the window which contains three buttons that all
+    // b9 is responsible for opening the window which contains three buttons that
+    // all
     // the Teacher Details when they clicked,
     // b10 is responsible for opening the Other Employee Salary Structure window ,
     // b11 is responsible for opening the Other Employee Salary Details window,
@@ -951,69 +947,84 @@ class First implements ActionListener {
         label.setText(School_Name);
         label.setFont(new Font("Serif", Font.BOLD, 50));
 
+        JLabel label2 = new JLabel();
+        label2.setFont(new Font("Serif", Font.PLAIN, 30));
+        label2.setText("STUDENTS");
+        label2.setBounds(222, 150, 270, 30);
+
+        JLabel label3 = new JLabel();
+        label3.setFont(new Font("Serif", Font.PLAIN, 30));
+        label3.setText("TEACHERS");
+        label3.setBounds(545, 150, 270, 30);
+
+        JLabel label4 = new JLabel();
+        label4.setFont(new Font("Serif", Font.PLAIN, 30));
+        label4.setText("EMPLOYEES");
+        label4.setBounds(886, 150, 270, 30);
+
         // create buttons and add to frame
         button = new JButton("STUDENT  REGISTRATION");
-        button.setBounds(160, 150, 270, 30);
+        button.setBounds(160, 200, 270, 30);
         frame.add(button);
 
         button3 = new JButton("ENROLLMENT  DETAILS");
-        button3.setBounds(160, 200, 270, 30);
+        button3.setBounds(160, 250, 270, 30);
         frame.add(button3);
 
         button4 = new JButton("ACADEMIC  DETAILS");
-        button4.setBounds(160, 250, 270, 30);
+        button4.setBounds(160, 300, 270, 30);
         frame.add(button4);
 
         button5 = new JButton("STUDENT'S  FEE  DETAILS");
-        button5.setBounds(160, 300, 270, 30);
+        button5.setBounds(160, 350, 270, 30);
         frame.add(button5);
 
         button6 = new JButton("VIEW  STUDENT'S  DETAILS");
-        button6.setBounds(160, 350, 270, 30);
+        button6.setBounds(160, 400, 270, 30);
         frame.add(button6);
 
         update1 = new JButton("UPDATE  STUDENT'S  DETAILS");
-        update1.setBounds(160, 400, 270, 30);
+        update1.setBounds(160, 450, 270, 30);
         frame.add(update1);
 
         button1 = new JButton("TEACHER  REGISTRATION");
-        button1.setBounds(480, 150, 300, 30);
+        button1.setBounds(480, 200, 300, 30);
         frame.add(button1);
 
         b7 = new JButton("TEACHER'S  SALARY  STRUCTURE");
-        b7.setBounds(480, 200, 300, 30);
+        b7.setBounds(480, 250, 300, 30);
         frame.add(b7);
 
         b8 = new JButton("TEACHER'S  SALARY  DETAILS");
-        b8.setBounds(480, 250, 300, 30);
+        b8.setBounds(480, 300, 300, 30);
         frame.add(b8);
 
         b9 = new JButton("VIEW  TEACHER'S  DETAILS");
-        b9.setBounds(480, 300, 300, 30);
+        b9.setBounds(480, 350, 300, 30);
         frame.add(b9);
 
         update2 = new JButton("UPDATE  TEACHER'S  DETAILS");
-        update2.setBounds(480, 350, 300, 30);
+        update2.setBounds(480, 400, 300, 30);
         frame.add(update2);
 
         button2 = new JButton("OTHER  EMPLOYEES  REGISTRATION");
-        button2.setBounds(830, 150, 300, 30);
+        button2.setBounds(830, 200, 300, 30);
         frame.add(button2);
 
         b10 = new JButton("EMPLOYEE'S  SALARY  STRUCTURE");
-        b10.setBounds(830, 200, 300, 30);
+        b10.setBounds(830, 250, 300, 30);
         frame.add(b10);
 
         b11 = new JButton("EMPLOYEE'S  SALARY  DETAILS");
-        b11.setBounds(830, 250, 300, 30);
+        b11.setBounds(830, 300, 300, 30);
         frame.add(b11);
 
         b12 = new JButton("VIEW  EMPLOYEE'S  DETAILS");
-        b12.setBounds(830, 300, 300, 30);
+        b12.setBounds(830, 350, 300, 30);
         frame.add(b12);
 
         update3 = new JButton("UPDATE  EMPLOYEE'S  DETAILS");
-        update3.setBounds(830, 350, 300, 30);
+        update3.setBounds(830, 400, 300, 30);
         frame.add(update3);
 
         back = new JButton("Back");
@@ -1022,6 +1033,9 @@ class First implements ActionListener {
 
         // Here add label in frame
         frame.add(label);
+        frame.add(label2);
+        frame.add(label3);
+        frame.add(label4);
 
         // set the properties of frame
         frame.setSize(500, 500);
@@ -1060,83 +1074,72 @@ class First implements ActionListener {
 
             new Student(null, Database, DBPassword, School_Name);
             frame.dispose();
-        }
-        if (e.getSource() == button1) {
+        } else if (e.getSource() == button1) {
 
             new Teacher(null, Database, DBPassword, School_Name);
             frame.dispose();
-        }
-        if (e.getSource() == button2) {
+        } else if (e.getSource() == button2) {
 
             new OtherEmployee(null, Database, DBPassword, School_Name);
             frame.dispose();
-        }
-        if (e.getSource() == button3) {
+        } else if (e.getSource() == button3) {
 
             new Enrollment(null, Database, DBPassword, School_Name);
             frame.dispose();
-        }
-        if (e.getSource() == button4) {
+        } else if (e.getSource() == button4) {
 
             new Academic(null, Database, DBPassword, School_Name);
             frame.dispose();
-        }
-        if (e.getSource() == button5) {
+        } else if (e.getSource() == button5) {
 
             new Fee(null, Database, DBPassword, School_Name);
             frame.dispose();
-        }
-        if (e.getSource() == button6) {
+        } else if (e.getSource() == button6) {
             new StudentData(Database, DBPassword, School_Name);
             frame.dispose();
-        }
-        if (e.getSource() == b7) {
+        } else if (e.getSource() == b7) {
 
             new TeacherSalaryStructure(null, Database, DBPassword, School_Name);
             frame.dispose();
-        }
-        if (e.getSource() == b8) {
+        } else if (e.getSource() == b8) {
 
             new TeacherSalaryDetails(null, Database, DBPassword, School_Name);
             frame.dispose();
-        }
-        if (e.getSource() == b9) {
+        } else if (e.getSource() == b9) {
 
             new TeacherData(Database, DBPassword, School_Name);
             frame.dispose();
         }
 
-        if (e.getSource() == b10) {
+        else if (e.getSource() == b10) {
 
             new EmployeeSalaryStructure(null, Database, DBPassword, School_Name);
             frame.dispose();
-        }
-        if (e.getSource() == b11) {
+        } else if (e.getSource() == b11) {
 
             new EmployeeSalaryDetails(null, Database, DBPassword, School_Name);
             frame.dispose();
-        }
-        if (e.getSource() == b12) {
+        } else if (e.getSource() == b12) {
             new EmployeeData(Database, DBPassword, School_Name);
             frame.dispose();
         }
 
-        if (e.getSource() == update1) {
+        else if (e.getSource() == update1) {
             new StudentDataUpdate(Database, DBPassword, School_Name);
             frame.dispose();
         }
 
-        if (e.getSource() == update2) {
+        else if (e.getSource() == update2) {
             new TeacherDataUpdate(Database, DBPassword, School_Name);
             frame.dispose();
         }
 
-        if (e.getSource() == update3) {
+        else if (e.getSource() == update3) {
             new EmployeeDataUpdate(Database, DBPassword, School_Name);
             frame.dispose();
         }
 
-        if (e.getSource() == back) {
+        else if (e.getSource() == back) {
             new Login(null, null, null, null, null, null);
             frame.dispose();
         }
@@ -1432,8 +1435,7 @@ class Student extends PlaceholderTextField implements ActionListener {
 
             new First(Database, DBPassword, School_Name);
             frame1.dispose();
-        }
-        if (e.getSource() == clear) {
+        } else if (e.getSource() == clear) {
             text1.setText(null);
             text2.setText(null);
             text3.setText(null);
@@ -1451,8 +1453,7 @@ class Student extends PlaceholderTextField implements ActionListener {
             ch1.setSelectedItem(gender[0]);
             ch2.setSelectedItem(category[0]);
 
-        }
-        if (e.getSource() == sub) {
+        } else if (e.getSource() == sub) {
             try {
 
                 if (text14.getText().toString().equals(null)) {
@@ -1491,6 +1492,7 @@ class Student extends PlaceholderTextField implements ActionListener {
 
             } catch (Exception a) {
                 System.out.println(a);
+
                 JOptionPane.showMessageDialog(this, "Something is missing or Incorrect enteries");
 
             }
@@ -1630,15 +1632,13 @@ class Enrollment extends PlaceholderTextField implements ActionListener {
 
             new First(Database, DBPassword, School_Name);
             frame.dispose();
-        }
-        if (e.getSource() == clear) {
+        } else if (e.getSource() == clear) {
             text1.setText(null);
             text2.setText(null);
             text3.setText(null);
             text4.setText(null);
 
-        }
-        if (e.getSource() == sub) {
+        } else if (e.getSource() == sub) {
             try {
                 // connect app to mysql to insert Enrollment details into database.
                 String url = "jdbc:mysql://localhost:3306/" + Database;
@@ -1646,7 +1646,8 @@ class Enrollment extends PlaceholderTextField implements ActionListener {
 
                 Connection connection = DriverManager.getConnection(url, user, DBPassword);
                 Statement statement = connection.createStatement();
-                statement.execute("insert into Enrollment(Student_Id,Student_Name,Enrollment_No,Class) values(" + text1.getText() + ", \"" + text2.getText()
+                statement.execute("insert into Enrollment(Student_Id,Student_Name,Enrollment_No,Class) values("
+                        + text1.getText() + ", \"" + text2.getText()
                         + "\", \"" + text3.getText() + "\", \"" + text4.getText() + "\");");
                 statement.close();
                 connection.close();
@@ -1818,8 +1819,7 @@ class Academic extends PlaceholderTextField implements ActionListener {
 
             new First(Database, DBPassword, School_Name);
             frame.dispose();
-        }
-        if (e.getSource() == clear) {
+        } else if (e.getSource() == clear) {
             text1.setText(null);
             text2.setText(null);
             text3.setText(null);
@@ -1827,8 +1827,7 @@ class Academic extends PlaceholderTextField implements ActionListener {
             text5.setText(null);
             text6.setText(null);
 
-        }
-        if (e.getSource() == sub) {
+        } else if (e.getSource() == sub) {
             try {
                 // connect app to mysql to insert Student Academic details into the database.
                 String url = "jdbc:mysql://localhost:3306/" + Database;
@@ -1836,7 +1835,8 @@ class Academic extends PlaceholderTextField implements ActionListener {
 
                 Connection connection = DriverManager.getConnection(url, user, DBPassword);
                 Statement statement = connection.createStatement();
-                statement.execute("insert into Academic(Student_Id,Student_Name,class,Subjects,Session,Fee) values(" + text1.getText() + ", \"" + text2.getText() + "\", \""
+                statement.execute("insert into Academic(Student_Id,Student_Name,class,Subjects,Session,Fee) values("
+                        + text1.getText() + ", \"" + text2.getText() + "\", \""
                         + text3.getText() + "\", \"" + text4.getText() + "\" , \'" + text5.getText() + "\', "
                         + text6.getText() + ");");
                 statement.close();
@@ -2007,7 +2007,7 @@ class Fee extends PlaceholderTextField implements ActionListener {
             frame.dispose();
         }
 
-        if (e.getSource() == clear) {
+        else if (e.getSource() == clear) {
             text1.setText(null);
             text2.setText(null);
             text3.setText(null);
@@ -2015,8 +2015,7 @@ class Fee extends PlaceholderTextField implements ActionListener {
             text5.setText(null);
             text6.setText(null);
 
-        }
-        if (e.getSource() == sub) {
+        } else if (e.getSource() == sub) {
             try {
 
                 // connect app to mysql to insert Student Fee data into the database .
@@ -2301,8 +2300,7 @@ class Teacher extends PlaceholderTextField implements ActionListener {
 
             new First(Database, DBPassword, School_Name);
             frame2.dispose();
-        }
-        if (e.getSource() == clear) {
+        } else if (e.getSource() == clear) {
             text1.setText(null);
             text2.setText(null);
             text3.setText(null);
@@ -2319,8 +2317,7 @@ class Teacher extends PlaceholderTextField implements ActionListener {
             text15.setText(null);
             ch1.setSelectedItem(gender[0]);
 
-        }
-        if (e.getSource() == sub) {
+        } else if (e.getSource() == sub) {
             try {
                 if (text12.getText().toString().equals(null)) {
                     text12.setText("null");
@@ -2356,7 +2353,6 @@ class Teacher extends PlaceholderTextField implements ActionListener {
         }
     }
 }
-
 
 /*
  * This class provides an user interface that allows the user to insert Teacher
@@ -2520,9 +2516,11 @@ class TeacherSalaryStructure extends PlaceholderTextField implements ActionListe
 
                 Connection connection = DriverManager.getConnection(url, user, DBPassword);
                 Statement statement = connection.createStatement();
-                statement.execute("insert into Teacher_Salary_Structure(Teacher_Id,Teacher_Name,Salary,Month,Year) values(" + text1.getText() + ", \""
-                        + text2.getText() + "\", " + text3.getText() + ", \"" + text4.getText() + "\" , "
-                        + text5.getText() + " );");
+                statement.execute(
+                        "insert into Teacher_Salary_Structure(Teacher_Id,Teacher_Name,Salary,Month,Year) values("
+                                + text1.getText() + ", \""
+                                + text2.getText() + "\", " + text3.getText() + ", \"" + text4.getText() + "\" , "
+                                + text5.getText() + " );");
                 statement.close();
                 connection.close();
                 JOptionPane.showMessageDialog(this, "Saved Into Database Successfully."); // showing the message whether
@@ -2680,8 +2678,7 @@ class TeacherSalaryDetails extends PlaceholderTextField implements ActionListene
 
             new First(Database, DBPassword, School_Name);
             frame.dispose();
-        }
-        if (e.getSource() == clear) {
+        } else if (e.getSource() == clear) {
             text1.setText(null);
             text2.setText(null);
             text3.setText(null);
@@ -2690,7 +2687,7 @@ class TeacherSalaryDetails extends PlaceholderTextField implements ActionListene
 
         }
 
-        if (e.getSource() == sub) {
+        else if (e.getSource() == sub) {
             try {
 
                 // connect App to mysql to insert Teacher Salary details into the database.
@@ -2699,9 +2696,11 @@ class TeacherSalaryDetails extends PlaceholderTextField implements ActionListene
 
                 Connection connection = DriverManager.getConnection(url, user, DBPassword);
                 Statement statement = connection.createStatement();
-                statement.execute("insert into Teacher_Salary_Details(Teacher_Id,Teacher_Name,Salary_Paid,Month,Year) values(" + text1.getText() + ", \""
-                        + text2.getText() + "\", " + text3.getText() + ", \"" + text4.getText() + "\" , "
-                        + text5.getText() + " );");
+                statement.execute(
+                        "insert into Teacher_Salary_Details(Teacher_Id,Teacher_Name,Salary_Paid,Month,Year) values("
+                                + text1.getText() + ", \""
+                                + text2.getText() + "\", " + text3.getText() + ", \"" + text4.getText() + "\" , "
+                                + text5.getText() + " );");
                 statement.close();
                 connection.close();
                 JOptionPane.showMessageDialog(this, "Saved Into Database Successfully."); // showing the message whether
@@ -2974,8 +2973,7 @@ class OtherEmployee extends PlaceholderTextField implements ActionListener {
 
             new First(Database, DBPassword, School_Name);
             frame3.dispose();
-        }
-        if (e.getSource() == clear) {
+        } else if (e.getSource() == clear) {
             text1.setText(null);
             text2.setText(null);
             text3.setText(null);
@@ -2991,8 +2989,7 @@ class OtherEmployee extends PlaceholderTextField implements ActionListener {
             text14.setText(null);
             ch1.setSelectedItem(gender[0]);
 
-        }
-        if (e.getSource() == sub) {
+        } else if (e.getSource() == sub) {
             try {
                 if (text12.getText().toString().equals(null)) {
                     text12.setText("-");
@@ -3174,16 +3171,14 @@ class EmployeeSalaryStructure extends PlaceholderTextField implements ActionList
 
             new First(Database, DBPassword, School_Name);
             frame.dispose();
-        }
-        if (e.getSource() == clear) {
+        } else if (e.getSource() == clear) {
             text1.setText(null);
             text2.setText(null);
             text3.setText(null);
             text4.setText(null);
             text5.setText(null);
 
-        }
-        if (e.getSource() == sub) {
+        } else if (e.getSource() == sub) {
             try {
 
                 // connect app to mysql to insert the Employee Salary Structure into database.
@@ -3192,9 +3187,11 @@ class EmployeeSalaryStructure extends PlaceholderTextField implements ActionList
 
                 Connection connection = DriverManager.getConnection(url, user, DBPassword);
                 Statement statement = connection.createStatement();
-                statement.execute("insert into Employee_Salary_Structure(Employee_Id,Employee_Name,Salary,Month,Year) values(" + text1.getText() + ", \""
-                        + text2.getText() + "\", " + text3.getText() + ", \"" + text4.getText() + "\" , "
-                        + text5.getText() + ");");
+                statement.execute(
+                        "insert into Employee_Salary_Structure(Employee_Id,Employee_Name,Salary,Month,Year) values("
+                                + text1.getText() + ", \""
+                                + text2.getText() + "\", " + text3.getText() + ", \"" + text4.getText() + "\" , "
+                                + text5.getText() + ");");
                 statement.close();
                 connection.close();
                 JOptionPane.showMessageDialog(this, "Saved Into Database Successfully."); // showing the message whether
@@ -3351,8 +3348,7 @@ class EmployeeSalaryDetails extends PlaceholderTextField implements ActionListen
 
             new First(Database, DBPassword, School_Name);
             frame.dispose();
-        }
-        if (e.getSource() == clear) {
+        } else if (e.getSource() == clear) {
             text1.setText(null);
             text2.setText(null);
             text3.setText(null);
@@ -3361,7 +3357,7 @@ class EmployeeSalaryDetails extends PlaceholderTextField implements ActionListen
 
         }
 
-        if (e.getSource() == sub) {
+        else if (e.getSource() == sub) {
             try {
 
                 // connect app to mysql to insert Employee Salary details into the database.
@@ -3370,9 +3366,11 @@ class EmployeeSalaryDetails extends PlaceholderTextField implements ActionListen
 
                 Connection connection = DriverManager.getConnection(url, user, DBPassword);
                 Statement statement = connection.createStatement();
-                statement.execute("insert into Employee_Salary_Details(Employee_Id , Employee_Name,Salary_Paid,Month,Year) values(" + text1.getText() + ", \""
-                        + text2.getText() + "\", " + text3.getText() + ", \"" + text4.getText() + "\" , "
-                        + text5.getText() + " );");
+                statement.execute(
+                        "insert into Employee_Salary_Details(Employee_Id , Employee_Name,Salary_Paid,Month,Year) values("
+                                + text1.getText() + ", \""
+                                + text2.getText() + "\", " + text3.getText() + ", \"" + text4.getText() + "\" , "
+                                + text5.getText() + " );");
                 statement.close();
                 connection.close();
                 JOptionPane.showMessageDialog(this, "Saved Into Database Successfully."); // showing the message whether
@@ -3423,7 +3421,7 @@ class StudentData implements ActionListener {
         JLabel label = new JLabel();
         label.setHorizontalAlignment(JLabel.CENTER);
         label.setSize(1250, 100);
-        label.setText(School_Name);
+        label.setText("VIEW  STUDENT'S  DETAILS");
         label.setFont(new Font("Serif", Font.BOLD, 50));
 
         // create buttons and add to frame
@@ -3475,19 +3473,17 @@ class StudentData implements ActionListener {
 
         }
 
-        if (e.getSource() == button1) {
+        else if (e.getSource() == button1) {
 
             AcademicView ac = new AcademicView(Database, DBPassword, School_Name);
             ac.view();
             frame.dispose();
-        }
-        if (e.getSource() == button2) {
+        } else if (e.getSource() == button2) {
 
             FeeView fv = new FeeView(Database, DBPassword, School_Name);
             fv.view();
             frame.dispose();
-        }
-        if (e.getSource() == back) {
+        } else if (e.getSource() == back) {
 
             new First(Database, DBPassword, School_Name);
             frame.dispose();
@@ -3507,6 +3503,7 @@ class StudentView implements ActionListener, KeyListener {
 
     JButton back; // button back redirects the user to Student data window.
 
+    JLabel lab2; // label to show the total no of students.
     JTextField text1; // textfield to search data .
 
     // Database to Store the database name
@@ -3542,6 +3539,10 @@ class StudentView implements ActionListener, KeyListener {
             lab1.setBounds(450, 100, 150, 30);
             lab1.setFont(new Font("Serif", Font.PLAIN, 25));
 
+            lab2 = new JLabel();
+            lab2.setBounds(940, 100, 450, 30);
+            lab2.setFont(new Font("Serif", Font.PLAIN, 25));
+
             // create TextField and set its properties
             text1 = new JTextField();
             text1.setFont(new Font("Serif", Font.PLAIN, 25));
@@ -3555,6 +3556,7 @@ class StudentView implements ActionListener, KeyListener {
             // Add labels and textfield to frame
             frame.add(label);
             frame.add(lab1);
+            frame.add(lab2);
             frame.add(text1);
 
             // connect app to mysql to fetch the Student Basic details from database.
@@ -3563,6 +3565,14 @@ class StudentView implements ActionListener, KeyListener {
 
             Connection connection = DriverManager.getConnection(url, user, DBPassword);
             Statement statement = connection.createStatement();
+            ResultSet result = statement.executeQuery("select count(*) from Student_Registration;");
+            while (result.next()) {
+                String count = result.getString(1);
+                lab2.setText("Total Students :" + count);
+
+            }
+            result.close();
+
             ResultSet resultSet = statement.executeQuery("Select * from Student_Registration;");
             ResultSetMetaData rsmd = resultSet.getMetaData();
 
@@ -3778,7 +3788,7 @@ class AcademicView implements ActionListener, KeyListener {
             tableData = new JTable(model);
 
             // set the column width of table
-            int[] columnWidths = { 200,200, 200, 200, 500, 200, 200, 200,200 };
+            int[] columnWidths = { 200, 200, 200, 200, 500, 200, 200, 200, 200 };
             for (int i = 0; i < columns; i++) {
                 TableColumn column = tableData.getColumnModel().getColumn(i);
                 column.setPreferredWidth(columnWidths[i]);
@@ -3956,7 +3966,7 @@ class FeeView implements ActionListener, KeyListener {
             tableData = new JTable(model);
 
             // Increase the column width of table
-            int[] columnWidths = { 200,200, 200, 200, 300, 200, 200, 200 };
+            int[] columnWidths = { 200, 200, 200, 200, 300, 200, 200, 200 };
             for (int i = 0; i < columns; i++) {
                 TableColumn column = tableData.getColumnModel().getColumn(i);
                 column.setPreferredWidth(columnWidths[i]);
@@ -4064,7 +4074,7 @@ class TeacherData implements ActionListener {
         JLabel label = new JLabel();
         label.setHorizontalAlignment(JLabel.CENTER);
         label.setSize(1250, 100);
-        label.setText(School_Name);
+        label.setText("VIEW TEACHER'S DETAILS");
         label.setFont(new Font("Serif", Font.BOLD, 50));
 
         // create buttons and add to frame
@@ -4117,19 +4127,17 @@ class TeacherData implements ActionListener {
 
         }
 
-        if (e.getSource() == button1) {
+        else if (e.getSource() == button1) {
 
             SalaryStructureView sv1 = new SalaryStructureView(Database, DBPassword, School_Name);
             sv1.view();
             frame.dispose();
-        }
-        if (e.getSource() == button2) {
+        } else if (e.getSource() == button2) {
 
             SalaryView sv2 = new SalaryView(Database, DBPassword, School_Name);
             sv2.view();
             frame.dispose();
-        }
-        if (e.getSource() == back) {
+        } else if (e.getSource() == back) {
 
             new First(Database, DBPassword, School_Name);
             frame.dispose();
@@ -4149,6 +4157,8 @@ class TeacherView implements ActionListener, KeyListener {
     JFrame frame; // frame in which all other components are added
 
     JButton back; // back buttons for redirect the user to Teacher Data window
+
+    JLabel lab2; // label for total teachers
 
     JTextField text1; // textfield for search data
 
@@ -4185,6 +4195,10 @@ class TeacherView implements ActionListener, KeyListener {
             lab1.setBounds(450, 100, 150, 30);
             lab1.setFont(new Font("Serif", Font.PLAIN, 25));
 
+            lab2 = new JLabel();
+            lab2.setBounds(940, 100, 450, 30);
+            lab2.setFont(new Font("Serif", Font.PLAIN, 25));
+
             // create TextFields
             text1 = new JTextField();
             text1.setFont(new Font("Serif", Font.PLAIN, 25));
@@ -4198,6 +4212,7 @@ class TeacherView implements ActionListener, KeyListener {
             // Add labels and textfield to frame
             frame.add(label);
             frame.add(lab1);
+            frame.add(lab2);
             frame.add(text1);
 
             // connect app to mysql to fetch Teacher basic details
@@ -4206,6 +4221,15 @@ class TeacherView implements ActionListener, KeyListener {
 
             Connection connection = DriverManager.getConnection(url, user, DBPassword);
             Statement statement = connection.createStatement();
+
+            ResultSet result = statement.executeQuery("select count(*) from Teacher_Registration;");
+            while (result.next()) {
+                String count = result.getString(1);
+                lab2.setText("Total Teachers :" + count);
+
+            }
+            result.close();
+
             ResultSet resultSet = statement.executeQuery("Select * from Teacher_Registration;");
             ResultSetMetaData rsmd = resultSet.getMetaData();
 
@@ -4415,7 +4439,7 @@ class SalaryStructureView implements ActionListener, KeyListener {
             tableData = new JTable(model);
 
             // set the column width of table
-            int[] columnWidths = { 200,200, 200, 200, 500, 200 };
+            int[] columnWidths = { 200, 200, 200, 200, 500, 200 };
             for (int i = 0; i < columns; i++) {
                 TableColumn column = tableData.getColumnModel().getColumn(i);
                 column.setPreferredWidth(columnWidths[i]);
@@ -4590,7 +4614,7 @@ class SalaryView implements ActionListener, KeyListener {
             tableData = new JTable(model);
 
             // set the column width of the table
-            int[] columnWidths = { 200,200, 200, 200, 500, 200 };
+            int[] columnWidths = { 200, 200, 200, 200, 500, 200 };
 
             for (int i = 0; i < columns; i++) {
                 TableColumn column = tableData.getColumnModel().getColumn(i);
@@ -4701,7 +4725,7 @@ class EmployeeData implements ActionListener {
         JLabel label = new JLabel();
         label.setHorizontalAlignment(JLabel.CENTER);
         label.setSize(1250, 100);
-        label.setText(School_Name);
+        label.setText("VIEW  EMPLOYEE'S  DETAILS");
         label.setFont(new Font("Serif", Font.BOLD, 50));
 
         // create buttons and add to frame
@@ -4754,19 +4778,17 @@ class EmployeeData implements ActionListener {
 
         }
 
-        if (e.getSource() == button1) {
+        else if (e.getSource() == button1) {
 
             EmployeeSalaryStructureView sv = new EmployeeSalaryStructureView(Database, DBPassword, School_Name);
             sv.view();
             frame.dispose();
-        }
-        if (e.getSource() == button2) {
+        } else if (e.getSource() == button2) {
 
             EmployeeSalaryView sv = new EmployeeSalaryView(Database, DBPassword, School_Name);
             sv.view();
             frame.dispose();
-        }
-        if (e.getSource() == back) {
+        } else if (e.getSource() == back) {
 
             new First(Database, DBPassword, School_Name);
             frame.dispose();
@@ -4786,6 +4808,8 @@ class EmployeeView implements ActionListener, KeyListener {
     JFrame frame; // frame in which all other components are added
 
     JButton back; // back buttons for redirect the user to Teacher Data window
+
+    JLabel lab2; // label for the total employees
 
     JTextField text1; // textfield for search data
 
@@ -4822,6 +4846,10 @@ class EmployeeView implements ActionListener, KeyListener {
             lab1.setBounds(450, 100, 150, 30);
             lab1.setFont(new Font("Serif", Font.PLAIN, 25));
 
+            lab2 = new JLabel();
+            lab2.setBounds(940, 100, 450, 30);
+            lab2.setFont(new Font("Serif", Font.PLAIN, 25));
+
             // create TextField
             text1 = new JTextField();
             text1.setFont(new Font("Serif", Font.PLAIN, 25));
@@ -4835,6 +4863,7 @@ class EmployeeView implements ActionListener, KeyListener {
             // Add label and textfield to frame
             frame.add(label);
             frame.add(lab1);
+            frame.add(lab2);
             frame.add(text1);
 
             // connect app to mysql to fetch Employee Basic details
@@ -4843,6 +4872,15 @@ class EmployeeView implements ActionListener, KeyListener {
 
             Connection connection = DriverManager.getConnection(url, user, DBPassword);
             Statement statement = connection.createStatement();
+
+            ResultSet result = statement.executeQuery("select count(*) from Employee_Registration;");
+            while (result.next()) {
+                String count = result.getString(1);
+                lab2.setText("Total Employees :" + count);
+
+            }
+            result.close();
+
             ResultSet resultSet = statement.executeQuery("Select * from Employee_Registration;");
             ResultSetMetaData rsmd = resultSet.getMetaData();
 
@@ -5054,7 +5092,7 @@ class EmployeeSalaryStructureView implements ActionListener, KeyListener {
             tableData = new JTable(model);
 
             // set the column width of the table
-            int[] columnWidths = {200, 200, 200, 200, 500, 200 };
+            int[] columnWidths = { 200, 200, 200, 200, 500, 200 };
 
             for (int i = 0; i < columns; i++) {
                 TableColumn column = tableData.getColumnModel().getColumn(i);
@@ -5232,7 +5270,7 @@ class EmployeeSalaryView implements ActionListener, KeyListener {
             tableData = new JTable(model);
 
             // set the column width of table
-            int[] columnWidths = {200, 200, 200, 200, 500, 200 };
+            int[] columnWidths = { 200, 200, 200, 200, 500, 200 };
             for (int i = 0; i < columns; i++) {
                 TableColumn column = tableData.getColumnModel().getColumn(i);
                 column.setPreferredWidth(columnWidths[i]);
@@ -5304,14 +5342,13 @@ class EmployeeSalaryView implements ActionListener, KeyListener {
     }
 }
 
-
 /*
  * This class provides an user interface that contains three buttons which
  * allows the user to update Student details when they clicked.
  * This class extends ActionListener for event handling.
  */
 
- class StudentDataUpdate implements ActionListener {
+class StudentDataUpdate implements ActionListener {
 
     JFrame frame; // frame in which all other components are added.
 
@@ -5342,21 +5379,21 @@ class EmployeeSalaryView implements ActionListener, KeyListener {
         JLabel label = new JLabel();
         label.setHorizontalAlignment(JLabel.CENTER);
         label.setSize(1250, 100);
-        label.setText(School_Name);
+        label.setText("UPDATE STUDENT'S DETAILS");
         label.setFont(new Font("Serif", Font.BOLD, 50));
 
         // create buttons and add to frame
 
-        button = new JButton("Update Student Basic and Enrollment Details");
-        button.setBounds(420, 150, 410, 30);
+        button = new JButton("Update/Delete Student Basic and Enrollment Details");
+        button.setBounds(420, 150, 440, 30);
         frame.add(button);
 
         button1 = new JButton("Update/Delete Student Academic Details ");
-        button1.setBounds(420, 200, 410, 30);
+        button1.setBounds(420, 200, 440, 30);
         frame.add(button1);
 
         button2 = new JButton("Update/Delete Student Fee Details");
-        button2.setBounds(420, 250, 410, 30);
+        button2.setBounds(420, 250, 440, 30);
         frame.add(button2);
 
         back = new JButton("Back");
@@ -5392,18 +5429,16 @@ class EmployeeSalaryView implements ActionListener, KeyListener {
 
         }
 
-        if (e.getSource() == button1) {
+        else if (e.getSource() == button1) {
 
-            new AcademicUpdate(null,Database, DBPassword, School_Name);
-            
-            frame.dispose();
-        }
-        if (e.getSource() == button2) {
+            new AcademicUpdate(null, Database, DBPassword, School_Name);
 
-            new FeeUpdate(null,Database, DBPassword, School_Name);
             frame.dispose();
-        }
-        if (e.getSource() == back) {
+        } else if (e.getSource() == button2) {
+
+            new FeeUpdate(null, Database, DBPassword, School_Name);
+            frame.dispose();
+        } else if (e.getSource() == back) {
 
             new First(Database, DBPassword, School_Name);
             frame.dispose();
@@ -5412,18 +5447,11 @@ class EmployeeSalaryView implements ActionListener, KeyListener {
     }
 }
 
-
-
-
-
-
-
-
 /*
  * This class provides an user interface that allows the user to update
  * Student Basic details .
  * This class extends ActionListenerfor event handling.
-*/
+ */
 
 class StudentUpdate extends PlaceholderTextField implements ActionListener {
 
@@ -5431,7 +5459,8 @@ class StudentUpdate extends PlaceholderTextField implements ActionListener {
     // sub to insert the Student basic details into the database,
     // clear for clear the information that are filled,
     // back for redirect the user to Home window of App
-    JButton back, sub, clear;
+    // Delete for delete the student details
+    JButton back, sub, Delete, clear;
 
     JFrame frame1; // frame in which all other components are added
 
@@ -5457,11 +5486,11 @@ class StudentUpdate extends PlaceholderTextField implements ActionListener {
     // text17 allows the user to enter Student's School Leaving date
     // text18 allows the user to enter Student Enrolled class
     JTextField text, text1, text2, text3, text4, text5, text7, text8, text9, text10, text11, text12, text13, text14,
-            text15, text16,text17,text18;
+            text15, text16, text17, text18;
 
-    final JComboBox<String> ch1; // JComboBox ch1 to select the gender of Student
+    JComboBox<String> ch1; // JComboBox ch1 to select the gender of Student
 
-    final JComboBox<String> ch2; // JCommboBox ch2 to select the category of Student
+    JComboBox<String> ch2; // JCommboBox ch2 to select the category of Student
 
     boolean message = false; // for showing the message
 
@@ -5476,30 +5505,6 @@ class StudentUpdate extends PlaceholderTextField implements ActionListener {
 
     // Student_Id store the student id of student
     String Student_Id;
-
-    // String
-    // Enrollment store Student's Enrollment No,
-    // Sname store Student Name,
-    // Fname store Student's Father Name,
-    // Mname store Student's Mother Name,
-    // Dob store Student's Date of Birth,
-    // gender store select Student's Gender,
-    // Mob1 store Student's Mobile Number1 ,
-    // Mob2 store Student's Mobile Number2,
-    // RDate store Student's Registration Date,
-    // Address store Student's Address,
-    // student_Aadhaar_No store Student's Aadhaar No,
-    // Father_Aadhaar_No store Student's Father Aadhaar No,
-    // Mother_Aadhaar store Student's Mother Aadhaar No,
-    // Family_Id store Student's Family ID,
-    // Category store select Student's Category ,
-    // Father_Occupation store Student's Father's Occupation,
-    // Mother_Occupation store Student's Mother's Ocupation,
-    // School_Leaving_Date store Student's School Leaving date
-
-    String ENROLLMENT, Sname, Fname, Mname, Dob, Gender, Mob1, Mob2, RDate, Address, student_Aadhaar_No,
-            Father_Aadhaar_No, Mother_Aadhaar_No, Family_Id, Category, Father_Occupation,
-            Mother_Occupation, School_Leaving_Date,EnrolledClass;
 
     // constructor
     StudentUpdate(String placeholder, String database, String Password, String School) {
@@ -5518,9 +5523,9 @@ class StudentUpdate extends PlaceholderTextField implements ActionListener {
         label1.setText("UPDATE  STUDENT  DATA");
         label1.setFont(new Font("Serif", Font.BOLD, 50));
 
-        JLabel label2 = new JLabel("Note : Admin can update student data using student id");
+        JLabel label2 = new JLabel("Note : Admin can update/Delete student data using student id");
         label2.setFont(new Font("Serif", Font.PLAIN, 22));
-        label2.setBounds(380, 75, 650, 25);
+        label2.setBounds(380, 75, 700, 25);
 
         JLabel lab = new JLabel("Student  ID :");
         lab.setFont(new Font("Serif", Font.PLAIN, 25));
@@ -5602,7 +5607,6 @@ class StudentUpdate extends PlaceholderTextField implements ActionListener {
         lab20.setFont(new Font("Serif", Font.PLAIN, 25));
         lab20.setBounds(700, 480, 250, 30);
 
-
         // create TextField and set its properties
         text = new JTextField();
         text.setFont(new Font("Serif", Font.PLAIN, 25));
@@ -5631,6 +5635,7 @@ class StudentUpdate extends PlaceholderTextField implements ActionListener {
         ch1 = new JComboBox<>(gender); // ComboBox for gender
         ch1.setBounds(300, 365, 300, 30);
         ch1.setSelectedIndex(-1);
+        
 
         text7 = new JTextField();
         text7.setFont(new Font("Serif", Font.PLAIN, 25));
@@ -5684,15 +5689,16 @@ class StudentUpdate extends PlaceholderTextField implements ActionListener {
         text18.setFont(new Font("Serif", Font.PLAIN, 25));
         text18.setBounds(950, 485, 300, 30);
 
-        // create buttons for submit ,clear and back
+        // create buttons for submit ,delete ,clear and back
 
         sub = new JButton(" UPDATE ");
-        sub.setBounds(400, 600, 200, 30);
+        sub.setBounds(250, 600, 200, 30);
 
         clear = new JButton(" CLEAR ");
-        clear.setBounds(650, 600, 200, 30);
+        clear.setBounds(500, 600, 200, 30);
 
-        
+        Delete = new JButton(" DELETE ");
+        Delete.setBounds(750, 600, 200, 30);
 
         back = new JButton("Back");
         back.setBounds(30, 30, 100, 30);
@@ -5746,6 +5752,7 @@ class StudentUpdate extends PlaceholderTextField implements ActionListener {
         // here add buttons to frame
         frame1.add(sub);
         frame1.add(clear);
+        frame1.add(Delete);
         frame1.add(back);
 
         // set the properties of frame
@@ -5759,6 +5766,7 @@ class StudentUpdate extends PlaceholderTextField implements ActionListener {
         // Register the buttons and JComboBox with EventListener
         back.addActionListener(this);
         sub.addActionListener(this);
+        Delete.addActionListener(this);
         clear.addActionListener(this);
         ch1.addActionListener(this);
         ch2.addActionListener(this);
@@ -5774,7 +5782,7 @@ class StudentUpdate extends PlaceholderTextField implements ActionListener {
             frame1.dispose();
         }
 
-        if (e.getSource() == clear) {
+        else if (e.getSource() == clear) {
             text.setText(null);
             text1.setText(null);
             text2.setText(null);
@@ -5797,14 +5805,46 @@ class StudentUpdate extends PlaceholderTextField implements ActionListener {
             ch1.setSelectedIndex(-1);
             ch2.setSelectedIndex(-1);
 
-        }
+        } else if (e.getSource() == Delete) {
+            try {
 
-        if (e.getSource() == sub) {
+                String url = "jdbc:mysql://localhost:3306/" + Database;
+                String user = "root";
+
+                Connection connection = DriverManager.getConnection(url, user, DBPassword);
+
+                // Enrollment No
+                if (text.getText() != null && !text.getText().trim().isEmpty()) {
+
+                    String selectQuery = "SELECT count(*) FROM STudent_Registration WHERE Student_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+                        String query = "Delete from Student_Registration WHERE Student_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text.getText());
+                        pstmt.executeUpdate();
+
+                        JOptionPane.showMessageDialog(this, "Data Deleted Sucessfully .");
+                        connection.close();
+                    }
+                }
+            } catch (Exception a) {
+                JOptionPane.showMessageDialog(this, "Student_Id is not filled or Wrong Enteries .");
+            }
+
+        } else if (e.getSource() == sub) {
 
             try {
                 // connect app to mysql to update Student Basic details
 
-                Student_Id = text.getText();
                 String url = "jdbc:mysql://localhost:3306/" + Database;
                 String user = "root";
 
@@ -5814,312 +5854,401 @@ class StudentUpdate extends PlaceholderTextField implements ActionListener {
                 // Enrollment No
                 if (text1.getText() != null && !text1.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet = statement.executeQuery(
-                            " select * from Enrollment where Student_Id = " + (String) text.getText() + " limit 1;");
-                    while (resultSet.next()) {
-                        ENROLLMENT = resultSet.getString(3);
+                    String selectQuery = "SELECT count(*) FROM Enrollment WHERE Student_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+                        String query = "UPDATE Enrollment SET Enrollment_No = ? WHERE Student_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text1.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+
+                        message = true;
                     }
-
-                    String query = "UPDATE Enrollment SET Enrollment_No = ? WHERE Enrollment_No = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text1.getText());
-                    pstmt.setString(2, ENROLLMENT);
-                    pstmt.executeUpdate();
-
-                    message = true;
                 }
-
                 // Student Name
                 if (text2.getText() != null && !text2.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet = statement.executeQuery(
-                            " select * from Student_Registration where Student_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet.next()) {
-                        Sname = resultSet.getString(2);
+                    String selectQuery = "SELECT count(*) FROM Student_Registration WHERE Student_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+                        String query = "UPDATE Student_Registration SET Student_Name = ? WHERE Student_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text2.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
                     }
 
-                    String query = "UPDATE Student_Registration SET Student_Name = ? WHERE Student_Name = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text2.getText());
-                    pstmt.setString(2, Sname);
-                    pstmt.executeUpdate();
-                    message = true;
                 }
-
                 // Father Name
                 if (text3.getText() != null && !text3.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet = statement.executeQuery(
-                            " select * from Student_Registration where Student_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet.next()) {
-                        Fname = resultSet.getString(3);
+                    String selectQuery = "SELECT count(*) FROM Student_Registration WHERE Student_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+                        String query = "UPDATE Student_Registration SET Father_Name = ? WHERE Student_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text3.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
                     }
-
-                    String query = "UPDATE Student_Registration SET Father_Name = ? WHERE Father_Name = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text3.getText());
-                    pstmt.setString(2, Fname);
-                    pstmt.executeUpdate();
-                    message = true;
                 }
-
                 // Mother Name
                 if (text4.getText() != null && !text4.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet = statement.executeQuery(
-                            " select * from Student_Registration where Student_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet.next()) {
-                        Mname = resultSet.getString(4);
+                    String selectQuery = "SELECT count(*) FROM Student_Registration WHERE Student_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE Student_Registration SET Mother_Name = ? WHERE Student_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text4.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
                     }
-
-                    String query = "UPDATE Student_Registration SET Mother_Name = ? WHERE Mother_Name = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text4.getText());
-                    pstmt.setString(2, Mname);
-                    pstmt.executeUpdate();
-                    message = true;
                 }
-
                 // Dob
                 if (text5.getText() != null && !text5.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet = statement.executeQuery(
-                            " select * from Student_Registration where Student_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet.next()) {
-                        Dob = resultSet.getString(5);
+                    String selectQuery = "SELECT count(*) FROM Student_Registration WHERE Student_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE Student_Registration SET Date_Of_Birth = ? WHERE Student_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text5.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
                     }
-
-                    String query = "UPDATE Student_Registration SET Date_Of_Birth = ? WHERE Date_Of_Birth = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text5.getText());
-                    pstmt.setString(2, Dob);
-                    pstmt.executeUpdate();
-                    message = true;
                 }
-
                 // Gender
                 if (ch1.getSelectedIndex() != -1) {
 
-                    ResultSet resultSet = statement.executeQuery(
-                            " select * from Student_Registration where Student_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet.next()) {
-                        Gender = resultSet.getString(6);
+                    String selectQuery = "SELECT count(*) FROM Student_Registration WHERE Student_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE Student_Registration SET Gender = ? WHERE Student_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, (String) ch1.getSelectedItem());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
                     }
-
-                    String query = "UPDATE Student_Registration SET Gender = ? WHERE Gender = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, (String) ch1.getSelectedItem());
-                    pstmt.setString(2, Gender);
-                    pstmt.executeUpdate();
-                    message = true;
                 }
-
                 // mobile Numbr1
                 if (text7.getText() != null && !text7.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet = statement.executeQuery(
-                            " select * from Student_Registration where Student_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet.next()) {
-                        Mob1 = resultSet.getString(7);
+                    String selectQuery = "SELECT count(*) FROM Student_Registration WHERE Student_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE Student_Registration SET Mob1= ? WHERE Student_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text7.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
                     }
-
-                    String query = "UPDATE Student_Registration SET Mob1= ? WHERE Mob1 = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text7.getText());
-                    pstmt.setString(2, Mob1);
-                    pstmt.executeUpdate();
-                    message = true;
                 }
-
                 // Mobile Number2
                 if (text8.getText() != null && !text8.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet = statement.executeQuery(
-                            " select * from Student_Registration where Student_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet.next()) {
-                        Mob2 = resultSet.getString(8);
+                    String selectQuery = "SELECT count(*) FROM Student_Registration WHERE Student_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE Student_Registration SET Mob2= ? WHERE Student_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text8.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
                     }
-
-                    String query = "UPDATE Student_Registration SET Mob2= ? WHERE Mob2 = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text8.getText());
-                    pstmt.setString(2, Mob2);
-                    pstmt.executeUpdate();
-                    message = true;
                 }
-
                 // Registration Date
                 if (text9.getText() != null && !text9.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet = statement.executeQuery(
-                            " select * from Student_Registration where Student_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet.next()) {
-                        RDate = resultSet.getString(9);
-                    }
+                    String selectQuery = "SELECT count(*) FROM Student_Registration WHERE Student_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
 
-                    String query = "UPDATE Student_Registration SET Registration_Date= ? WHERE Registration_Date = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text9.getText());
-                    pstmt.setString(2, RDate);
-                    pstmt.executeUpdate();
-                    message = true;
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE Student_Registration SET Registration_Date= ? WHERE Student_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text9.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
+                    }
                 }
 
                 // Address
                 if (text10.getText() != null && !text10.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet = statement.executeQuery(
-                            " select * from Student_Registration where Student_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet.next()) {
-                        Address = resultSet.getString(10);
-                    }
+                    String selectQuery = "SELECT count(*) FROM Student_Registration WHERE Student_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
 
-                    String query = "UPDATE Student_Registration SET Address= ? WHERE Address = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text10.getText());
-                    pstmt.setString(2, Address);
-                    pstmt.executeUpdate();
-                    message = true;
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE Student_Registration SET Address= ? WHERE Student_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text10.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
+                    }
                 }
 
                 // Student Aadhaar no
                 if (text11.getText() != null && !text11.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet = statement.executeQuery(
-                            " select * from Student_Registration where Student_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet.next()) {
-                        student_Aadhaar_No = resultSet.getString(11);
+                    String selectQuery = "SELECT count(*) FROM Student_Registration WHERE Student_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE Student_Registration SET Student_Aadhaar_No= ? WHERE Student_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text11.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
                     }
-
-                    String query = "UPDATE Student_Registration SET Student_Aadhaar_No= ? WHERE Student_Aadhaar_No = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text11.getText());
-                    pstmt.setString(2, student_Aadhaar_No);
-                    pstmt.executeUpdate();
-                    message = true;
                 }
-
                 // Father Aadhaar No
                 if (text12.getText() != null && !text12.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet = statement
-                            .executeQuery(" select * from Student_Registration where Student_Id = "
-                                    + (String) text.getText() + " limit 1;");
-                    while (resultSet.next()) {
-                        Father_Aadhaar_No = resultSet.getString(12);
+                    String selectQuery = "SELECT count(*) FROM Student_Registration WHERE Student_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE Student_Registration SET Father_Aadhaar_No= ? WHERE Student_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text12.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
                     }
 
-                    String query = "UPDATE Student_Registration SET Father_Aadhaar_No= ? WHERE Father_Aadhaar_No = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text12.getText());
-                    pstmt.setString(2, Father_Aadhaar_No);
-                    pstmt.executeUpdate();
-                    message = true;
                 }
-
                 // Mother Aadhaar No
                 if (text13.getText() != null && !text13.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet = statement.executeQuery(
-                            " select * from Student_Registration where Student_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet.next()) {
-                        Mother_Aadhaar_No = resultSet.getString(13);
+                    String selectQuery = "SELECT count(*) FROM Student_Registration WHERE Student_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE Student_Registration SET Mother_Aadhaar_No= ? WHERE Student_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text13.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
                     }
 
-                    String query = "UPDATE Student_Registration SET Mother_Aadhaar_No= ? WHERE Mother_Aadhaar_No = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text13.getText());
-                    pstmt.setString(2, Mother_Aadhaar_No);
-                    pstmt.executeUpdate();
-                    message = true;
                 }
-
                 // Family Id
 
                 if (text14.getText() != null && !text14.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet = statement.executeQuery(
-                            " select * from Student_Registration where Student_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet.next()) {
-                        Family_Id = resultSet.getString(14);
-                    }
+                    String selectQuery = "SELECT count(*) FROM Student_Registration WHERE Student_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
 
-                    String query = "UPDATE Student_Registration SET Family_Id= ? WHERE Family_Id = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text14.getText());
-                    pstmt.setString(2, Family_Id);
-                    pstmt.executeUpdate();
-                    message = true;
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+                        String query = "UPDATE Student_Registration SET Family_Id= ? WHERE Student_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text14.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
+                    }
                 }
 
                 // Student Category
                 if (ch2.getSelectedIndex() != -1) {
 
-                    ResultSet resultSet = statement.executeQuery(
-                            " select * from Student_Registration where Student_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet.next()) {
-                        Category = resultSet.getString(15);
+                    String selectQuery = "SELECT count(*) FROM Student_Registration WHERE Student_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE Student_Registration SET Category= ? WHERE Student_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, (String) ch2.getSelectedItem());
+                        pstmt.setString(2, text.getText());
+
+                        pstmt.executeUpdate();
+                        message = true;
                     }
-
-                    String query = "UPDATE Student_Registration SET Category= ? WHERE Category = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, (String) ch2.getSelectedItem());
-                    pstmt.setString(2, Category);
-
-                    pstmt.executeUpdate();
-                    message = true;
                 }
 
                 // Father Occupation
 
                 if (text15.getText() != null && !text15.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet = statement.executeQuery(
-                            " select * from Student_Registration where Student_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet.next()) {
-                        Father_Occupation = resultSet.getString(15);
+                    String selectQuery = "SELECT count(*) FROM Student_Registration WHERE Student_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE Student_Registration SET Father_Occupation= ? WHERE Student_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text15.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
                     }
-
-                    String query = "UPDATE Student_Registration SET Father_Occupation= ? WHERE Father_Occupation = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text15.getText());
-                    pstmt.setString(2, Father_Occupation);
-                    pstmt.executeUpdate();
-                    message = true;
                 }
-
                 // Mother Occupation
                 if (text16.getText() != null && !text16.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet = statement.executeQuery(
-                            " select * from Student_Registration where Student_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet.next()) {
-                        Mother_Occupation = resultSet.getString(16);
+                    String selectQuery = "SELECT count(*) FROM Student_Registration WHERE Student_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE Student_Registration SET Mother_Occupation= ? WHERE Student_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text16.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
                     }
-
-                    String query = "UPDATE Student_Registration SET Mother_Occupation= ? WHERE Mother_Occupation = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text16.getText());
-                    pstmt.setString(2, Mother_Occupation);
-                    pstmt.executeUpdate();
-                    message = true;
                 }
-
                 // School Leaving Date
                 if (text17.getText() != null && !text17.getText().trim().isEmpty()) {
 
@@ -6134,28 +6263,33 @@ class StudentUpdate extends PlaceholderTextField implements ActionListener {
 
                 if (text18.getText() != null && !text1.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet = statement.executeQuery(
-                            "select * from Enrollment where Student_Id = " + (String) text.getText() + " limit 1;");
-                    while (resultSet.next()) {
-                        EnrolledClass = resultSet.getString(4);
+                    String selectQuery = "SELECT count(*) FROM Enrollment WHERE Student_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE Enrollment SET Enrolled_Class = ? WHERE Student_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text18.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+
+                        message = true;
                     }
-
-                    String query = "UPDATE Enrollment SET Class = ? WHERE Class = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text18.getText());
-                    pstmt.setString(2, EnrolledClass);
-                    pstmt.executeUpdate();
-
-                    message = true;
                 }
-
-
                 if (message == true) {
                     JOptionPane.showMessageDialog(this, "Student Data Updated ");
 
                 }
 
-                if (message == false) {
+                else if (message == false) {
                     JOptionPane.showMessageDialog(this, "Nothing is updated");
 
                 }
@@ -6164,7 +6298,7 @@ class StudentUpdate extends PlaceholderTextField implements ActionListener {
                 connection.close();
 
             } catch (Exception a) {
-
+                System.out.println(a);
                 JOptionPane.showMessageDialog(this, "Student_Id is not filled or Wrong Enteries");
 
             }
@@ -6175,7 +6309,6 @@ class StudentUpdate extends PlaceholderTextField implements ActionListener {
 
 }
 
-
 class AcademicUpdate extends PlaceholderTextField implements ActionListener {
 
     // Buttons :
@@ -6183,7 +6316,7 @@ class AcademicUpdate extends PlaceholderTextField implements ActionListener {
     // clear for clear the information that are filled,
     // back for redirect the user to Home window of App
     // Delete for delete the Academic data
-    JButton back, sub,Delete, clear;
+    JButton back, sub, Delete, clear;
 
     // Textfields:
     // text1 allows user to enter serial Number ,
@@ -6202,17 +6335,8 @@ class AcademicUpdate extends PlaceholderTextField implements ActionListener {
     // placeholder for background text of textfield
     String placeholder, Database, DBPassword, School_Name;
 
-
-    // Serial No to store serial no of data
-    // Student Id to store student id
-    // Class to store class of student
-    // Subject to store subjects of student
-    // Session to store the session of Student
-    // Fee to store the Fee of Student
-    String Serial_No , Student_Id, Student_Name, Class, Subject, Session, Fee;
-
-
-    boolean message = false; // message to store the message that shows whether the Student database updated or not.
+    boolean message = false; // message to store the message that shows whether the Student database updated
+                             // or not.
 
     // constructor
     AcademicUpdate(String placeholder, String database, String Password, String School) {
@@ -6237,7 +6361,7 @@ class AcademicUpdate extends PlaceholderTextField implements ActionListener {
         label2.setFont(new Font("Serif", Font.PLAIN, 22));
         label2.setBounds(330, 75, 700, 25);
 
-        JLabel label3 = new JLabel("Note : Admin can find the Serial Number by click on View Student details button");
+        JLabel label3 = new JLabel("Note : Admin can find the Serial Number by click on View_Student_details button");
         label3.setFont(new Font("Serif", Font.PLAIN, 22));
         label3.setBounds(300, 110, 720, 25);
 
@@ -6265,8 +6389,6 @@ class AcademicUpdate extends PlaceholderTextField implements ActionListener {
         lab6.setFont(new Font("Serif", Font.PLAIN, 25));
         lab6.setBounds(150, 360, 250, 30);
 
-
-
         // Here add label in frame
         frame.add(label);
         frame.add(label2);
@@ -6277,7 +6399,6 @@ class AcademicUpdate extends PlaceholderTextField implements ActionListener {
         frame.add(lab4);
         frame.add(lab5);
         frame.add(lab6);
-        
 
         // create TextFields and set their properties
 
@@ -6304,8 +6425,6 @@ class AcademicUpdate extends PlaceholderTextField implements ActionListener {
         text6 = new JTextField();
         text6.setFont(new Font("Serif", Font.PLAIN, 25));
         text6.setBounds(450, 365, 300, 30);
-
- 
 
         // add submit,clear and back buttons
 
@@ -6357,147 +6476,170 @@ class AcademicUpdate extends PlaceholderTextField implements ActionListener {
 
             new StudentDataUpdate(Database, DBPassword, School_Name);
             frame.dispose();
-        }
-        if (e.getSource() == clear) {
+        } else if (e.getSource() == clear) {
             text1.setText(null);
             text2.setText(null);
             text3.setText(null);
             text4.setText(null);
             text5.setText(null);
             text6.setText(null);
-        
 
-        }
-        if(e.getSource()== Delete){
-            try{
+        } else if (e.getSource() == Delete) {
+            try {
                 // connect app to mysql to delete Student Academic details from the database.
 
-            
                 String url = "jdbc:mysql://localhost:3306/" + Database;
                 String user = "root";
 
                 Connection connection = DriverManager.getConnection(url, user, DBPassword);
-                PreparedStatement pstmt = connection.prepareStatement("delete from Academic where Student_Id = ? and Serial_No = ? ");
-                pstmt.setString(1, text2.getText());
-                pstmt.setString(2, text1.getText());
-                pstmt.executeUpdate();
-                JOptionPane.showMessageDialog(this, "Data Deleted Successfully.");
-                connection.close();
-            }
-            catch(Exception b){
-                
+
+                String selectQuery = "SELECT count(*) FROM Academic WHERE Student_Id = ? AND Serial_No = ?";
+                PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                selectStmt.setString(1, text2.getText());
+                selectStmt.setString(2, text1.getText());
+
+                ResultSet resultSet = selectStmt.executeQuery();
+
+                resultSet.next();
+                int count = resultSet.getInt(1);
+
+                if (count == 0) {
+                    JOptionPane.showMessageDialog(this, "Data does not exist.");
+                } else if (count > 0) {
+
+                    PreparedStatement pstmt = connection
+                            .prepareStatement("delete from Academic where Student_Id = ? and Serial_No = ? ");
+                    pstmt.setString(1, text2.getText());
+                    pstmt.setString(2, text1.getText());
+                    pstmt.executeUpdate();
+                    JOptionPane.showMessageDialog(this, "Data Deleted Successfully.");
+                    connection.close();
+                }
+            } catch (Exception b) {
+
                 JOptionPane.showMessageDialog(this, "No Data Deleted.");
             }
-        }
-        if (e.getSource() == sub) {
+
+        } else if (e.getSource() == sub) {
             try {
                 // connect app to mysql to update Student Academic details into the database.
                 String url = "jdbc:mysql://localhost:3306/" + Database;
                 String user = "root";
 
                 Connection connection = DriverManager.getConnection(url, user, DBPassword);
-                
+
                 // Class
                 if (text3.getText() != null && !text3.getText().trim().isEmpty()) {
 
-                    String selectQuery = "SELECT * FROM Academic WHERE Student_Id = ? AND Serial_No = ?";
+                    String selectQuery = "SELECT count(*) FROM Academic WHERE Student_Id = ? AND Serial_No = ?";
                     PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
                     selectStmt.setString(1, text2.getText());
                     selectStmt.setString(2, text1.getText());
-                
+
                     ResultSet resultSet = selectStmt.executeQuery();
-                
-                    while (resultSet.next()) {
-                        Class = resultSet.getString(4);
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+                        String query = "UPDATE  Academic  SET class  = ? WHERE Student_Id = ? AND Serial_No = ? ;";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text3.getText());
+                        pstmt.setString(2, text2.getText());
+                        pstmt.setString(3, text1.getText());
+                        pstmt.executeUpdate();
+
+                        message = true;
                     }
-
-                    String query = "UPDATE  Academic  SET class  = ? WHERE class = ? ;";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text3.getText());
-                    pstmt.setString(2,Class);
-                    pstmt.executeUpdate();
-
-                    message = true;
                 }
-
                 // Subjects
                 if (text4.getText() != null && !text4.getText().trim().isEmpty()) {
 
-                
-                    String selectQuery = "SELECT * FROM Academic WHERE Student_Id = ? AND Serial_No = ?";
+                    String selectQuery = "SELECT count(*) FROM Academic WHERE Student_Id = ? AND Serial_No = ?";
                     PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
                     selectStmt.setString(1, text2.getText());
                     selectStmt.setString(2, text1.getText());
-                
-                    ResultSet resultSet = selectStmt.executeQuery();
-                while (resultSet.next()) {
-                        Subject = resultSet.getString(5);
-                    }
 
-                    String query = "UPDATE Academic SET Subjects = ? WHERE Subjects = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text4.getText());
-                    pstmt.setString(2, Subject);
-                    pstmt.executeUpdate();
-                    message = true;
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist.");
+                    } else if (count > 0) {
+                        String query = "UPDATE Academic SET Subjects = ? WHERE Student_Id = ? AND Serial_No = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text4.getText());
+                        pstmt.setString(2, text2.getText());
+                        pstmt.setString(3, text1.getText());
+                        pstmt.executeUpdate();
+                        message = true;
+                    }
                 }
 
-                // Session 
+                // Session
                 if (text5.getText() != null && !text5.getText().trim().isEmpty()) {
 
-                    String selectQuery = "SELECT * FROM Academic WHERE Student_Id = ? AND Serial_No = ?";
+                    String selectQuery = "SELECT count(*) FROM Academic WHERE Student_Id = ? AND Serial_No = ?";
                     PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
                     selectStmt.setString(1, text2.getText());
                     selectStmt.setString(2, text1.getText());
-                
+
                     ResultSet resultSet = selectStmt.executeQuery();
-                    while (resultSet.next()) {
-                    Session = resultSet.getString(6);
-                }
 
-                    String query = "UPDATE Academic SET Session = ? WHERE Session = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text5.getText());
-                    pstmt.setString(2, Session);
-                    pstmt.executeUpdate();
-                    message = true;
-                }
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
 
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist.");
+                    } else if (count > 0) {
+                        String query = "UPDATE Academic SET Session = ? WHERE Student_Id = ? AND Serial_No = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text5.getText());
+                        pstmt.setString(2, text2.getText());
+                        pstmt.setString(3, text1.getText());
+                        pstmt.executeUpdate();
+                        message = true;
+                    }
+
+                }
                 // Fee
                 if (text6.getText() != null && !text6.getText().trim().isEmpty()) {
 
-                    String selectQuery = "SELECT * FROM Academic WHERE Student_Id = ? AND Serial_No = ?";
+                    String selectQuery = "SELECT count(*) FROM Academic WHERE Student_Id = ? AND Serial_No = ?";
                     PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
                     selectStmt.setString(1, text2.getText());
                     selectStmt.setString(2, text1.getText());
-                
+
                     ResultSet resultSet = selectStmt.executeQuery();
-                    while (resultSet.next()) {
-                    Fee = resultSet.getString(7);
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist.");
+                    } else if (count > 0) {
+                        String query = "UPDATE Academic SET Fee = ? WHERE Student_Id = ? AND Serial_No = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text6.getText());
+                        pstmt.setString(2, text2.getText());
+                        pstmt.setString(3, text1.getText());
+                        pstmt.executeUpdate();
+                        message = true;
+                    }
+
                 }
-
-                    String query = "UPDATE Academic SET Fee = ? WHERE Fee = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text6.getText());
-                    pstmt.setString(2, Fee);
-                    pstmt.executeUpdate();
-                    message = true;
+                if (message == true) {
+                    JOptionPane.showMessageDialog(this, "Student Data Updated."); // showing the message whether
                 }
-
-              
-
-
-
-
-                if(message == true){
-                JOptionPane.showMessageDialog(this, "Student Data Updated."); // showing the message whether
-                }
-                                                                                       // the Student Details insert into the database or not .
-                if(message == false){
+                // the Student Details insert into the database or not .
+                else if (message == false) {
                     JOptionPane.showMessageDialog(this, "Nothing is Updated.");
                 }
-                
-            
+
                 connection.close();
 
             } catch (Exception a) {
@@ -6508,17 +6650,15 @@ class AcademicUpdate extends PlaceholderTextField implements ActionListener {
     }
 }
 
-
-
-
 /*
- * This class provides an user interface that allows the user to update Fee details.
+ * This class provides an user interface that allows the user to update Fee
+ * details.
  * This class extends PlaceholderTextField to fill the background of textfield
  * that shows how to enter date and which textfield is optional.
  * This class extends ActionListener for event handling.
  */
 
- class FeeUpdate extends PlaceholderTextField implements ActionListener {
+class FeeUpdate extends PlaceholderTextField implements ActionListener {
 
     JFrame frame; // frame in which all other components are added .
 
@@ -6527,7 +6667,7 @@ class AcademicUpdate extends PlaceholderTextField implements ActionListener {
     // clear for clear the information that are filled,
     // Delete for delete the fee data of Student
     // back for redirect the user to Home window of App
-    JButton back, clear,Delete, sub;
+    JButton back, clear, Delete, sub;
 
     // Textfields:
     // text1 allows user to enter serial no ,
@@ -6544,13 +6684,7 @@ class AcademicUpdate extends PlaceholderTextField implements ActionListener {
     // placeholder for background text of textfield
     String placeholder, Database, DBPassword, School_Name;
 
-    boolean message = false;  // for message that shows whether the fee details updated or not.
-
-    // class to store the class of student to update
-    // Paid_Fee to store the fees paid by Student to update
-    // Balance to store the balance left to update
-    // Date to store the Data to be updated
-    String Class,Paid_Fee,Balance,Date;
+    boolean message = false; // for message that shows whether the fee details updated or not.
 
     // constructor
     FeeUpdate(String placeholder, String database, String Password, String School) {
@@ -6569,12 +6703,12 @@ class AcademicUpdate extends PlaceholderTextField implements ActionListener {
         label.setText("UPDATE/DELETE  FEE  DETAILS");
         label.setFont(new Font("Serif", Font.BOLD, 50));
 
-
         JLabel label2 = new JLabel("Note : Admin can update/Delete student data using student id and Serial No");
         label2.setFont(new Font("Serif", Font.PLAIN, 22));
         label2.setBounds(330, 75, 700, 25);
 
-        JLabel label3 = new JLabel("Note : Admin can find the Serial Number by click on View Student details button");
+        JLabel label3 = new JLabel(
+                "Note : Admin can find the Serial Number by click on View_Student_details button");
         label3.setFont(new Font("Serif", Font.PLAIN, 22));
         label3.setBounds(300, 110, 720, 25);
 
@@ -6690,7 +6824,7 @@ class AcademicUpdate extends PlaceholderTextField implements ActionListener {
             frame.dispose();
         }
 
-        if (e.getSource() == clear) {
+        else if (e.getSource() == clear) {
             text1.setText(null);
             text2.setText(null);
             text3.setText(null);
@@ -6698,28 +6832,42 @@ class AcademicUpdate extends PlaceholderTextField implements ActionListener {
             text5.setText(null);
             text6.setText(null);
 
-        }
-        if(e.getSource()== Delete){
-            try{
+        } else if (e.getSource() == Delete) {
+            try {
                 // connect app to mysql to delete Student Academic details from the database.
 
-            
                 String url = "jdbc:mysql://localhost:3306/" + Database;
                 String user = "root";
 
                 Connection connection = DriverManager.getConnection(url, user, DBPassword);
-                PreparedStatement pstmt = connection.prepareStatement("delete from Fee_Details where Student_Id = ? and Serial_No = ? ");
-                pstmt.setString(1, text2.getText());
-                pstmt.setString(2, text1.getText());
-                pstmt.executeUpdate();
-                JOptionPane.showMessageDialog(this, "Data Deleted Successfully.");
-                connection.close();
-            }
-            catch(Exception b){
-                
+
+                String selectQuery = "SELECT count(*) FROM Fee_Details WHERE Student_Id = ? AND Serial_No = ?";
+                PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                selectStmt.setString(1, text2.getText());
+                selectStmt.setString(2, text1.getText());
+
+                ResultSet resultSet = selectStmt.executeQuery();
+
+                resultSet.next();
+                int count = resultSet.getInt(1);
+
+                if (count == 0) {
+                    JOptionPane.showMessageDialog(this, "Data does not exist.");
+                } else if (count > 0) {
+                    PreparedStatement pstmt = connection
+                            .prepareStatement("delete from Fee_Details where Student_Id = ? and Serial_No = ? ");
+                    pstmt.setString(1, text2.getText());
+                    pstmt.setString(2, text1.getText());
+                    pstmt.executeUpdate();
+                    JOptionPane.showMessageDialog(this, "Data Deleted Successfully.");
+                    connection.close();
+                }
+            } catch (Exception b) {
+
                 JOptionPane.showMessageDialog(this, "No Data Deleted.");
             }
         }
+
         if (e.getSource() == sub) {
             try {
                 // connect app to mysql to update Student Academic details into the database.
@@ -6727,102 +6875,118 @@ class AcademicUpdate extends PlaceholderTextField implements ActionListener {
                 String user = "root";
 
                 Connection connection = DriverManager.getConnection(url, user, DBPassword);
-               
-               
+
                 // Classw
                 if (text3.getText() != null && !text3.getText().trim().isEmpty()) {
-                    String selectQuery = "SELECT * FROM Fee_Details WHERE Student_Id = ? AND Serial_No = ?";
+                    String selectQuery = "SELECT count(*) FROM Fee_Details WHERE Student_Id = ? AND Serial_No = ?";
                     PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
                     selectStmt.setString(1, text2.getText());
                     selectStmt.setString(2, text1.getText());
-                
+
                     ResultSet resultSet = selectStmt.executeQuery();
 
-                    while (resultSet.next()) {
-                        Class = resultSet.getString(4);
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist.");
+                    } else if (count > 0) {
+                        String query = "UPDATE  Fee_Details  SET Class  = ? WHERE Student_Id = ? AND Serial_No = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text3.getText());
+                        pstmt.setString(2, text2.getText());
+                        pstmt.setString(3, text1.getText());
+                        pstmt.executeUpdate();
+
+                        message = true;
                     }
-
-                    String query = "UPDATE  Fee_Details  SET Class  = ? WHERE Class = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text3.getText());
-                    pstmt.setString(2,Class);
-                    pstmt.executeUpdate();
-
-                    message = true;
                 }
 
                 // Subjects
                 if (text4.getText() != null && !text4.getText().trim().isEmpty()) {
 
-                    String selectQuery = "SELECT * FROM Fee_Details WHERE Student_Id = ? AND Serial_No = ?";
+                    String selectQuery = "SELECT count(*) FROM Fee_Details WHERE Student_Id = ? AND Serial_No = ?";
                     PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
                     selectStmt.setString(1, text2.getText());
                     selectStmt.setString(2, text1.getText());
-                
+
                     ResultSet resultSet = selectStmt.executeQuery();
-                while (resultSet.next()) {
-                        Paid_Fee = resultSet.getString(5);
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist.");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE Fee_Details SET Paid_Fee = ? WHERE Student_Id = ? AND Serial_No = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text4.getText());
+                        pstmt.setString(2, text2.getText());
+                        pstmt.setString(3, text1.getText());
+                        pstmt.executeUpdate();
+                        message = true;
                     }
 
-                    String query = "UPDATE Fee_Details SET Paid_Fee = ? WHERE Paid_Fee = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text4.getText());
-                    pstmt.setString(2, Paid_Fee);
-                    pstmt.executeUpdate();
-                    message = true;
                 }
-
-                // Session 
+                // Session
                 if (text5.getText() != null && !text5.getText().trim().isEmpty()) {
 
-                    String selectQuery = "SELECT * FROM Fee_Details WHERE Student_Id = ? AND Serial_No = ?";
+                    String selectQuery = "SELECT count(*) FROM Fee_Details WHERE Student_Id = ? AND Serial_No = ?";
                     PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
                     selectStmt.setString(1, text2.getText());
                     selectStmt.setString(2, text1.getText());
-                
+
                     ResultSet resultSet = selectStmt.executeQuery();
-                while (resultSet.next()) {
-                    Balance = resultSet.getString(6);
-                }
 
-                    String query = "UPDATE Fee_Details SET Balance = ? WHERE Balance = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text5.getText());
-                    pstmt.setString(2, Balance);
-                    pstmt.executeUpdate();
-                    message = true;
-                }
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
 
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist.");
+                    } else if (count > 0) {
+                        String query = "UPDATE Fee_Details SET Balance = ? WHERE Student_Id = ? AND Serial_No = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text5.getText());
+                        pstmt.setString(2, text2.getText());
+                        pstmt.setString(3, text1.getText());
+                        pstmt.executeUpdate();
+                        message = true;
+                    }
+                }
                 // Fee
                 if (text6.getText() != null && !text6.getText().trim().isEmpty()) {
 
-                    String selectQuery = "SELECT * FROM Fee_Details WHERE Student_Id = ? AND Serial_No = ?";
+                    String selectQuery = "SELECT count(*) FROM Fee_Details WHERE Student_Id = ? AND Serial_No = ?";
                     PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
                     selectStmt.setString(1, text2.getText());
                     selectStmt.setString(2, text1.getText());
-                
+
                     ResultSet resultSet = selectStmt.executeQuery();
-                while (resultSet.next()) {
-                    Date = resultSet.getString(7);
-                }
 
-                    String query = "UPDATE Fee_Details SET Date = ? WHERE Date = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text6.getText());
-                    pstmt.setString(2, Date);
-                    pstmt.executeUpdate();
-                    message = true;
-                }
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
 
-              
-                
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist.");
+                    } else if (count > 0) {
+                        String query = "UPDATE Fee_Details SET Date = ? WHERE Student_Id = ? AND Serial_No = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text6.getText());
+                        pstmt.setString(2, text2.getText());
+                        pstmt.setString(3, text1.getText());
+                        pstmt.executeUpdate();
+                        message = true;
+                    }
+
+                }
                 connection.close();
 
-                if(message == true){
-                JOptionPane.showMessageDialog(this, "Student Data Updated."); // showing the message whether
+                if (message == true) {
+                    JOptionPane.showMessageDialog(this, "Student Data Updated."); // showing the message whether
                 }
-                                                                                       // the Student Details insert into the database or not .
-                if(message == false){
+                // the Student Details insert into the database or not .
+                else if (message == false) {
                     JOptionPane.showMessageDialog(this, "Nothing is Updated.");
                 }
 
@@ -6832,7 +6996,6 @@ class AcademicUpdate extends PlaceholderTextField implements ActionListener {
         }
     }
 }
-
 
 /*
  * This class provides an user interface that contains three buttons which
@@ -6871,12 +7034,12 @@ class TeacherDataUpdate implements ActionListener {
         JLabel label = new JLabel();
         label.setHorizontalAlignment(JLabel.CENTER);
         label.setSize(1250, 100);
-        label.setText(School_Name);
+        label.setText("UPDATE TEACHER'S DETAILS");
         label.setFont(new Font("Serif", Font.BOLD, 50));
 
         // create buttons and add to frame
 
-        button = new JButton("Update Teacher Basic Details");
+        button = new JButton("Update/Delete Teacher Basic Details");
         button.setBounds(480, 150, 350, 30);
         frame.add(button);
 
@@ -6918,25 +7081,23 @@ class TeacherDataUpdate implements ActionListener {
 
         if (e.getSource() == button) {
 
-            new TeacherUpdate(null,Database, DBPassword, School_Name);
-            
+            new TeacherUpdate(null, Database, DBPassword, School_Name);
+
             frame.dispose();
 
         }
 
-        if (e.getSource() == button1) {
+        else if (e.getSource() == button1) {
 
-            new TeacherSalaryStructureUpdate(null,Database, DBPassword, School_Name);
-            
-            frame.dispose();
-        }
-        if (e.getSource() == button2) {
+            new TeacherSalaryStructureUpdate(null, Database, DBPassword, School_Name);
 
-            new TeacherSalaryUpdate(null,Database, DBPassword, School_Name);
-        
             frame.dispose();
-        }
-        if (e.getSource() == back) {
+        } else if (e.getSource() == button2) {
+
+            new TeacherSalaryUpdate(null, Database, DBPassword, School_Name);
+
+            frame.dispose();
+        } else if (e.getSource() == back) {
 
             new First(Database, DBPassword, School_Name);
             frame.dispose();
@@ -6944,13 +7105,6 @@ class TeacherDataUpdate implements ActionListener {
 
     }
 }
-
-
-
-
-
-
-
 
 /*
  * This class provides an user interface that allows the user to update
@@ -6963,8 +7117,9 @@ class TeacherUpdate extends PlaceholderTextField implements ActionListener {
     // Buttons :
     // sub to insert the Teacher basic details into the database,
     // clear for clear the information that are filled,
+    // Delete for delete the teacher basic details,
     // back for redirect the user to Home window of App
-    JButton back, sub, clear;
+    JButton back, sub, Delete, clear;
 
     // TextField:
     // text allows the user to enter Teacher ID,
@@ -6992,25 +7147,6 @@ class TeacherUpdate extends PlaceholderTextField implements ActionListener {
 
     JFrame frame2; // frame in which all other components are added
 
-    // String
-    // Teacher_Id store Teacher's Id,
-    // Teacher_Name store Teacher Name,
-    // Father_Name store Teacher's Father Name,
-    // Mother_Name store Teacher's Mother Name,
-    // Dob store Teacher's Date of Birth,
-    // Gender store select Teacher's Gender,
-    // Mob1 store Teacher's Mobile Number1 ,
-    // Mob2 store Teacher's Mobile Number2,
-    // Joining_Date store Teacher's Joining Date,
-    // Address store Teacher's Address,
-    // Family_Id store Teacher's Family ID,
-    // Qualification store select Teacher's Qualification ,
-    // Experience store Teacher's Experience,
-    // Account_No store Teacher's Mother's Account No,
-    // Job_Leaving_Date store Teacher's Job Leaving date
-    String Teacher_Id, Teacher_Name, Father_Name, Mother_Name, Dob, Gender, Mob1, Mob2, Joining_Date, Address,
-            Teacher_Aadhaar_No, Family_Id, Qualification, Experience, Account_No, Job_Leaving_Date;
-
     // Database to Store the database name
     // DBPassword to store the mysql password
     // School_Name to store the School name
@@ -7036,9 +7172,9 @@ class TeacherUpdate extends PlaceholderTextField implements ActionListener {
         label1.setText("UPDATE  TEACHER  DATA");
         label1.setFont(new Font("Serif", Font.BOLD, 50));
 
-        JLabel label2 = new JLabel("Note : Admin can update teacher data using Teacher id");
+        JLabel label2 = new JLabel("Note : Admin can update/Delete teacher data using Teacher id");
         label2.setFont(new Font("Serif", Font.PLAIN, 22));
-        label2.setBounds(380, 75, 650, 25);
+        label2.setBounds(380, 75, 700, 25);
 
         JLabel lab = new JLabel("Teacher  ID :");
         lab.setFont(new Font("Serif", Font.PLAIN, 25));
@@ -7211,16 +7347,20 @@ class TeacherUpdate extends PlaceholderTextField implements ActionListener {
         // create buttons for submit ,clear and back
 
         sub = new JButton(" UPDATE ");
-        sub.setBounds(400, 600, 200, 30);
+        sub.setBounds(250, 600, 200, 30);
 
         clear = new JButton(" CLEAR ");
-        clear.setBounds(650, 600, 200, 30);
+        clear.setBounds(500, 600, 200, 30);
+
+        Delete = new JButton(" DELETE ");
+        Delete.setBounds(750, 600, 200, 30);
 
         back = new JButton("Back");
         back.setBounds(30, 30, 100, 30);
 
         // here add buttons to frame
         frame2.add(sub);
+        frame2.add(Delete);
         frame2.add(clear);
         frame2.add(back);
 
@@ -7234,6 +7374,7 @@ class TeacherUpdate extends PlaceholderTextField implements ActionListener {
         // Register the button component with frame
         back.addActionListener(this);
         sub.addActionListener(this);
+        Delete.addActionListener(this);
         clear.addActionListener(this);
 
     }
@@ -7245,8 +7386,7 @@ class TeacherUpdate extends PlaceholderTextField implements ActionListener {
 
             new TeacherDataUpdate(Database, DBPassword, School_Name);
             frame2.dispose();
-        }
-        if (e.getSource() == clear) {
+        } else if (e.getSource() == clear) {
             text.setText(null);
             text1.setText(null);
             text2.setText(null);
@@ -7266,299 +7406,413 @@ class TeacherUpdate extends PlaceholderTextField implements ActionListener {
 
         }
 
-        if (e.getSource() == sub) {
+        else if (e.getSource() == Delete) {
             try {
 
-                // connect app to Mysql to update Teacher Basic details
-                Teacher_Id = text.getText();
                 String url = "jdbc:mysql://localhost:3306/" + Database;
                 String user = "root";
 
                 Connection connection = DriverManager.getConnection(url, user, DBPassword);
-                Statement statement = connection.createStatement();
+
+                // Enrollment No
+                if (text.getText() != null && !text.getText().trim().isEmpty()) {
+
+                    String selectQuery = "SELECT count(*) FROM Teacher_Registration WHERE Teacher_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+                        String query = "Delete from Teacher_Registration WHERE Teacher_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text.getText());
+                        pstmt.executeUpdate();
+
+                        JOptionPane.showMessageDialog(this, "Data Deleted Sucessfully .");
+                        connection.close();
+                    }
+                }
+            } catch (Exception a) {
+                JOptionPane.showMessageDialog(this, "Student_Id is not filled or Wrong Enteries .");
+            }
+        }
+
+        else if (e.getSource() == sub) {
+            try {
+
+                // connect app to Mysql to update Teacher Basic details
+
+                String url = "jdbc:mysql://localhost:3306/" + Database;
+                String user = "root";
+
+                Connection connection = DriverManager.getConnection(url, user, DBPassword);
 
                 // Teacher Name
                 if (text1.getText() != null && !text1.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet = statement.executeQuery(
-                            " select * from Teacher_Registration where Teacher_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet.next()) {
-                        Teacher_Name = resultSet.getString(2);
+                    String selectQuery = "SELECT count(*) FROM Teacher_Registration WHERE Teacher_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE Teacher_Registration SET Teacher_Name = ? WHERE Teacher_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text1.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
                     }
 
-                    String query = "UPDATE Teacher_Registration SET Teacher_Name = ? WHERE Teacher_Name = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text1.getText());
-                    pstmt.setString(2, Teacher_Name);
-                    pstmt.executeUpdate();
-                    message = true;
                 }
-
                 // Teacher Father Name
                 if (text2.getText() != null && !text2.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet = statement.executeQuery(
-                            " select * from Teacher_Registration where Teacher_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet.next()) {
-                        Father_Name = resultSet.getString(3);
+                    String selectQuery = "SELECT count(*) FROM Teacher_Registration WHERE Teacher_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE Teacher_Registration SET Father_Name = ? WHERE Teacher_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text2.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
                     }
 
-                    String query = "UPDATE Teacher_Registration SET Father_Name = ? WHERE Father_Name = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text2.getText());
-                    pstmt.setString(2, Father_Name);
-                    pstmt.executeUpdate();
-                    message = true;
                 }
-
                 // Teacher Mother Name
                 if (text3.getText() != null && !text3.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet = statement.executeQuery(
-                            " select * from Teacher_Registration where Teacher_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet.next()) {
-                        Mother_Name = resultSet.getString(4);
+                    String selectQuery = "SELECT count(*) FROM Teacher_Registration WHERE  Teacher_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+                        String query = "UPDATE Teacher_Registration SET Mother_Name = ? WHERE Mother_Name = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text3.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
                     }
-
-                    String query = "UPDATE Teacher_Registration SET Mother_Name = ? WHERE Mother_Name = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text3.getText());
-                    pstmt.setString(2, Mother_Name);
-                    pstmt.executeUpdate();
-                    message = true;
                 }
-
                 // Dob
                 if (text4.getText() != null && !text4.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet = statement.executeQuery(
-                            " select * from Teacher_Registration where Teacher_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet.next()) {
-                        Dob = resultSet.getString(5);
+                    String selectQuery = "SELECT count(*) FROM Teacher_Registration WHERE Teacher_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE Teacher_Registration SET Date_Of_Birth = ? WHERE Teacher_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text4.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
                     }
-
-                    String query = "UPDATE Teacher_Registration SET Date_Of_Birth = ? WHERE Date_Of_Birth = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text4.getText());
-                    pstmt.setString(2, Dob);
-                    pstmt.executeUpdate();
-                    message = true;
                 }
-
                 // Gender
                 if (ch1.getSelectedIndex() != -1) {
 
-                    ResultSet resultSet = statement.executeQuery(
-                            " select * from Teacher_Registration where Teacher_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet.next()) {
-                        Gender = resultSet.getString(6);
-                    }
+                    String selectQuery = "SELECT count(*) FROM Teacher_Registration WHERE Teacher_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
 
-                    String query = "UPDATE Teacher_Registration SET Gender = ? WHERE Gender = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, (String) ch1.getSelectedItem());
-                    pstmt.setString(2, Gender);
-                    pstmt.executeUpdate();
-                    message = true;
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE Teacher_Registration SET Gender = ? WHERE Teacher_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, (String) ch1.getSelectedItem());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
+                    }
                 }
 
                 // Mobile Number1
                 if (text5.getText() != null && !text5.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet = statement.executeQuery(
-                            " select * from Teacher_Registration where Teacher_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet.next()) {
-                        Mob1 = resultSet.getString(7);
+                    String selectQuery = "SELECT count(*) FROM Teacher_Registration WHERE Teacher_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE Teacher_Registration  SET Mob1 = ? WHERE Teacher_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text5.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
                     }
-
-                    String query = "UPDATE Teacher_Registration  SET Mob1 = ? WHERE Mob1 = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text5.getText());
-                    pstmt.setString(2, Mob1);
-                    pstmt.executeUpdate();
-                    message = true;
                 }
-
                 // Mobile Number2
                 if (text7.getText() != null && !text7.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet = statement.executeQuery(
-                            " select * from Teacher_Registration where Teacher_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet.next()) {
-                        Mob2 = resultSet.getString(8);
+                    String selectQuery = "SELECT count(*) FROM Teacher_Registration WHERE Teacher_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE Teacher_Registration  SET Mob2= ? WHERE Teacher_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text7.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
                     }
-
-                    String query = "UPDATE Teacher_Registration  SET Mob2= ? WHERE Mob2 = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text7.getText());
-                    pstmt.setString(2, Mob2);
-                    pstmt.executeUpdate();
-                    message = true;
                 }
-
                 // Joining Date
                 if (text8.getText() != null && !text8.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet = statement.executeQuery(
-                            " select * from Teacher_Registration where Teacher_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet.next()) {
-                        Joining_Date = resultSet.getString(9);
-                    }
+                    String selectQuery = "SELECT count(*) FROM Teacher_Registration WHERE Teacher_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
 
-                    String query = "UPDATE Teacher_Registration  SET Joining_Date= ? WHERE Joining_Date = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text8.getText());
-                    pstmt.setString(2, Joining_Date);
-                    pstmt.executeUpdate();
-                    message = true;
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE Teacher_Registration  SET Joining_Date= ? WHERE Teacher_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text8.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
+                    }
                 }
 
                 // Address
                 if (text9.getText() != null && !text9.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet = statement.executeQuery(
-                            " select * from Teacher_Registration where Teacher_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet.next()) {
-                        Address = resultSet.getString(10);
-                    }
+                    String selectQuery = "SELECT count(*) FROM Teacher_Registration WHERE Teacher_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
 
-                    String query = "UPDATE Teacher_Registration  SET Address= ? WHERE Address = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text9.getText());
-                    pstmt.setString(2, Address);
-                    pstmt.executeUpdate();
-                    message = true;
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE Teacher_Registration  SET Address= ? WHERE Teacher_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text9.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
+                    }
                 }
 
                 // Teacher Aadhaar Number
                 if (text11.getText() != null && !text11.getText().trim().isEmpty()) {
+                    String selectQuery = "SELECT count(*) FROM Teacher_Registration WHERE Teacher_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
 
-                    ResultSet resultSet1 = statement.executeQuery(
-                            " select * from Teacher_Registration where Teacher_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet1.next()) {
-                        Teacher_Aadhaar_No = resultSet1.getString(11);
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE Teacher_Registration SET Teacher_Aadhaar_No= ? WHERE Teacher_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text11.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
                     }
-
-                    String query = "UPDATE Teacher_Registration SET Teacher_Aadhaar_No= ? WHERE Teacher_Aadhaar_No = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text11.getText());
-                    pstmt.setString(2, Teacher_Aadhaar_No);
-                    pstmt.executeUpdate();
-                    message = true;
                 }
 
                 // Family Id
                 if (text12.getText() != null && !text12.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet2 = statement
-                            .executeQuery(" select * from Teacher_Registration where Teacher_Id = "
-                                    + (String) text.getText() + " limit 1;");
-                    while (resultSet2.next()) {
-                        Family_Id = resultSet2.getString(12);
-                    }
+                    String selectQuery = "SELECT count(*) FROM Teacher_Registration WHERE Teacher_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
 
-                    String query = "UPDATE Teacher_Registration SET Family_Id= ? WHERE Family_Id = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text12.getText());
-                    pstmt.setString(2, Family_Id);
-                    pstmt.executeUpdate();
-                    message = true;
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE Teacher_Registration SET Family_Id= ? WHERE Teacher_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text12.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
+                    }
                 }
 
                 // Qualification
                 if (text13.getText() != null && !text13.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet3 = statement.executeQuery(
-                            " select * from Teacher_Registration where Teacher_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet3.next()) {
-                        Qualification = resultSet3.getString(13);
-                    }
+                    String selectQuery = "SELECT count(*) FROM Teacher_Registration WHERE Teacher_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
 
-                    String query = "UPDATE Teacher_Registration SET Qualification= ? WHERE Qualification = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text13.getText());
-                    pstmt.setString(2, Qualification);
-                    pstmt.executeUpdate();
-                    message = true;
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+                        String query = "UPDATE Teacher_Registration SET Qualification= ? WHERE Teacher_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text13.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
+                    }
                 }
 
                 // Experience
                 if (text14.getText() != null && !text14.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet4 = statement.executeQuery(
-                            " select * from Teacher_Registration where Teacher_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet4.next()) {
-                        Experience = resultSet4.getString(14);
-                    }
+                    String selectQuery = "SELECT count(*) FROM Teacher_Registration WHERE Teacher_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
 
-                    String query = "UPDATE Teacher_Registration SET Experience= ? WHERE Experience = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text14.getText());
-                    pstmt.setString(2, Experience);
-                    pstmt.executeUpdate();
-                    message = true;
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+                        String query = "UPDATE Teacher_Registration SET Experience= ? WHERE Teacher_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text14.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
+                    }
                 }
 
                 // Account No
                 if (text15.getText() != null && !text15.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet5 = statement.executeQuery(
-                            " select * from Teacher_Registration where Teacher_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet5.next()) {
-                        Account_No = resultSet5.getString(15);
+                    String selectQuery = "SELECT count(*) FROM Teacher_Registration WHERE Teacher_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+                        String query = "UPDATE Teacher_Registration SET Account_No= ? WHERE Teacher_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text15.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
                     }
 
-                    String query = "UPDATE Teacher_Registration SET Account_No= ? WHERE Account_No = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text15.getText());
-                    pstmt.setString(2, Account_No);
-                    pstmt.executeUpdate();
-                    message = true;
                 }
-
                 // Job leaving Date
                 if (text16.getText() != null && !text16.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet6 = statement.executeQuery(
-                            " select * from Teacher_Registration where Teacher_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet6.next()) {
-                        Job_Leaving_Date = resultSet6.getString(16);
+                    String selectQuery = "SELECT count(*) FROM Teacher_Registration WHERE Teacher_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE Teacher_Registration SET Job_Leaving_Date= ? WHERE Teacher_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text16.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
                     }
-
-                    String query = "UPDATE Teacher_Registration SET Job_Leaving_Date= ? WHERE Job_Leaving_Date = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text16.getText());
-                    pstmt.setString(2, Job_Leaving_Date);
-                    pstmt.executeUpdate();
-                    message = true;
                 }
-
-              
 
                 if (message == true) {
                     JOptionPane.showMessageDialog(this, "Teacher Data Updated");
 
                 }
 
-                if (message == false) {
+                else if (message == false) {
                     JOptionPane.showMessageDialog(this, "Nothing is Updated");
 
                 }
-                statement.close();
+
                 connection.close();
 
             } catch (Exception a) {
@@ -7578,8 +7832,6 @@ class TeacherUpdate extends PlaceholderTextField implements ActionListener {
  * This class extends ActionListener for event handling.
  */
 
-
-
 class TeacherSalaryStructureUpdate extends PlaceholderTextField implements ActionListener {
 
     // Buttons :
@@ -7587,7 +7839,7 @@ class TeacherSalaryStructureUpdate extends PlaceholderTextField implements Actio
     // clear for clear the information that are filled,
     // Delete for delete the Teacher Salary Structure,
     // back for redirect the user to Home window of App
-    JButton back, clear,Delete, sub;
+    JButton back, clear, Delete, sub;
 
     // TextField:
     // text1 allows the user to enter Teacher ID,
@@ -7602,12 +7854,6 @@ class TeacherSalaryStructureUpdate extends PlaceholderTextField implements Actio
     // School_Name to store the School name
     // placeholder for background text of textfield
     String placeholder, Database, DBPassword, School_Name;
-
-
-    // Salary to store salary of the Teacher from database,
-    // Month to store month from database
-    // Year to store year from daabase
-    String Salary,Month,Year;
 
     boolean message = false; // message for the message that shows whether the data updated or not.
 
@@ -7635,10 +7881,10 @@ class TeacherSalaryStructureUpdate extends PlaceholderTextField implements Actio
         label2.setFont(new Font("Serif", Font.PLAIN, 22));
         label2.setBounds(330, 75, 700, 25);
 
-        JLabel label3 = new JLabel("Note : Admin can find the Serial Number by click on View Teacher details button");
+        JLabel label3 = new JLabel(
+                "Note : Admin can find the Serial Number by click on View_Teacher_details button");
         label3.setFont(new Font("Serif", Font.PLAIN, 22));
         label3.setBounds(300, 110, 720, 25);
-
 
         JLabel lab1 = new JLabel("Serial No :");
         lab1.setFont(new Font("Serif", Font.PLAIN, 25));
@@ -7750,22 +7996,37 @@ class TeacherSalaryStructureUpdate extends PlaceholderTextField implements Actio
 
         }
 
-        if(e.getSource()== Delete){
-            try{
-            
+        else if (e.getSource() == Delete) {
+            try {
+
                 String url = "jdbc:mysql://localhost:3306/" + Database;
                 String user = "root";
 
                 Connection connection = DriverManager.getConnection(url, user, DBPassword);
-                PreparedStatement pstmt = connection.prepareStatement("delete from Teacher_Salary_Structure where Teacher_Id = ? and Serial_No = ? ");
-                pstmt.setString(1, text2.getText());
-                pstmt.setString(2, text1.getText());
-                pstmt.executeUpdate();
-                JOptionPane.showMessageDialog(this, "Data Deleted Successfully.");
-                connection.close();
-            }
-            catch(Exception b){
-                
+
+                String selectQuery = "SELECT count(*) FROM Teacher_Salary_Structure WHERE Teacher_Id = ? and Serial_No =?";
+                PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                selectStmt.setString(1, text2.getText());
+                selectStmt.setString(2, text1.getText());
+
+                ResultSet resultSet = selectStmt.executeQuery();
+
+                resultSet.next();
+                int count = resultSet.getInt(1);
+
+                if (count == 0) {
+                    JOptionPane.showMessageDialog(this, "Data does not exist .");
+                } else if (count > 0) {
+                    PreparedStatement pstmt = connection.prepareStatement(
+                            "delete from Teacher_Salary_Structure where Teacher_Id = ? and Serial_No = ? ");
+                    pstmt.setString(1, text2.getText());
+                    pstmt.setString(2, text1.getText());
+                    pstmt.executeUpdate();
+                    JOptionPane.showMessageDialog(this, "Data Deleted Successfully.");
+                    connection.close();
+                }
+            } catch (Exception b) {
+
                 JOptionPane.showMessageDialog(this, "No Data Deleted.");
             }
         }
@@ -7776,82 +8037,94 @@ class TeacherSalaryStructureUpdate extends PlaceholderTextField implements Actio
                 String user = "root";
 
                 Connection connection = DriverManager.getConnection(url, user, DBPassword);
-                
-               
+
                 // Classw
                 if (text3.getText() != null && !text3.getText().trim().isEmpty()) {
 
-                    String selectQuery = "SELECT * FROM Teacher_Salary_Structure WHERE Teacher_Id = ? AND Serial_No = ?";
+                    String selectQuery = "SELECT count(*) FROM Teacher_Salary_Structure WHERE Teacher_Id = ? and Serial_No =?";
                     PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
                     selectStmt.setString(1, text2.getText());
                     selectStmt.setString(2, text1.getText());
-                
+
                     ResultSet resultSet = selectStmt.executeQuery();
-                    while (resultSet.next()) {
-                        Salary = resultSet.getString(4);
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE  Teacher_Salary_Structure  SET Salary  = ? WHERE Teacher_Id = ? and  Serial_No =?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text3.getText());
+                        pstmt.setString(2, text2.getText());
+                        pstmt.setString(3, text1.getText());
+
+                        pstmt.executeUpdate();
+
+                        message = true;
                     }
-
-                    String query = "UPDATE  Teacher_Salary_Structure  SET Salary  = ? WHERE Salary = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text3.getText());
-                    pstmt.setString(2,Salary);
-                    pstmt.executeUpdate();
-
-                    message = true;
                 }
 
                 // Subjects
                 if (text4.getText() != null && !text4.getText().trim().isEmpty()) {
 
-                    String selectQuery = "SELECT * FROM Teacher_Salary_Structure WHERE Teacher_Id = ? AND Serial_No = ?";
+                    String selectQuery = "SELECT count(*) FROM Teacher_Salary_Structure WHERE Teacher_Id = ? and Serial_No =?";
                     PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
                     selectStmt.setString(1, text2.getText());
                     selectStmt.setString(2, text1.getText());
-                
+
                     ResultSet resultSet = selectStmt.executeQuery();
-                while (resultSet.next()) {
-                    Month = resultSet.getString(5);
-                }
 
-                    String query = "UPDATE Teacher_Salary_Structure SET Month = ? WHERE Month = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text4.getText());
-                    pstmt.setString(2, Month);
-                    pstmt.executeUpdate();
-                    message = true;
-                }
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
 
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+                        String query = "UPDATE Teacher_Salary_Structure SET Month = ? WHERE Teacher_Id = ? and Serial_No =?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text4.getText());
+                        pstmt.setString(2, text2.getText());
+                        pstmt.setString(3, text1.getText());
+                        pstmt.executeUpdate();
+                        message = true;
+                    }
+                }
                 // Year
                 if (text5.getText() != null && !text5.getText().trim().isEmpty()) {
 
-                    String selectQuery = "SELECT * FROM Teacher_Salary_Structure WHERE Teacher_Id = ? AND Serial_No = ?";
+                    String selectQuery = "SELECT count(*) FROM Teacher_Salary_Structure WHERE Teacher_Id = ? and Serial_No =?";
                     PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
                     selectStmt.setString(1, text2.getText());
                     selectStmt.setString(2, text1.getText());
-                
+
                     ResultSet resultSet = selectStmt.executeQuery();
-                while (resultSet.next()) {
-                    Year = resultSet.getString(6);
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+                        String query = "UPDATE Teacher_Salary_Structure SET Year = ? WHERE Teacher_Id = ? and Serial_No = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text5.getText());
+                        pstmt.setString(2, text2.getText());
+                        pstmt.setString(3, text1.getText());
+                        pstmt.executeUpdate();
+                        message = true;
+                    }
+
                 }
-                    String query = "UPDATE Teacher_Salary_Structure SET Year = ? WHERE Year = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text5.getText());
-                    pstmt.setString(2, Year);
-                    pstmt.executeUpdate();
-                    message = true;
-                }
-
-
-
-              
-                
                 connection.close();
 
-                if(message == true){
-                JOptionPane.showMessageDialog(this, "Teacher Data Updated."); // showing the message whether
+                if (message == true) {
+                    JOptionPane.showMessageDialog(this, "Teacher Data Updated."); // showing the message whether
                 }
-                                                                                       // the Student Details insert into the database or not .
-                if(message == false){
+                // the Teacher Details insert into the database or not .
+                else if (message == false) {
                     JOptionPane.showMessageDialog(this, "Nothing is Updated.");
                 }
 
@@ -7871,16 +8144,14 @@ class TeacherSalaryStructureUpdate extends PlaceholderTextField implements Actio
  * This class extends ActionListener for event handling.
  */
 
-
-
- class TeacherSalaryUpdate extends PlaceholderTextField implements ActionListener {
+class TeacherSalaryUpdate extends PlaceholderTextField implements ActionListener {
 
     // Buttons :
     // sub to update the Teacher Salary Details,
     // clear for clear the information that are filled,
     // Delete for delete the Teacher Salary Structure,
     // back for redirect the user to Home window of App
-    JButton back, clear,Delete, sub;
+    JButton back, clear, Delete, sub;
 
     // TextField:
     // text1 allows the user to enter Teacher ID,
@@ -7895,12 +8166,6 @@ class TeacherSalaryStructureUpdate extends PlaceholderTextField implements Actio
     // School_Name to store the School name
     // placeholder for background text of textfield
     String placeholder, Database, DBPassword, School_Name;
-
-
-    // Salary_Paid to store paid salary details of the Teacher from database,
-    // Month to store month from database
-    // Year to store year from daabase
-    String Salary_Paid,Month,Year;
 
     boolean message = false; // message for the message that shows whether the data updated or not.
 
@@ -7928,12 +8193,10 @@ class TeacherSalaryStructureUpdate extends PlaceholderTextField implements Actio
         label2.setFont(new Font("Serif", Font.PLAIN, 22));
         label2.setBounds(330, 75, 700, 25);
 
-
-        
-        JLabel label3 = new JLabel("Note : Admin can find the Serial Number by click on View Teacher details button");
+        JLabel label3 = new JLabel(
+                "Note : Admin can find the Serial Number by click on View_Teacher_details button");
         label3.setFont(new Font("Serif", Font.PLAIN, 22));
         label3.setBounds(300, 110, 720, 25);
-
 
         JLabel lab1 = new JLabel("Serial No :");
         lab1.setFont(new Font("Serif", Font.PLAIN, 25));
@@ -8035,8 +8298,7 @@ class TeacherSalaryStructureUpdate extends PlaceholderTextField implements Actio
 
             new TeacherDataUpdate(Database, DBPassword, School_Name);
             frame.dispose();
-        }
-        if (e.getSource() == clear) {
+        } else if (e.getSource() == clear) {
             text1.setText(null);
             text2.setText(null);
             text3.setText(null);
@@ -8045,104 +8307,135 @@ class TeacherSalaryStructureUpdate extends PlaceholderTextField implements Actio
 
         }
 
-        if(e.getSource()== Delete){
-            try{
-            
+        else if (e.getSource() == Delete) {
+            try {
+
                 String url = "jdbc:mysql://localhost:3306/" + Database;
                 String user = "root";
 
                 Connection connection = DriverManager.getConnection(url, user, DBPassword);
-                PreparedStatement pstmt = connection.prepareStatement("delete from Teacher_Salary_Details where Teacher_Id = ? and Serial_No = ? ");
-                pstmt.setString(1, text2.getText());
-                pstmt.setString(2, text1.getText());
-                pstmt.executeUpdate();
-                JOptionPane.showMessageDialog(this, "Data Deleted Successfully.");
-                connection.close();
-            }
-            catch(Exception b){
-                
+                String selectQuery = "SELECT count(*) FROM Teacher_Salary_Details WHERE Teacher_Id = ? and Serial_No =?";
+                PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                selectStmt.setString(1, text2.getText());
+                selectStmt.setString(2, text1.getText());
+
+                ResultSet resultSet = selectStmt.executeQuery();
+
+                resultSet.next();
+                int count = resultSet.getInt(1);
+
+                if (count == 0) {
+                    JOptionPane.showMessageDialog(this, "Data does not exist .");
+                } else if (count > 0) {
+
+                    PreparedStatement pstmt = connection
+                            .prepareStatement(
+                                    "delete from Teacher_Salary_Details where Teacher_Id = ? and Serial_No = ? ");
+                    pstmt.setString(1, text2.getText());
+                    pstmt.setString(2, text1.getText());
+                    pstmt.executeUpdate();
+                    JOptionPane.showMessageDialog(this, "Data Deleted Successfully.");
+                    connection.close();
+                }
+            } catch (Exception b) {
+
                 JOptionPane.showMessageDialog(this, "No Data Deleted.");
             }
-        }
-        if (e.getSource() == sub) {
+        } else if (e.getSource() == sub) {
             try {
                 // connect app to mysql to update Student Academic details into the database.
                 String url = "jdbc:mysql://localhost:3306/" + Database;
                 String user = "root";
 
                 Connection connection = DriverManager.getConnection(url, user, DBPassword);
-                
-               
-                // Classw
+
+                // salary_Paid
                 if (text3.getText() != null && !text3.getText().trim().isEmpty()) {
 
-                    String selectQuery = "SELECT * FROM Teacher_Salary_Details WHERE Teacher_Id = ? AND Serial_No = ?";
+                    String selectQuery = "SELECT count(*) FROM Teacher_Salary_Details WHERE Teacher_Id = ? and Serial_No =?";
                     PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
                     selectStmt.setString(1, text2.getText());
                     selectStmt.setString(2, text1.getText());
-                
+
                     ResultSet resultSet = selectStmt.executeQuery();
-                    while (resultSet.next()) {
-                        Salary_Paid = resultSet.getString(4);
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE  Teacher_Salary_Details  SET Salary_Paid  = ? Teacher_Id = ? and Serial_No =?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text3.getText());
+                        pstmt.setString(2, text2.getText());
+                        pstmt.setString(3, text1.getText());
+                        pstmt.executeUpdate();
+
+                        message = true;
                     }
-
-                    String query = "UPDATE  Teacher_Salary_Details  SET Salary_Paid  = ? WHERE Salary_Paid = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text3.getText());
-                    pstmt.setString(2,Salary_Paid);
-                    pstmt.executeUpdate();
-
-                    message = true;
                 }
 
                 // Subjects
                 if (text4.getText() != null && !text4.getText().trim().isEmpty()) {
 
-                    String selectQuery = "SELECT * FROM Teacher_Salary_Details WHERE Teacher_Id = ? AND Serial_No = ?";
+                    String selectQuery = "SELECT count(*) FROM Teacher_Salary_Details WHERE Teacher_Id = ? and Serial_No =?";
                     PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
                     selectStmt.setString(1, text2.getText());
                     selectStmt.setString(2, text1.getText());
-                
-                    ResultSet resultSet = selectStmt.executeQuery();
-                while (resultSet.next()) {
-                    Month = resultSet.getString(5);
-                }
 
-                    String query = "UPDATE Teacher_Salary_Details SET Month = ? WHERE Month = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text4.getText());
-                    pstmt.setString(2, Month);
-                    pstmt.executeUpdate();
-                    message = true;
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE Teacher_Salary_Details SET Month = ? WHERE Teacher_Id = ? and Serial_No =?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text4.getText());
+                        pstmt.setString(2, text2.getText());
+                        pstmt.setString(3, text1.getText());
+                        pstmt.executeUpdate();
+                        message = true;
+                    }
                 }
 
                 // Year
                 if (text5.getText() != null && !text5.getText().trim().isEmpty()) {
 
-                    String selectQuery = "SELECT * FROM Teacher_Salary_Details WHERE Teacher_Id = ? AND Serial_No = ?";
+                    String selectQuery = "SELECT count(*) FROM Teacher_Salary_Details WHERE Teacher_Id = ? and Serial_No =?";
                     PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
                     selectStmt.setString(1, text2.getText());
                     selectStmt.setString(2, text1.getText());
-                
-                    ResultSet resultSet = selectStmt.executeQuery();
-                while (resultSet.next()) {
-                    Year = resultSet.getString(6);
-                }
-                    String query = "UPDATE Teacher_Salary_Details SET Year = ? WHERE Year = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text5.getText());
-                    pstmt.setString(2, Year);
-                    pstmt.executeUpdate();
-                    message = true;
-                }
 
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+                        String query = "UPDATE Teacher_Salary_Details SET Year = ? WHERE   Teacher_Id = ? and Serial_No =?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text5.getText());
+                        pstmt.setString(2, text2.getText());
+                        pstmt.setString(3, text1.getText());
+                        pstmt.executeUpdate();
+                        message = true;
+                    }
+                }
                 connection.close();
 
-                if(message == true){
-                JOptionPane.showMessageDialog(this, "Teacher Data Updated."); // showing the message whether
+                if (message == true) {
+                    JOptionPane.showMessageDialog(this, "Teacher Data Updated."); // showing the message whether
                 }
-                                                                                       // the Student Details insert into the database or not .
-                if(message == false){
+                // the Student Details insert into the database or not .
+                else if (message == false) {
                     JOptionPane.showMessageDialog(this, "Nothing is Updated.");
                 }
 
@@ -8154,14 +8447,13 @@ class TeacherSalaryStructureUpdate extends PlaceholderTextField implements Actio
     }
 }
 
-
 /*
  * This class provides an user interface that contains three buttons which
  * allows the user to update Employee details when they clicked.
  * This class extends ActionListener for event handling.
  */
 
- class EmployeeDataUpdate implements ActionListener {
+class EmployeeDataUpdate implements ActionListener {
 
     JFrame frame; // frame in which all other components are added.
 
@@ -8192,12 +8484,12 @@ class TeacherSalaryStructureUpdate extends PlaceholderTextField implements Actio
         JLabel label = new JLabel();
         label.setHorizontalAlignment(JLabel.CENTER);
         label.setSize(1250, 100);
-        label.setText(School_Name);
+        label.setText("UPDATE EMPLOYEE DETAILS");
         label.setFont(new Font("Serif", Font.BOLD, 50));
 
         // create buttons and add to frame
 
-        button = new JButton("Update Employee Basic Details");
+        button = new JButton("Update/Delete Employee Basic Details");
         button.setBounds(480, 150, 350, 30);
         frame.add(button);
 
@@ -8239,25 +8531,23 @@ class TeacherSalaryStructureUpdate extends PlaceholderTextField implements Actio
 
         if (e.getSource() == button) {
 
-            new EmployeeUpdate(null,Database, DBPassword, School_Name);
-            
+            new EmployeeUpdate(null, Database, DBPassword, School_Name);
+
             frame.dispose();
 
         }
 
-        if (e.getSource() == button1) {
+        else if (e.getSource() == button1) {
 
-            new EmployeeSalaryStructureUpdate(null,Database, DBPassword, School_Name);
-            
-            frame.dispose();
-        }
-        if (e.getSource() == button2) {
+            new EmployeeSalaryStructureUpdate(null, Database, DBPassword, School_Name);
 
-            new EmployeeSalaryUpdate(null,Database, DBPassword, School_Name);
-        
             frame.dispose();
-        }
-        if (e.getSource() == back) {
+        } else if (e.getSource() == button2) {
+
+            new EmployeeSalaryUpdate(null, Database, DBPassword, School_Name);
+
+            frame.dispose();
+        } else if (e.getSource() == back) {
 
             new First(Database, DBPassword, School_Name);
             frame.dispose();
@@ -8265,7 +8555,6 @@ class TeacherSalaryStructureUpdate extends PlaceholderTextField implements Actio
 
     }
 }
-
 
 /*
  * This class provides an user interface that allows the user to update Employee
@@ -8275,16 +8564,14 @@ class TeacherSalaryStructureUpdate extends PlaceholderTextField implements Actio
  * This class extends ActionListener for event handling.
  */
 
-
-
- class EmployeeSalaryStructureUpdate extends PlaceholderTextField implements ActionListener {
+class EmployeeSalaryStructureUpdate extends PlaceholderTextField implements ActionListener {
 
     // Buttons :
     // sub to update the Employee Salary Structure,
     // clear for clear the information that are filled,
     // Delete for delete the Employee Salary Structure,
     // back for redirect the user to Home window of App
-    JButton back, clear,Delete, sub;
+    JButton back, clear, Delete, sub;
 
     // TextField:
     // text1 allows the user to enter Employee ID,
@@ -8299,12 +8586,6 @@ class TeacherSalaryStructureUpdate extends PlaceholderTextField implements Actio
     // School_Name to store the School name
     // placeholder for background text of textfield
     String placeholder, Database, DBPassword, School_Name;
-
-
-    // Salary to store salary of the Employee from database,
-    // Month to store month from database
-    // Year to store year from daabase
-    String Salary,Month,Year;
 
     boolean message = false; // message for the message that shows whether the data updated or not.
 
@@ -8332,11 +8613,10 @@ class TeacherSalaryStructureUpdate extends PlaceholderTextField implements Actio
         label2.setFont(new Font("Serif", Font.PLAIN, 22));
         label2.setBounds(300, 75, 720, 25);
 
-        
-        JLabel label3 = new JLabel("Note : Admin can find the Serial Number by click on View Employee details button");
+        JLabel label3 = new JLabel(
+                "Note : Admin can find the Serial Number by click on View_Employee_details button");
         label3.setFont(new Font("Serif", Font.PLAIN, 22));
-        label3.setBounds(330, 110, 700, 25);
-
+        label3.setBounds(290, 110, 750, 25);
 
         JLabel lab1 = new JLabel("Serial No :");
         lab1.setFont(new Font("Serif", Font.PLAIN, 25));
@@ -8438,8 +8718,7 @@ class TeacherSalaryStructureUpdate extends PlaceholderTextField implements Actio
 
             new EmployeeDataUpdate(Database, DBPassword, School_Name);
             frame.dispose();
-        }
-        if (e.getSource() == clear) {
+        } else if (e.getSource() == clear) {
             text1.setText(null);
             text2.setText(null);
             text3.setText(null);
@@ -8448,22 +8727,37 @@ class TeacherSalaryStructureUpdate extends PlaceholderTextField implements Actio
 
         }
 
-        if(e.getSource()== Delete){
-            try{
-            
+        else if (e.getSource() == Delete) {
+            try {
+
                 String url = "jdbc:mysql://localhost:3306/" + Database;
                 String user = "root";
 
                 Connection connection = DriverManager.getConnection(url, user, DBPassword);
-                PreparedStatement pstmt = connection.prepareStatement("delete from Employee_Salary_Structure where Employee_Id = ? and Serial_No = ? ");
-                pstmt.setString(1, text2.getText());
-                pstmt.setString(2, text1.getText());
-                pstmt.executeUpdate();
-                JOptionPane.showMessageDialog(this, "Data Deleted Successfully.");
-                connection.close();
-            }
-            catch(Exception b){
-                
+
+                String selectQuery = "SELECT count(*) FROM Employee_Salary_Structure WHERE Employee_Id = ? and Serial_No =?";
+                PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                selectStmt.setString(1, text2.getText());
+                selectStmt.setString(2, text1.getText());
+
+                ResultSet resultSet = selectStmt.executeQuery();
+
+                resultSet.next();
+                int count = resultSet.getInt(1);
+
+                if (count == 0) {
+                    JOptionPane.showMessageDialog(this, "Data does not exist .");
+                } else if (count > 0) {
+                    PreparedStatement pstmt = connection.prepareStatement(
+                            "delete from Employee_Salary_Structure where Employee_Id = ? and Serial_No = ? ");
+                    pstmt.setString(1, text2.getText());
+                    pstmt.setString(2, text1.getText());
+                    pstmt.executeUpdate();
+                    JOptionPane.showMessageDialog(this, "Data Deleted Successfully.");
+                    connection.close();
+                }
+            } catch (Exception b) {
+
                 JOptionPane.showMessageDialog(this, "No Data Deleted.");
             }
         }
@@ -8474,81 +8768,94 @@ class TeacherSalaryStructureUpdate extends PlaceholderTextField implements Actio
                 String user = "root";
 
                 Connection connection = DriverManager.getConnection(url, user, DBPassword);
-                Statement statement = connection.createStatement();
-               
+
                 // Classw
                 if (text3.getText() != null && !text3.getText().trim().isEmpty()) {
 
-                    String selectQuery = "SELECT * FROM Employee_Salary_Structure WHERE Employee_Id = ? AND Serial_No = ?";
+                    String selectQuery = "SELECT count(*) FROM Employee_Salary_Structure WHERE Employee_Id = ? and Serial_No =?";
                     PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
                     selectStmt.setString(1, text2.getText());
                     selectStmt.setString(2, text1.getText());
-                
+
                     ResultSet resultSet = selectStmt.executeQuery();
-                    while (resultSet.next()) {
-                        Salary = resultSet.getString(4);
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE  Employee_Salary_Structure  SET Salary  = ? WHERE Employee_Id = ? and  Serial_No =?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text3.getText());
+                        pstmt.setString(2, text2.getText());
+                        pstmt.setString(3, text1.getText());
+
+                        pstmt.executeUpdate();
+
+                        message = true;
                     }
-
-                    String query = "UPDATE  Employee_Salary_Structure  SET Salary  = ? WHERE Salary = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text3.getText());
-                    pstmt.setString(2,Salary);
-                    pstmt.executeUpdate();
-
-                    message = true;
                 }
 
                 // Subjects
                 if (text4.getText() != null && !text4.getText().trim().isEmpty()) {
 
-                    String selectQuery = "SELECT * FROM Employee_Salary_Structure WHERE Employee_Id = ? AND Serial_No = ?";
+                    String selectQuery = "SELECT count(*) FROM Employee_Salary_Structure WHERE Employee_Id = ? and Serial_No =?";
                     PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
                     selectStmt.setString(1, text2.getText());
                     selectStmt.setString(2, text1.getText());
-                
+
                     ResultSet resultSet = selectStmt.executeQuery();
-                while (resultSet.next()) {
-                    Month = resultSet.getString(5);
-                }
 
-                    String query = "UPDATE Employee_Salary_Structure SET Month = ? WHERE Month = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text4.getText());
-                    pstmt.setString(2, Month);
-                    pstmt.executeUpdate();
-                    message = true;
-                }
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
 
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+                        String query = "UPDATE Employee_Salary_Structure SET Month = ? WHERE Employee_Id = ? and Serial_No =?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text4.getText());
+                        pstmt.setString(2, text2.getText());
+                        pstmt.setString(3, text1.getText());
+                        pstmt.executeUpdate();
+                        message = true;
+                    }
+                }
                 // Year
                 if (text5.getText() != null && !text5.getText().trim().isEmpty()) {
-                    String selectQuery = "SELECT * FROM Employee_Salary_Structure WHERE Employee_Id = ? AND Serial_No = ?";
+
+                    String selectQuery = "SELECT count(*) FROM Employee_Salary_Structure WHERE Employee_Id = ? and Serial_No =?";
                     PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
                     selectStmt.setString(1, text2.getText());
                     selectStmt.setString(2, text1.getText());
-                
+
                     ResultSet resultSet = selectStmt.executeQuery();
-                while (resultSet.next()) {
-                    Year = resultSet.getString(6);
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+                        String query = "UPDATE Employee_Salary_Structure SET Year = ? WHERE Employee_Id = ? and Serial_No = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text5.getText());
+                        pstmt.setString(2, text2.getText());
+                        pstmt.setString(3, text1.getText());
+                        pstmt.executeUpdate();
+                        message = true;
+                    }
+
                 }
-                    String query = "UPDATE Employee_Salary_Structure SET Year = ? WHERE Year = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text5.getText());
-                    pstmt.setString(2, Year);
-                    pstmt.executeUpdate();
-                    message = true;
-                }
-
-
-
-              
-                statement.close();
                 connection.close();
 
-                if(message == true){
-                JOptionPane.showMessageDialog(this, "Employee Data Updated."); // showing the message whether
+                if (message == true) {
+                    JOptionPane.showMessageDialog(this, "Employee Data Updated."); // showing the message whether
                 }
-                                                                                       // the Student Details insert into the database or not .
-                if(message == false){
+                // the Employee Details insert into the database or not .
+                else if (message == false) {
                     JOptionPane.showMessageDialog(this, "Nothing is Updated.");
                 }
 
@@ -8568,16 +8875,14 @@ class TeacherSalaryStructureUpdate extends PlaceholderTextField implements Actio
  * This class extends ActionListener for event handling.
  */
 
-
-
- class EmployeeSalaryUpdate extends PlaceholderTextField implements ActionListener {
+class EmployeeSalaryUpdate extends PlaceholderTextField implements ActionListener {
 
     // Buttons :
     // sub to update the Employee Salary Details,
     // clear for clear the information that are filled,
     // Delete for delete the Employee Salary Structure,
     // back for redirect the user to Home window of App
-    JButton back, clear,Delete, sub;
+    JButton back, clear, Delete, sub;
 
     // TextField:
     // text1 allows the user to enter Employee ID,
@@ -8592,12 +8897,6 @@ class TeacherSalaryStructureUpdate extends PlaceholderTextField implements Actio
     // School_Name to store the School name
     // placeholder for background text of textfield
     String placeholder, Database, DBPassword, School_Name;
-
-
-    // Salary_Paid to store paid salary details of the Employee from database,
-    // Month to store month from database
-    // Year to store year from daabase
-    String Salary_Paid,Month,Year;
 
     boolean message = false; // message for the message that shows whether the data updated or not.
 
@@ -8625,11 +8924,10 @@ class TeacherSalaryStructureUpdate extends PlaceholderTextField implements Actio
         label2.setFont(new Font("Serif", Font.PLAIN, 22));
         label2.setBounds(300, 75, 720, 25);
 
-        
-        JLabel label3 = new JLabel("Note : Admin can find the Serial Number by click on View Employee details button");
+        JLabel label3 = new JLabel(
+                "Note : Admin can find the Serial Number by click on View_Employee_details button");
         label3.setFont(new Font("Serif", Font.PLAIN, 22));
-        label3.setBounds(330, 110, 700, 25);
-
+        label3.setBounds(290, 110, 750, 25);
 
         JLabel lab1 = new JLabel("Serial No :");
         lab1.setFont(new Font("Serif", Font.PLAIN, 25));
@@ -8741,104 +9039,135 @@ class TeacherSalaryStructureUpdate extends PlaceholderTextField implements Actio
 
         }
 
-        if(e.getSource()== Delete){
-            try{
-            
+        else if (e.getSource() == Delete) {
+            try {
+
                 String url = "jdbc:mysql://localhost:3306/" + Database;
                 String user = "root";
 
                 Connection connection = DriverManager.getConnection(url, user, DBPassword);
-                PreparedStatement pstmt = connection.prepareStatement("delete from Employee_Salary_Details where Employee_Id = ? and Serial_No = ? ");
-                pstmt.setString(1, text2.getText());
-                pstmt.setString(2, text1.getText());
-                pstmt.executeUpdate();
-                JOptionPane.showMessageDialog(this, "Data Deleted Successfully.");
-                connection.close();
-            }
-            catch(Exception b){
-                
+                String selectQuery = "SELECT count(*) FROM Employee_Salary_Details WHERE Employee_Id = ? and Serial_No =?";
+                PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                selectStmt.setString(1, text2.getText());
+                selectStmt.setString(2, text1.getText());
+
+                ResultSet resultSet = selectStmt.executeQuery();
+
+                resultSet.next();
+                int count = resultSet.getInt(1);
+
+                if (count == 0) {
+                    JOptionPane.showMessageDialog(this, "Data does not exist .");
+                } else if (count > 0) {
+
+                    PreparedStatement pstmt = connection
+                            .prepareStatement(
+                                    "delete from Employee_Salary_Details where Employee_Id = ? and Serial_No = ? ");
+                    pstmt.setString(1, text2.getText());
+                    pstmt.setString(2, text1.getText());
+                    pstmt.executeUpdate();
+                    JOptionPane.showMessageDialog(this, "Data Deleted Successfully.");
+                    connection.close();
+                }
+            } catch (Exception b) {
+
                 JOptionPane.showMessageDialog(this, "No Data Deleted.");
             }
-        }
-        if (e.getSource() == sub) {
+        } else if (e.getSource() == sub) {
             try {
                 // connect app to mysql to update Student Academic details into the database.
                 String url = "jdbc:mysql://localhost:3306/" + Database;
                 String user = "root";
 
                 Connection connection = DriverManager.getConnection(url, user, DBPassword);
-                
-               
-                // Classw
+
+                // salary_Paid
                 if (text3.getText() != null && !text3.getText().trim().isEmpty()) {
 
-                    String selectQuery = "SELECT * FROM Employee_Salary_Details WHERE Employee_Id = ? AND Serial_No = ?";
+                    String selectQuery = "SELECT count(*) FROM Employee_Salary_Details WHERE Employee_Id = ? and Serial_No =?";
                     PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
                     selectStmt.setString(1, text2.getText());
                     selectStmt.setString(2, text1.getText());
-                
+
                     ResultSet resultSet = selectStmt.executeQuery();
-                    while (resultSet.next()) {
-                        Salary_Paid = resultSet.getString(4);
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE  Employee_Salary_Details  SET Salary_Paid  = ? Employee_Id = ? and Serial_No =?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text3.getText());
+                        pstmt.setString(2, text2.getText());
+                        pstmt.setString(3, text1.getText());
+                        pstmt.executeUpdate();
+
+                        message = true;
                     }
-
-                    String query = "UPDATE  Employee_Salary_Details  SET Salary_Paid  = ? WHERE Salary_Paid = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text3.getText());
-                    pstmt.setString(2,Salary_Paid);
-                    pstmt.executeUpdate();
-
-                    message = true;
                 }
 
                 // Subjects
                 if (text4.getText() != null && !text4.getText().trim().isEmpty()) {
 
-                    String selectQuery = "SELECT * FROM Employee_Salary_Details WHERE Employee_Id = ? AND Serial_No = ?";
+                    String selectQuery = "SELECT count(*) FROM Employee_Salary_Details WHERE Employee_Id = ? and Serial_No =?";
                     PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
                     selectStmt.setString(1, text2.getText());
                     selectStmt.setString(2, text1.getText());
-                
-                    ResultSet resultSet = selectStmt.executeQuery();
-                while (resultSet.next()) {
-                    Month = resultSet.getString(5);
-                }
 
-                    String query = "UPDATE Employee_Salary_Details SET Month = ? WHERE Month = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text4.getText());
-                    pstmt.setString(2, Month);
-                    pstmt.executeUpdate();
-                    message = true;
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE Employee_Salary_Details SET Month = ? WHERE Employee_Id = ? and Serial_No =?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text4.getText());
+                        pstmt.setString(2, text2.getText());
+                        pstmt.setString(3, text1.getText());
+                        pstmt.executeUpdate();
+                        message = true;
+                    }
                 }
 
                 // Year
                 if (text5.getText() != null && !text5.getText().trim().isEmpty()) {
 
-                    String selectQuery = "SELECT * FROM Employee_Salary_Details WHERE Employee_Id = ? AND Serial_No = ?";
+                    String selectQuery = "SELECT count(*) FROM Employee_Salary_Details WHERE Employee_Id = ? and Serial_No =?";
                     PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
                     selectStmt.setString(1, text2.getText());
                     selectStmt.setString(2, text1.getText());
-                
-                    ResultSet resultSet = selectStmt.executeQuery();
-                while (resultSet.next()) {
-                    Year = resultSet.getString(6);
-                }
-                    String query = "UPDATE Employee_Salary_Details SET Year = ? WHERE Year = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text5.getText());
-                    pstmt.setString(2, Year);
-                    pstmt.executeUpdate();
-                    message = true;
-                }
 
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+                        String query = "UPDATE Employee_Salary_Details SET Year = ? WHERE   Employee_Id = ? and Serial_No =?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text5.getText());
+                        pstmt.setString(2, text2.getText());
+                        pstmt.setString(3, text1.getText());
+                        pstmt.executeUpdate();
+                        message = true;
+                    }
+                }
                 connection.close();
 
-                if(message == true){
-                JOptionPane.showMessageDialog(this, "Employee Data Updated."); // showing the message whether
+                if (message == true) {
+                    JOptionPane.showMessageDialog(this, "Employee Data Updated."); // showing the message whether
                 }
-                                                                                       // the Student Details insert into the database or not .
-                if(message == false){
+                // the Employee Details insert into the database or not .
+                else if (message == false) {
                     JOptionPane.showMessageDialog(this, "Nothing is Updated.");
                 }
 
@@ -8850,11 +9179,6 @@ class TeacherSalaryStructureUpdate extends PlaceholderTextField implements Actio
     }
 }
 
-
-
-
-
-
 /*
  * This class provides an user interface that allows the user to update
  * Employee Basic details .
@@ -8865,8 +9189,9 @@ class EmployeeUpdate extends PlaceholderTextField implements ActionListener {
     // Buttons :
     // sub to insert the Employee basic details into the database,
     // clear for clear the information that are filled,
+    // Delete for delete the Employee basic details
     // back for redirect the user to Home window of App
-    JButton back, sub, clear;
+    JButton back, sub, Delete, clear;
 
     // TextField:
     // text allows the user to enter Employee ID,
@@ -8900,25 +9225,6 @@ class EmployeeUpdate extends PlaceholderTextField implements ActionListener {
     // placeholder for background text of textfield
     String placeholder, Database, DBPassword, School_Name;
 
-    // String
-    // Employee_Id store Employee's Id,
-    // Employee_Name store Employee Name,
-    // Father_Name store Employee's Father Name,
-    // Mother_Name store Employee's Mother Name,
-    // Dob store Employee's Date of Birth,
-    // Gender store select Employee's Gender,
-    // Mob1 store Employee's Mobile Number1 ,
-    // Mob2 store Employee's Mobile Number2,
-    // Joining_Date store Employee's Joining Date,
-    // Address store Employee's Address,
-    // Family_Id store Employee's Family ID,
-    // Qualification store select Employee's Qualification ,
-    // Experience store Employee's Experience,
-    // Account_No store Employee's Mother's Account No,
-    // Job_Leaving_Date store Employee's Job Leaving date
-    String Employee_Id, Employee_Name, Father_Name, Mother_Name, Dob, Gender, Mob1, Mob2, Joining_Date, Address,
-            Employee_Aadhaar_No, Family_Id, Qualification, Experience, Account_No, Job_Leaving_Date;
-
     boolean message = false; // for message that shows employee data updated or not
     // constructor
 
@@ -8939,9 +9245,9 @@ class EmployeeUpdate extends PlaceholderTextField implements ActionListener {
         label3.setText("UPDATE   EMPLOYEE  DATA ");
         label3.setFont(new Font("Serif", Font.BOLD, 50));
 
-        JLabel label2 = new JLabel("Note : Admin can update employee data using Employee id");
+        JLabel label2 = new JLabel("Note : Admin can update/Delete employee data using Employee id");
         label2.setFont(new Font("Serif", Font.PLAIN, 22));
-        label2.setBounds(380, 75, 650, 25);
+        label2.setBounds(380, 75, 700, 25);
 
         JLabel lab = new JLabel("Employee  ID :");
         lab.setFont(new Font("Serif", Font.PLAIN, 25));
@@ -9114,10 +9420,13 @@ class EmployeeUpdate extends PlaceholderTextField implements ActionListener {
         // create buttons for submit ,clear and back
 
         sub = new JButton(" UPDATE ");
-        sub.setBounds(400, 600, 200, 30);
+        sub.setBounds(250, 600, 200, 30);
 
         clear = new JButton(" CLEAR ");
-        clear.setBounds(650, 600, 200, 30);
+        clear.setBounds(500, 600, 200, 30);
+
+        Delete = new JButton(" DELETE ");
+        Delete.setBounds(750, 600, 200, 30);
 
         back = new JButton("Back");
         back.setBounds(30, 30, 100, 30);
@@ -9125,6 +9434,7 @@ class EmployeeUpdate extends PlaceholderTextField implements ActionListener {
         // here add buttons to frame
         frame3.add(sub);
         frame3.add(clear);
+        frame3.add(Delete);
         frame3.add(back);
 
         // set the properties of frame
@@ -9138,6 +9448,7 @@ class EmployeeUpdate extends PlaceholderTextField implements ActionListener {
         // Register the buttons with Action listener
         back.addActionListener(this);
         sub.addActionListener(this);
+        Delete.addActionListener(this);
         clear.addActionListener(this);
     }
 
@@ -9148,8 +9459,7 @@ class EmployeeUpdate extends PlaceholderTextField implements ActionListener {
 
             new EmployeeDataUpdate(Database, DBPassword, School_Name);
             frame3.dispose();
-        }
-        if (e.getSource() == clear) {
+        } else if (e.getSource() == clear) {
             text.setText(null);
             text1.setText(null);
             text2.setText(null);
@@ -9168,306 +9478,421 @@ class EmployeeUpdate extends PlaceholderTextField implements ActionListener {
             text16.setText(null);
         }
 
-        if (e.getSource() == sub) {
+        else if (e.getSource() == Delete) {
             try {
 
-                // connect app to mysql to update Employee Basic Details update
-                Employee_Id = text.getText();
                 String url = "jdbc:mysql://localhost:3306/" + Database;
                 String user = "root";
 
                 Connection connection = DriverManager.getConnection(url, user, DBPassword);
-                Statement statement = connection.createStatement();
+
+                // Enrollment No
+                if (text.getText() != null && !text.getText().trim().isEmpty()) {
+
+                    String selectQuery = "SELECT count(*) FROM Employee_Registration WHERE Employee_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+                        String query = "Delete from Employee_Registration WHERE Employee_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text.getText());
+                        pstmt.executeUpdate();
+
+                        JOptionPane.showMessageDialog(this, "Data Deleted Sucessfully .");
+                        connection.close();
+                    }
+                }
+            } catch (Exception a) {
+                JOptionPane.showMessageDialog(this, "Student_Id is not filled or Wrong Enteries .");
+            }
+        }
+
+        else if (e.getSource() == sub) {
+            try {
+
+                // connect app to Mysql to update Employee Basic details
+
+                String url = "jdbc:mysql://localhost:3306/" + Database;
+                String user = "root";
+
+                Connection connection = DriverManager.getConnection(url, user, DBPassword);
 
                 // Employee Name
                 if (text1.getText() != null && !text1.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet = statement.executeQuery(
-                            " select * from Employee_Registration where Employee_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet.next()) {
-                        Employee_Name = resultSet.getString(2);
+                    String selectQuery = "SELECT count(*) FROM Employee_Registration WHERE Employee_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE Employee_Registration SET Employee_Name = ? WHERE Employee_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text1.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
                     }
 
-                    String query = "UPDATE Employee_Registration SET Employee_Name = ? WHERE Employee_Name = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text1.getText());
-                    pstmt.setString(2, Employee_Name);
-                    pstmt.executeUpdate();
-                    message = true;
                 }
-
-                // Father Name
+                // Employee Father Name
                 if (text2.getText() != null && !text2.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet = statement.executeQuery(
-                            " select * from Employee_Registration where Employee_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet.next()) {
-                        Father_Name = resultSet.getString(3);
+                    String selectQuery = "SELECT count(*) FROM Employee_Registration WHERE Employee_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE Employee_Registration SET Father_Name = ? WHERE Employee_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text2.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
                     }
 
-                    String query = "UPDATE Employee_Registration SET Father_Name = ? WHERE Father_Name = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text2.getText());
-                    pstmt.setString(2, Father_Name);
-                    pstmt.executeUpdate();
-                    message = true;
                 }
-
-                // Mother Name
+                // Employee Mother Name
                 if (text3.getText() != null && !text3.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet = statement.executeQuery(
-                            " select * from Employee_Registration where Employee_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet.next()) {
-                        Mother_Name = resultSet.getString(4);
+                    String selectQuery = "SELECT count(*) FROM Employee_Registration WHERE  Employee_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+                        String query = "UPDATE Employee_Registration SET Mother_Name = ? WHERE Mother_Name = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text3.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
                     }
-
-                    String query = "UPDATE Employee_Registration SET Mother_Name = ? WHERE Mother_Name = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text3.getText());
-                    pstmt.setString(2, Mother_Name);
-                    pstmt.executeUpdate();
-                    message = true;
                 }
-
-                // dob
+                // Dob
                 if (text4.getText() != null && !text4.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet = statement.executeQuery(
-                            " select * from Employee_Registration where Employee_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet.next()) {
-                        Dob = resultSet.getString(5);
+                    String selectQuery = "SELECT count(*) FROM Employee_Registration WHERE Employee_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE Employee_Registration SET Date_Of_Birth = ? WHERE Employee_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text4.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
                     }
-
-                    String query = "UPDATE Employee_Registration SET Date_Of_Birth = ? WHERE Date_Of_Birth = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text4.getText());
-                    pstmt.setString(2, Dob);
-                    pstmt.executeUpdate();
-                    message = true;
                 }
-
                 // Gender
                 if (ch1.getSelectedIndex() != -1) {
 
-                    ResultSet resultSet = statement.executeQuery(
-                            " select * from Employee_Registration where Employee_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet.next()) {
-                        Gender = resultSet.getString(6);
-                    }
+                    String selectQuery = "SELECT count(*) FROM Employee_Registration WHERE Employee_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
 
-                    String query = "UPDATE Employee_Registration SET Gender = ? WHERE Gender = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, (String) ch1.getSelectedItem());
-                    pstmt.setString(2, Gender);
-                    pstmt.executeUpdate();
-                    message = true;
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE Employee_Registration SET Gender = ? WHERE Employee_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, (String) ch1.getSelectedItem());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
+                    }
                 }
 
-                // Mobile number1
+                // Mobile Number1
                 if (text5.getText() != null && !text5.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet = statement.executeQuery(
-                            " select * from Employee_Registration where Employee_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet.next()) {
-                        Mob1 = resultSet.getString(7);
+                    String selectQuery = "SELECT count(*) FROM Employee_Registration WHERE Employee_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE Employee_Registration  SET Mob1 = ? WHERE Employee_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text5.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
                     }
-
-                    String query = "UPDATE Employee_Registration  SET Mob1 = ? WHERE Mob1 = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text5.getText());
-                    pstmt.setString(2, Mob1);
-                    pstmt.executeUpdate();
-                    message = true;
                 }
-
                 // Mobile Number2
                 if (text7.getText() != null && !text7.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet = statement.executeQuery(
-                            " select * from Employee_Registration where Employee_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet.next()) {
-                        Mob2 = resultSet.getString(8);
+                    String selectQuery = "SELECT count(*) FROM Employee_Registration WHERE Employee_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE Employee_Registration  SET Mob2= ? WHERE Employee_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text7.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
                     }
-
-                    String query = "UPDATE Employee_Registration  SET Mob2= ? WHERE Mob2 = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text7.getText());
-                    pstmt.setString(2, Mob2);
-                    pstmt.executeUpdate();
-                    message = true;
                 }
-
                 // Joining Date
                 if (text8.getText() != null && !text8.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet = statement.executeQuery(
-                            " select * from Employee_Registration where Employee_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet.next()) {
-                        Joining_Date = resultSet.getString(9);
-                    }
+                    String selectQuery = "SELECT count(*) FROM Employee_Registration WHERE Employee_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
 
-                    String query = "UPDATE Employee_Registration  SET Joining_Date= ? WHERE Joining_Date = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text8.getText());
-                    pstmt.setString(2, Joining_Date);
-                    pstmt.executeUpdate();
-                    message = true;
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE Employee_Registration  SET Joining_Date= ? WHERE Employee_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text8.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
+                    }
                 }
 
                 // Address
                 if (text9.getText() != null && !text9.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet = statement.executeQuery(
-                            " select * from Employee_Registration where Employee_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet.next()) {
-                        Address = resultSet.getString(10);
-                    }
+                    String selectQuery = "SELECT count(*) FROM Employee_Registration WHERE Employee_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
 
-                    String query = "UPDATE Employee_Registration  SET Address= ? WHERE Address = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text9.getText());
-                    pstmt.setString(2, Address);
-                    pstmt.executeUpdate();
-                    message = true;
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE Employee_Registration  SET Address= ? WHERE Employee_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text9.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
+                    }
                 }
 
-                // Employee Aadhaar No
+                // Employee Aadhaar Number
                 if (text11.getText() != null && !text11.getText().trim().isEmpty()) {
+                    String selectQuery = "SELECT count(*) FROM Employee_Registration WHERE Employee_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
 
-                    ResultSet resultSet1 = statement.executeQuery(
-                            " select * from Employee_Registration where Employee_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet1.next()) {
-                        Employee_Aadhaar_No = resultSet1.getString(11);
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE Employee_Registration SET Employee_Aadhaar_No= ? WHERE Employee_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text11.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
                     }
-
-                    String query = "UPDATE Employee_Registration SET Employee_Aadhaar_No= ? WHERE Employee_Aadhaar_No = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text11.getText());
-                    pstmt.setString(2, Employee_Aadhaar_No);
-                    pstmt.executeUpdate();
-                    message = true;
                 }
 
                 // Family Id
                 if (text12.getText() != null && !text12.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet2 = statement
-                            .executeQuery(" select * from Employee_Registration where Employee_Id = "
-                                    + (String) text.getText() + " limit 1;");
-                    while (resultSet2.next()) {
-                        Family_Id = resultSet2.getString(12);
-                    }
+                    String selectQuery = "SELECT count(*) FROM Employee_Registration WHERE Employee_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
 
-                    String query = "UPDATE Employee_Registration SET Family_Id= ? WHERE Family_Id = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text12.getText());
-                    pstmt.setString(2, Family_Id);
-                    pstmt.executeUpdate();
-                    message = true;
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE Employee_Registration SET Family_Id= ? WHERE Employee_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text12.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
+                    }
                 }
 
                 // Qualification
                 if (text13.getText() != null && !text13.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet3 = statement.executeQuery(
-                            " select * from Employee_Registration where Employee_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet3.next()) {
-                        Qualification = resultSet3.getString(13);
-                    }
+                    String selectQuery = "SELECT count(*) FROM Employee_Registration WHERE Employee_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
 
-                    String query = "UPDATE Employee_Registration SET Qualification= ? WHERE Qualification = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text13.getText());
-                    pstmt.setString(2, Qualification);
-                    pstmt.executeUpdate();
-                    message = true;
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+                        String query = "UPDATE Employee_Registration SET Qualification= ? WHERE Employee_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text13.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
+                    }
                 }
 
                 // Experience
                 if (text14.getText() != null && !text14.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet4 = statement.executeQuery(
-                            " select * from Employee_Registration where Employee_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet4.next()) {
-                        Experience = resultSet4.getString(14);
-                    }
+                    String selectQuery = "SELECT count(*) FROM Employee_Registration WHERE Employee_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
 
-                    String query = "UPDATE Employee_Registration SET Experience= ? WHERE Experience = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text14.getText());
-                    pstmt.setString(2, Experience);
-                    pstmt.executeUpdate();
-                    message = true;
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+                        String query = "UPDATE Employee_Registration SET Experience= ? WHERE Employee_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text14.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
+                    }
                 }
 
                 // Account No
                 if (text15.getText() != null && !text15.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet5 = statement.executeQuery(
-                            " select * from Employee_Registration where Employee_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet5.next()) {
-                        Account_No = resultSet5.getString(15);
+                    String selectQuery = "SELECT count(*) FROM Employee_Registration WHERE Employee_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+                        String query = "UPDATE Employee_Registration SET Account_No= ? WHERE Employee_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text15.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
                     }
 
-                    String query = "UPDATE Employee_Registration SET Account_No= ? WHERE Account_No = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text15.getText());
-                    pstmt.setString(2, Account_No);
-                    pstmt.executeUpdate();
-                    message = true;
                 }
-
-                // Job Leaving Date
+                // Job leaving Date
                 if (text16.getText() != null && !text16.getText().trim().isEmpty()) {
 
-                    ResultSet resultSet6 = statement.executeQuery(
-                            " select * from Employee_Registration where Employee_Id = " + (String) text.getText()
-                                    + " limit 1;");
-                    while (resultSet6.next()) {
-                        Job_Leaving_Date = resultSet6.getString(16);
-                    }
+                    String selectQuery = "SELECT count(*) FROM Employee_Registration WHERE Employee_Id = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    ResultSet resultSet = selectStmt.executeQuery();
 
-                    String query = "UPDATE Employee_Registration SET Job_Leaving_Date= ? WHERE Job_Leaving_Date = ?";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, text16.getText());
-                    pstmt.setString(2, Job_Leaving_Date);
-                    pstmt.executeUpdate();
-                    message = true;
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+
+                        String query = "UPDATE Employee_Registration SET Job_Leaving_Date= ? WHERE Employee_Id = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text16.getText());
+                        pstmt.setString(2, text.getText());
+                        pstmt.executeUpdate();
+                        message = true;
+                    }
                 }
 
-                //
                 if (message == true) {
                     JOptionPane.showMessageDialog(this, "Employee Data Updated");
-                }
-                if (message == false) {
-                    JOptionPane.showMessageDialog(this, "Nothing is Updated");
+
                 }
 
-                statement.close();
+                else if (message == false) {
+                    JOptionPane.showMessageDialog(this, "Nothing is Updated");
+
+                }
+
                 connection.close();
 
             } catch (Exception a) {
-
                 JOptionPane.showMessageDialog(this, "Employee_Id is not filled or Wrong Enteries");
 
             }
 
         }
-
     }
 }
 
@@ -9478,6 +9903,9 @@ public class App {
 
     // main method
     public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
         new Login(null, null, null, null, null, null);
+       });
     }
+
 }
