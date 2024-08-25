@@ -402,6 +402,8 @@ class CreateDB implements ActionListener {
                 statement1.execute(
                         "alter table Employee_Salary_Details add constraint fk_es2 Foreign key(Employee_Id,Employee_Name) references Employee_Registration(Employee_Id,Employee_Name) on update cascade  on delete cascade;");
 
+                statement1.execute("create table School_Fee_Structure(Serial_No int AUTO_INCREMENT Primary key,Class varchar(5) not null,Fee int(9) not null , Session varchar(10) not null )");
+
                 statement1.execute(
                         "create  table credentials(School_Name varchar(50) not null,User_Name varchar(50) not null,Password varchar(50) not null,SNo int AUTO_INCREMENT ,Primary key(SNo));");
 
@@ -773,15 +775,15 @@ class ResetPassword implements ActionListener {
 
         JLabel lab3 = new JLabel("Enter New User Name ");
         lab3.setFont(new Font("Serif", Font.PLAIN, 20));
-        lab3.setBounds(385, 390, 300, 40);
+        lab3.setBounds(538, 390, 350, 40);
 
         JLabel lab4 = new JLabel("Enter New Password ");
         lab4.setFont(new Font("Serif", Font.PLAIN, 20));
-        lab4.setBounds(385, 440, 350, 40);
+        lab4.setBounds(538, 480, 350, 40);
 
         lab2 = new JLabel();
         lab2.setFont(new Font("Serif", Font.PLAIN, 20));
-        lab2.setBounds(700, 540, 450, 25);
+        lab2.setBounds(700, 580, 450, 25);
 
         // create TextFields and set their properties
 
@@ -795,15 +797,15 @@ class ResetPassword implements ActionListener {
 
         text3 = new JTextField();
         text3.setFont(new Font("Serif", Font.PLAIN, 25));
-        text3.setBounds(620, 400, 300, 30);
+        text3.setBounds(480, 440, 300, 30);
 
         text4 = new JTextField();
         text4.setFont(new Font("Serif", Font.PLAIN, 25));
-        text4.setBounds(620, 450, 300, 30);
+        text4.setBounds(480, 530, 300, 30);
 
         // create buttons and add to frame
         submit = new JButton("Submit");
-        submit.setBounds(580, 540, 100, 25);
+        submit.setBounds(580, 580, 100, 25);
         frame.add(submit);
 
         back = new JButton("Back");
@@ -916,13 +918,13 @@ class First implements ActionListener {
     // b10 is responsible for opening the Other Employee Salary Structure window ,
     // b11 is responsible for opening the Other Employee Salary Details window,
     // b12 is responsibe for opening the window in which three buttons are available
+    // b13 is responsible for opening the window to fill school fee structure
     // that shows all Other employee details when they clicked,
     // update1 is responsible for opening the Update Student's Details window,
     // update2 is responsible for openening the Update Teacher's Details window,
     // update3 is reponsible for opening the Other's Employee's Details window,
     // back for redirect the user to first window
-    private JButton button, button1, button2, button3, button4, button5, button6, b7, b8, b9, b10, b11, b12, update1,
-            update2, update3, back;
+    private JButton button, button1, button2, button3, button4, button5, button6, b7, b8, b9, b10, b11, b12,b13,update1,update2, update3, back;
 
     // Database to Store the database name
     // DBPassword to store the mysql password
@@ -947,20 +949,22 @@ class First implements ActionListener {
         label.setText(School_Name);
         label.setFont(new Font("Serif", Font.BOLD, 50));
 
-        JLabel label2 = new JLabel();
-        label2.setFont(new Font("Serif", Font.PLAIN, 30));
-        label2.setText("STUDENTS");
-        label2.setBounds(222, 150, 270, 30);
+        JLabel label2 = new JLabel("STUDENTS");
+        label2.setFont(new Font("Serif", Font.PLAIN, 25));
+        label2.setBounds(222, 150, 270, 25);
 
-        JLabel label3 = new JLabel();
-        label3.setFont(new Font("Serif", Font.PLAIN, 30));
-        label3.setText("TEACHERS");
-        label3.setBounds(545, 150, 270, 30);
+        JLabel label3 = new JLabel("TEACHERS");
+        label3.setFont(new Font("Serif", Font.PLAIN, 25));
+        label3.setBounds(545, 150, 270, 25);
 
-        JLabel label4 = new JLabel();
-        label4.setFont(new Font("Serif", Font.PLAIN, 30));
-        label4.setText("EMPLOYEES");
-        label4.setBounds(886, 150, 270, 30);
+        JLabel label4 = new JLabel("EMPLOYEES");
+        label4.setFont(new Font("Serif", Font.PLAIN, 25));
+        label4.setBounds(886, 150, 270, 25);
+
+
+        JLabel label5 = new JLabel("SCHOOL");
+        label5.setFont(new Font("Serif", Font.PLAIN, 25));
+        label5.setBounds(575, 550, 270, 25);
 
         // create buttons and add to frame
         button = new JButton("STUDENT  REGISTRATION");
@@ -1027,6 +1031,14 @@ class First implements ActionListener {
         update3.setBounds(830, 400, 300, 30);
         frame.add(update3);
 
+        
+        b13 = new JButton("SCHOOL  FEE  STRUCTURE");
+        b13.setBounds(480, 585, 300, 30);
+        frame.add(b13);
+
+
+
+
         back = new JButton("Back");
         back.setBounds(3, 5, 100, 30);
         frame.add(back);
@@ -1036,6 +1048,7 @@ class First implements ActionListener {
         frame.add(label2);
         frame.add(label3);
         frame.add(label4);
+        frame.add(label5);
 
         // set the properties of frame
         frame.setSize(500, 500);
@@ -1059,6 +1072,7 @@ class First implements ActionListener {
         b10.addActionListener(this);
         b11.addActionListener(this);
         b12.addActionListener(this);
+        b13.addActionListener(this);
         back.addActionListener(this);
         update1.addActionListener(this);
         update2.addActionListener(this);
@@ -1139,6 +1153,12 @@ class First implements ActionListener {
             frame.dispose();
         }
 
+        else if(e.getSource()== b13){
+           SchoolFeeStructure sc = new SchoolFeeStructure(null,Database,DBPassword,School_Name);
+           sc.view();
+           frame.dispose();
+
+        }
         else if (e.getSource() == back) {
             new Login(null, null, null, null, null, null);
             frame.dispose();
@@ -1450,8 +1470,8 @@ class Student extends PlaceholderTextField implements ActionListener {
             text13.setText(null);
             text14.setText(null);
 
-            ch1.setSelectedItem(gender[0]);
-            ch2.setSelectedItem(category[0]);
+            ch1.setSelectedIndex(-1);
+            ch2.setSelectedIndex(-1);
 
         } else if (e.getSource() == sub) {
             try {
@@ -1520,9 +1540,13 @@ class Enrollment extends PlaceholderTextField implements ActionListener {
     // text1 allows user to enter student id ,
     // text2 allows user to enter Student Name,
     // text3 allows user to enter Student Enrolllment No,
-    // text4 allows user to enter Student Class.
-    JTextField text1, text2, text3, text4;
 
+    JTextField text1, text2, text3;
+
+    // options for classes
+    String[] Class = { "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th" };
+    // ch4 allows user to select Student Class.
+    JComboBox<String> ch4;
     // Database to Store the database name
     // DBPassword to store the mysql password
     // School_Name to store the School name
@@ -1586,9 +1610,10 @@ class Enrollment extends PlaceholderTextField implements ActionListener {
         text3.setFont(new Font("Serif", Font.PLAIN, 25));
         text3.setBounds(450, 245, 300, 30);
 
-        text4 = new PlaceholderTextField("eg : 5th");
-        text4.setFont(new Font("Serif", Font.PLAIN, 25));
-        text4.setBounds(450, 285, 300, 30);
+        ch4 = new JComboBox<>(Class);
+        ch4.setBounds(450, 285, 300, 30);
+        ch4.setMaximumRowCount(5);
+        ch4.setSelectedIndex(-1);
 
         // create Buttons and set their properties
         sub = new JButton(" SUBMIT ");
@@ -1600,11 +1625,11 @@ class Enrollment extends PlaceholderTextField implements ActionListener {
         back = new JButton("Home");
         back.setBounds(30, 30, 100, 30);
 
-        // here add textfields to frame
+        // here add textfields and JCombobox to frame
         frame.add(text1);
         frame.add(text2);
         frame.add(text3);
-        frame.add(text4);
+        frame.add(ch4);
 
         // here add buttons to frame
         frame.add(sub);
@@ -1636,7 +1661,7 @@ class Enrollment extends PlaceholderTextField implements ActionListener {
             text1.setText(null);
             text2.setText(null);
             text3.setText(null);
-            text4.setText(null);
+            ch4.setSelectedIndex(-1);
 
         } else if (e.getSource() == sub) {
             try {
@@ -1648,7 +1673,7 @@ class Enrollment extends PlaceholderTextField implements ActionListener {
                 Statement statement = connection.createStatement();
                 statement.execute("insert into Enrollment(Student_Id,Student_Name,Enrollment_No,Class) values("
                         + text1.getText() + ", \"" + text2.getText()
-                        + "\", \"" + text3.getText() + "\", \"" + text4.getText() + "\");");
+                        + "\", \"" + text3.getText() + "\", \"" + ch4.getSelectedItem() + "\");");
                 statement.close();
                 connection.close();
                 JOptionPane.showMessageDialog(this, "Saved Into Database Successfully."); // showing the message whether
@@ -1680,11 +1705,17 @@ class Academic extends PlaceholderTextField implements ActionListener {
     // Textfields:
     // text1 allows user to enter student id ,
     // text2 allows user to enter Student Name,
-    // text3 allows user to enter Student Class,
+
     // text4 allows user to enter Student Subject,
     // text5 allows user to enter Student Session,
     // text6 allows user to enter Student Fee.
-    JTextField text1, text2, text5, text3, text4, text6;
+    JTextField text1, text2, text5, text4, text6;
+
+    // ch3 allows user to enter Student Class,
+    JComboBox<String> ch3;
+
+    // Options for classes
+    String[] Class = { "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th" };
 
     JFrame frame; // frame in which all other components are added .
 
@@ -1758,15 +1789,16 @@ class Academic extends PlaceholderTextField implements ActionListener {
         text2.setFont(new Font("Serif", Font.PLAIN, 25));
         text2.setBounds(450, 205, 300, 30);
 
-        text3 = new PlaceholderTextField("eg:5th");
-        text3.setFont(new Font("Serif", Font.PLAIN, 25));
-        text3.setBounds(450, 245, 300, 30);
+        ch3 = new JComboBox<>(Class);
+        ch3.setBounds(450, 245, 300, 30);
+        ch3.setMaximumRowCount(5);
+        ch3.setSelectedIndex(-1);
 
         text4 = new PlaceholderTextField("eg : Math,English,Science");
         text4.setFont(new Font("Serif", Font.PLAIN, 25));
         text4.setBounds(450, 285, 300, 30);
 
-        text5 = new JTextField();
+        text5 = new PlaceholderTextField("eg : 2023-24");
         text5.setFont(new Font("Serif", Font.PLAIN, 25));
         text5.setBounds(450, 325, 300, 30);
 
@@ -1785,10 +1817,10 @@ class Academic extends PlaceholderTextField implements ActionListener {
         back = new JButton("Home");
         back.setBounds(30, 30, 100, 30);
 
-        // here add textfields to frame
+        // here add textfields and Jcombobox to frame
         frame.add(text1);
         frame.add(text2);
-        frame.add(text3);
+        frame.add(ch3);
         frame.add(text4);
         frame.add(text5);
         frame.add(text6);
@@ -1822,7 +1854,7 @@ class Academic extends PlaceholderTextField implements ActionListener {
         } else if (e.getSource() == clear) {
             text1.setText(null);
             text2.setText(null);
-            text3.setText(null);
+            ch3.setSelectedIndex(-1);
             text4.setText(null);
             text5.setText(null);
             text6.setText(null);
@@ -1837,7 +1869,7 @@ class Academic extends PlaceholderTextField implements ActionListener {
                 Statement statement = connection.createStatement();
                 statement.execute("insert into Academic(Student_Id,Student_Name,class,Subjects,Session,Fee) values("
                         + text1.getText() + ", \"" + text2.getText() + "\", \""
-                        + text3.getText() + "\", \"" + text4.getText() + "\" , \'" + text5.getText() + "\', "
+                        + ch3.getSelectedItem() + "\", \"" + text4.getText() + "\" , \'" + text5.getText() + "\', "
                         + text6.getText() + ");");
                 statement.close();
                 connection.close();
@@ -1873,11 +1905,16 @@ class Fee extends PlaceholderTextField implements ActionListener {
     // Textfields:
     // text1 allows user to enter student id ,
     // text2 allows user to enter Student Name,
-    // text3 allows user to enter Student Class,
     // text4 allows user to enter Student Paid Fee,
     // text5 allows user to enter Student Balance,
     // text6 allows user to enter Student Date.
-    JTextField text1, text2, text3, text4, text5, text6;
+    JTextField text1, text2, text4, text5, text6;
+
+    // ch3 allows user to enter Student Class,
+    JComboBox<String> ch3;
+
+    // Options for classes
+    String[] Class = { "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th" };
 
     // Database to Store the database name
     // DBPassword to store the mysql password
@@ -1946,9 +1983,10 @@ class Fee extends PlaceholderTextField implements ActionListener {
         text2.setFont(new Font("Serif", Font.PLAIN, 25));
         text2.setBounds(450, 205, 300, 30);
 
-        text3 = new PlaceholderTextField("eg : 5th");
-        text3.setFont(new Font("Serif", Font.PLAIN, 25));
-        text3.setBounds(450, 245, 300, 30);
+        ch3 = new JComboBox<>(Class);
+        ch3.setBounds(450, 245, 300, 30);
+        ch3.setMaximumRowCount(5);
+        ch3.setSelectedIndex(-1);
 
         text4 = new JTextField();
         text4.setFont(new Font("Serif", Font.PLAIN, 25));
@@ -1972,10 +2010,10 @@ class Fee extends PlaceholderTextField implements ActionListener {
         back = new JButton("Home");
         back.setBounds(30, 30, 100, 30);
 
-        // here add textfields to frame
+        // here add textfields and Jcombobox to frame
         frame.add(text1);
         frame.add(text2);
-        frame.add(text3);
+        frame.add(ch3);
         frame.add(text4);
         frame.add(text5);
         frame.add(text6);
@@ -2010,7 +2048,7 @@ class Fee extends PlaceholderTextField implements ActionListener {
         else if (e.getSource() == clear) {
             text1.setText(null);
             text2.setText(null);
-            text3.setText(null);
+            ch3.setSelectedIndex(-1);
             text4.setText(null);
             text5.setText(null);
             text6.setText(null);
@@ -2026,7 +2064,7 @@ class Fee extends PlaceholderTextField implements ActionListener {
                 Statement statement = connection.createStatement();
                 statement.execute(
                         "insert into Fee_Details(Student_Id,Student_Name,Class,Paid_Fee,Balance,P_date) values("
-                                + text1.getText() + ", \"" + text2.getText() + "\", \"" + text3.getText() + "\", "
+                                + text1.getText() + ", \"" + text2.getText() + "\", \"" + ch3.getSelectedItem() + "\", "
                                 + text4.getText() + " , " + text5.getText() + ", \'" + text6.getText() + "\' );");
                 statement.close();
                 connection.close();
@@ -2374,9 +2412,15 @@ class TeacherSalaryStructure extends PlaceholderTextField implements ActionListe
     // text1 allows the user to enter Teacher ID,
     // text2 allows the user to enter Teacher Name,
     // text3 allows the user to enter Teacher's Salary,
-    // text4 allows the user to enter Month,
     // text5 allows the user to enter Year
-    JTextField text1, text2, text3, text4, text5;
+    JTextField text1, text2, text3, text5;
+
+    // ch4 allows user to select month,
+    JComboBox<String> ch4;
+
+    // Options for Months
+    String[] Month = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October",
+            "November", "December" };
 
     // Database to Store the database name
     // DBPassword to store the mysql password
@@ -2447,9 +2491,10 @@ class TeacherSalaryStructure extends PlaceholderTextField implements ActionListe
         text3.setFont(new Font("Serif", Font.PLAIN, 25));
         text3.setBounds(450, 245, 300, 30);
 
-        text4 = new PlaceholderTextField("eg : January");
-        text4.setFont(new Font("Serif", Font.PLAIN, 25));
-        text4.setBounds(450, 285, 300, 30);
+        ch4 = new JComboBox<>(Month);
+        ch4.setBounds(450, 285, 300, 30);
+        ch4.setMaximumRowCount(5);
+        ch4.setSelectedIndex(-1);
 
         text5 = new JTextField();
         text5.setFont(new Font("Serif", Font.PLAIN, 25));
@@ -2466,11 +2511,11 @@ class TeacherSalaryStructure extends PlaceholderTextField implements ActionListe
         back = new JButton("Home");
         back.setBounds(30, 30, 100, 30);
 
-        // here add textfields to frame
+        // here add textfields and Jcombobox to frame
         frame.add(text1);
         frame.add(text2);
         frame.add(text3);
-        frame.add(text4);
+        frame.add(ch4);
         frame.add(text5);
 
         // here add buttons to frame
@@ -2503,7 +2548,7 @@ class TeacherSalaryStructure extends PlaceholderTextField implements ActionListe
             text1.setText(null);
             text2.setText(null);
             text3.setText(null);
-            text4.setText(null);
+            ch4.setSelectedIndex(-1);
             text5.setText(null);
 
         }
@@ -2519,7 +2564,7 @@ class TeacherSalaryStructure extends PlaceholderTextField implements ActionListe
                 statement.execute(
                         "insert into Teacher_Salary_Structure(Teacher_Id,Teacher_Name,Salary,Month,Year) values("
                                 + text1.getText() + ", \""
-                                + text2.getText() + "\", " + text3.getText() + ", \"" + text4.getText() + "\" , "
+                                + text2.getText() + "\", " + text3.getText() + ", \"" + ch4.getSelectedItem() + "\" , "
                                 + text5.getText() + " );");
                 statement.close();
                 connection.close();
@@ -2554,10 +2599,15 @@ class TeacherSalaryDetails extends PlaceholderTextField implements ActionListene
     // text1 allows the user to enter Teacher ID,
     // text2 allows the user to enter Teacher Name,
     // text3 allows the user to enter Teacher's Salary Paid,
-    // text4 allows the user to enter Month,
     // text5 allows the user to enter Year
+    JTextField text1, text2, text3, text5;
 
-    JTextField text1, text2, text3, text4, text5;
+    // ch4 allows user to select month,
+    JComboBox<String> ch4;
+
+    // Options for Month
+    String[] Month = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October",
+            "November", "December" };
 
     // Database to Store the database name
     // DBPassword to store the mysql password
@@ -2627,9 +2677,10 @@ class TeacherSalaryDetails extends PlaceholderTextField implements ActionListene
         text3.setFont(new Font("Serif", Font.PLAIN, 25));
         text3.setBounds(450, 245, 300, 30);
 
-        text4 = new PlaceholderTextField("eg : January");
-        text4.setFont(new Font("Serif", Font.PLAIN, 25));
-        text4.setBounds(450, 285, 300, 30);
+        ch4 = new JComboBox<>(Month);
+        ch4.setBounds(450, 285, 300, 30);
+        ch4.setMaximumRowCount(5);
+        ch4.setSelectedIndex(-1);
 
         text5 = new JTextField();
         text5.setFont(new Font("Serif", Font.PLAIN, 25));
@@ -2646,11 +2697,11 @@ class TeacherSalaryDetails extends PlaceholderTextField implements ActionListene
         back = new JButton("Home");
         back.setBounds(30, 30, 100, 30);
 
-        // here add textfields to frame
+        // here add textfields and JCombobox to frame
         frame.add(text1);
         frame.add(text2);
         frame.add(text3);
-        frame.add(text4);
+        frame.add(ch4);
         frame.add(text5);
 
         // here add buttons to frame
@@ -2682,7 +2733,7 @@ class TeacherSalaryDetails extends PlaceholderTextField implements ActionListene
             text1.setText(null);
             text2.setText(null);
             text3.setText(null);
-            text4.setText(null);
+            ch4.setSelectedIndex(-1);
             text5.setText(null);
 
         }
@@ -2699,7 +2750,7 @@ class TeacherSalaryDetails extends PlaceholderTextField implements ActionListene
                 statement.execute(
                         "insert into Teacher_Salary_Details(Teacher_Id,Teacher_Name,Salary_Paid,Month,Year) values("
                                 + text1.getText() + ", \""
-                                + text2.getText() + "\", " + text3.getText() + ", \"" + text4.getText() + "\" , "
+                                + text2.getText() + "\", " + text3.getText() + ", \"" + ch4.getSelectedItem() + "\" , "
                                 + text5.getText() + " );");
                 statement.close();
                 connection.close();
@@ -3046,10 +3097,15 @@ class EmployeeSalaryStructure extends PlaceholderTextField implements ActionList
     // text1 allows the user to enter Employee ID,
     // text2 allows the user to enter Employee Name,
     // text3 allows the user to enter Employee's Salary,
-    // text4 allows the user to enter Month,
     // text5 allows the user to enter Year
+    JTextField text1, text2, text3, text5;
 
-    JTextField text1, text2, text3, text4, text5;
+    // ch4 allows user to select month,
+    JComboBox<String> ch4;
+
+    // Options for months
+    String[] Month = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October",
+            "November", "December" };
 
     // Database to Store the database name
     // DBPassword to store the mysql password
@@ -3120,9 +3176,9 @@ class EmployeeSalaryStructure extends PlaceholderTextField implements ActionList
         text3.setFont(new Font("Serif", Font.PLAIN, 25));
         text3.setBounds(450, 245, 300, 30);
 
-        text4 = new PlaceholderTextField("eg : January");
-        text4.setFont(new Font("Serif", Font.PLAIN, 25));
-        text4.setBounds(450, 285, 300, 30);
+        ch4 = new JComboBox<>(Month);
+        ch4.setBounds(450, 285, 300, 30);
+        ch4.setSelectedIndex(-1);
 
         text5 = new JTextField();
         text5.setFont(new Font("Serif", Font.PLAIN, 25));
@@ -3139,11 +3195,11 @@ class EmployeeSalaryStructure extends PlaceholderTextField implements ActionList
         back = new JButton("Home");
         back.setBounds(30, 30, 100, 30);
 
-        // here add textfields to frame
+        // here add textfields and JCombobox to frame
         frame.add(text1);
         frame.add(text2);
         frame.add(text3);
-        frame.add(text4);
+        frame.add(ch4);
         frame.add(text5);
 
         // here add buttons to frame
@@ -3175,7 +3231,7 @@ class EmployeeSalaryStructure extends PlaceholderTextField implements ActionList
             text1.setText(null);
             text2.setText(null);
             text3.setText(null);
-            text4.setText(null);
+            ch4.setSelectedIndex(-1);
             text5.setText(null);
 
         } else if (e.getSource() == sub) {
@@ -3190,7 +3246,7 @@ class EmployeeSalaryStructure extends PlaceholderTextField implements ActionList
                 statement.execute(
                         "insert into Employee_Salary_Structure(Employee_Id,Employee_Name,Salary,Month,Year) values("
                                 + text1.getText() + ", \""
-                                + text2.getText() + "\", " + text3.getText() + ", \"" + text4.getText() + "\" , "
+                                + text2.getText() + "\", " + text3.getText() + ", \"" + ch4.getSelectedItem() + "\" , "
                                 + text5.getText() + ");");
                 statement.close();
                 connection.close();
@@ -3224,9 +3280,15 @@ class EmployeeSalaryDetails extends PlaceholderTextField implements ActionListen
     // text1 allows the user to enter Employee ID,
     // text2 allows the user to enter Employee Name,
     // text3 allows the user to enter Employee's Salary Paid,
-    // text4 allows the user to enter Month,
     // text5 allows the user to enter Year
-    JTextField text1, text2, text3, text4, text5;
+    JTextField text1, text2, text3, text5;
+
+    // ch4 allows user to select month,
+    JComboBox<String> ch4;
+
+    // Options for Month
+    String[] Month = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October",
+            "November", "December" };
 
     // Database to Store the database name
     // DBPassword to store the mysql password
@@ -3297,9 +3359,10 @@ class EmployeeSalaryDetails extends PlaceholderTextField implements ActionListen
         text3.setFont(new Font("Serif", Font.PLAIN, 25));
         text3.setBounds(450, 245, 300, 30);
 
-        text4 = new PlaceholderTextField("eg : January");
-        text4.setFont(new Font("Serif", Font.PLAIN, 25));
-        text4.setBounds(450, 285, 300, 30);
+        ch4 = new JComboBox<>(Month);
+        ch4.setBounds(450, 285, 300, 30);
+        ch4.setMaximumRowCount(5);
+        ch4.setSelectedIndex(-1);
 
         text5 = new JTextField();
         text5.setFont(new Font("Serif", Font.PLAIN, 25));
@@ -3320,7 +3383,7 @@ class EmployeeSalaryDetails extends PlaceholderTextField implements ActionListen
         frame.add(text1);
         frame.add(text2);
         frame.add(text3);
-        frame.add(text4);
+        frame.add(ch4);
         frame.add(text5);
 
         // here add buttons to frame
@@ -3352,7 +3415,7 @@ class EmployeeSalaryDetails extends PlaceholderTextField implements ActionListen
             text1.setText(null);
             text2.setText(null);
             text3.setText(null);
-            text4.setText(null);
+            ch4.setSelectedIndex(-1);
             text5.setText(null);
 
         }
@@ -3369,7 +3432,7 @@ class EmployeeSalaryDetails extends PlaceholderTextField implements ActionListen
                 statement.execute(
                         "insert into Employee_Salary_Details(Employee_Id , Employee_Name,Salary_Paid,Month,Year) values("
                                 + text1.getText() + ", \""
-                                + text2.getText() + "\", " + text3.getText() + ", \"" + text4.getText() + "\" , "
+                                + text2.getText() + "\", " + text3.getText() + ", \"" + ch4.getSelectedItem() + "\" , "
                                 + text5.getText() + " );");
                 statement.close();
                 connection.close();
@@ -5486,11 +5549,16 @@ class StudentUpdate extends PlaceholderTextField implements ActionListener {
     // text17 allows the user to enter Student's School Leaving date
     // text18 allows the user to enter Student Enrolled class
     JTextField text, text1, text2, text3, text4, text5, text7, text8, text9, text10, text11, text12, text13, text14,
-            text15, text16, text17, text18;
+            text15, text16, text17;
 
     JComboBox<String> ch1; // JComboBox ch1 to select the gender of Student
 
     JComboBox<String> ch2; // JCommboBox ch2 to select the category of Student
+
+    JComboBox<String> ch18; // JCommboBox ch2 to select the class of Student
+
+    // Options for classes
+    String[] Class = { "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th" };
 
     boolean message = false; // for showing the message
 
@@ -5635,7 +5703,6 @@ class StudentUpdate extends PlaceholderTextField implements ActionListener {
         ch1 = new JComboBox<>(gender); // ComboBox for gender
         ch1.setBounds(300, 365, 300, 30);
         ch1.setSelectedIndex(-1);
-        
 
         text7 = new JTextField();
         text7.setFont(new Font("Serif", Font.PLAIN, 25));
@@ -5685,9 +5752,10 @@ class StudentUpdate extends PlaceholderTextField implements ActionListener {
         text17.setFont(new Font("Serif", Font.PLAIN, 25));
         text17.setBounds(950, 445, 300, 30);
 
-        text18 = new PlaceholderTextField("eg : 5th");
-        text18.setFont(new Font("Serif", Font.PLAIN, 25));
-        text18.setBounds(950, 485, 300, 30);
+        ch18 = new JComboBox<>(Class);
+        ch18.setBounds(950, 485, 300, 30);
+        ch18.setMaximumRowCount(5);
+        ch18.setSelectedIndex(-1);
 
         // create buttons for submit ,delete ,clear and back
 
@@ -5748,7 +5816,7 @@ class StudentUpdate extends PlaceholderTextField implements ActionListener {
         frame1.add(text16);
         frame1.add(text17);
         frame1.add(ch2);
-        frame1.add(text18);
+        frame1.add(ch18);
         // here add buttons to frame
         frame1.add(sub);
         frame1.add(clear);
@@ -5800,7 +5868,7 @@ class StudentUpdate extends PlaceholderTextField implements ActionListener {
             text15.setText(null);
             text16.setText(null);
             text17.setText(null);
-            text18.setText(null);
+            ch18.setSelectedIndex(-1);
 
             ch1.setSelectedIndex(-1);
             ch2.setSelectedIndex(-1);
@@ -6261,7 +6329,7 @@ class StudentUpdate extends PlaceholderTextField implements ActionListener {
                     message = true;
                 }
 
-                if (text18.getText() != null && !text1.getText().trim().isEmpty()) {
+                if (ch18.getSelectedIndex() != -1) {
 
                     String selectQuery = "SELECT count(*) FROM Enrollment WHERE Student_Id = ?";
                     PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
@@ -6277,7 +6345,7 @@ class StudentUpdate extends PlaceholderTextField implements ActionListener {
 
                         String query = "UPDATE Enrollment SET Enrolled_Class = ? WHERE Student_Id = ?";
                         PreparedStatement pstmt = connection.prepareStatement(query);
-                        pstmt.setString(1, text18.getText());
+                        pstmt.setString(1, (String) ch18.getSelectedItem());
                         pstmt.setString(2, text.getText());
                         pstmt.executeUpdate();
 
@@ -6321,11 +6389,16 @@ class AcademicUpdate extends PlaceholderTextField implements ActionListener {
     // Textfields:
     // text1 allows user to enter serial Number ,
     // text2 allows user to enter Student ID,
-    // text3 allows user to enter Student class,
     // text4 allows user to enter Student Subject,
     // text5 allows user to enter Student Session,
     // text6 allows user to enter Student Fee,
-    JTextField text1, text2, text5, text3, text4, text6;
+    JTextField text1, text2, text5, text4, text6;
+
+    // ch3 allows user to enter Student Class,
+    JComboBox<String> ch3;
+
+    // Options for classes
+    String[] Class = { "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th" };
 
     JFrame frame; // frame in which all other components are added .
 
@@ -6410,15 +6483,16 @@ class AcademicUpdate extends PlaceholderTextField implements ActionListener {
         text2.setFont(new Font("Serif", Font.PLAIN, 25));
         text2.setBounds(450, 205, 300, 30);
 
-        text3 = new PlaceholderTextField("eg:5th");
-        text3.setFont(new Font("Serif", Font.PLAIN, 25));
-        text3.setBounds(450, 245, 300, 30);
+        ch3 = new JComboBox<>(Class);
+        ch3.setBounds(450, 245, 300, 30);
+        ch3.setMaximumRowCount(5);
+        ch3.setSelectedIndex(-1);
 
         text4 = new PlaceholderTextField("eg : Math,English,Science");
         text4.setFont(new Font("Serif", Font.PLAIN, 25));
         text4.setBounds(450, 285, 300, 30);
 
-        text5 = new JTextField();
+        text5 = new PlaceholderTextField("eg : 2023-24");
         text5.setFont(new Font("Serif", Font.PLAIN, 25));
         text5.setBounds(450, 325, 300, 30);
 
@@ -6440,10 +6514,10 @@ class AcademicUpdate extends PlaceholderTextField implements ActionListener {
         back = new JButton("Back");
         back.setBounds(30, 30, 100, 30);
 
-        // here add textfields to frame
+        // here add textfields and JCombobox to frame
         frame.add(text1);
         frame.add(text2);
-        frame.add(text3);
+        frame.add(ch3);
         frame.add(text4);
         frame.add(text5);
         frame.add(text6);
@@ -6479,7 +6553,7 @@ class AcademicUpdate extends PlaceholderTextField implements ActionListener {
         } else if (e.getSource() == clear) {
             text1.setText(null);
             text2.setText(null);
-            text3.setText(null);
+            ch3.setSelectedIndex(-1);
             text4.setText(null);
             text5.setText(null);
             text6.setText(null);
@@ -6529,7 +6603,7 @@ class AcademicUpdate extends PlaceholderTextField implements ActionListener {
                 Connection connection = DriverManager.getConnection(url, user, DBPassword);
 
                 // Class
-                if (text3.getText() != null && !text3.getText().trim().isEmpty()) {
+                if (ch3.getSelectedIndex() != -1) {
 
                     String selectQuery = "SELECT count(*) FROM Academic WHERE Student_Id = ? AND Serial_No = ?";
                     PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
@@ -6546,7 +6620,7 @@ class AcademicUpdate extends PlaceholderTextField implements ActionListener {
                     } else if (count > 0) {
                         String query = "UPDATE  Academic  SET class  = ? WHERE Student_Id = ? AND Serial_No = ? ;";
                         PreparedStatement pstmt = connection.prepareStatement(query);
-                        pstmt.setString(1, text3.getText());
+                        pstmt.setString(1, (String) ch3.getSelectedItem());
                         pstmt.setString(2, text2.getText());
                         pstmt.setString(3, text1.getText());
                         pstmt.executeUpdate();
@@ -6672,11 +6746,16 @@ class FeeUpdate extends PlaceholderTextField implements ActionListener {
     // Textfields:
     // text1 allows user to enter serial no ,
     // text2 allows user to enter Student id,
-    // text3 allows user to enter Student Class,
     // text4 allows user to enter Student Paid Fee,
     // text5 allows user to enter Student Balance,
     // text6 allows user to enter Student Date.
-    JTextField text1, text2, text3, text4, text5, text6;
+    JTextField text1, text2, text4, text5, text6;
+
+    // ch3 allows user to enter Student Class,
+    JComboBox<String> ch3;
+
+    // Options for classes
+    String[] Class = { "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th" };
 
     // Database to Store the database name
     // DBPassword to store the mysql password
@@ -6757,9 +6836,10 @@ class FeeUpdate extends PlaceholderTextField implements ActionListener {
         text2.setFont(new Font("Serif", Font.PLAIN, 25));
         text2.setBounds(450, 205, 300, 30);
 
-        text3 = new PlaceholderTextField("eg : 5th");
-        text3.setFont(new Font("Serif", Font.PLAIN, 25));
-        text3.setBounds(450, 245, 300, 30);
+        ch3 = new JComboBox<>(Class);
+        ch3.setBounds(450, 245, 300, 30);
+        ch3.setMaximumRowCount(5);
+        ch3.setSelectedIndex(-1);
 
         text4 = new JTextField();
         text4.setFont(new Font("Serif", Font.PLAIN, 25));
@@ -6790,7 +6870,7 @@ class FeeUpdate extends PlaceholderTextField implements ActionListener {
         // here add textfields to frame
         frame.add(text1);
         frame.add(text2);
-        frame.add(text3);
+        frame.add(ch3);
         frame.add(text4);
         frame.add(text5);
         frame.add(text6);
@@ -6827,7 +6907,7 @@ class FeeUpdate extends PlaceholderTextField implements ActionListener {
         else if (e.getSource() == clear) {
             text1.setText(null);
             text2.setText(null);
-            text3.setText(null);
+            ch3.setSelectedIndex(-1);
             text4.setText(null);
             text5.setText(null);
             text6.setText(null);
@@ -6877,7 +6957,7 @@ class FeeUpdate extends PlaceholderTextField implements ActionListener {
                 Connection connection = DriverManager.getConnection(url, user, DBPassword);
 
                 // Classw
-                if (text3.getText() != null && !text3.getText().trim().isEmpty()) {
+                if (ch3.getSelectedIndex() != -1) {
                     String selectQuery = "SELECT count(*) FROM Fee_Details WHERE Student_Id = ? AND Serial_No = ?";
                     PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
                     selectStmt.setString(1, text2.getText());
@@ -6893,7 +6973,7 @@ class FeeUpdate extends PlaceholderTextField implements ActionListener {
                     } else if (count > 0) {
                         String query = "UPDATE  Fee_Details  SET Class  = ? WHERE Student_Id = ? AND Serial_No = ?";
                         PreparedStatement pstmt = connection.prepareStatement(query);
-                        pstmt.setString(1, text3.getText());
+                        pstmt.setString(1, (String) ch3.getSelectedItem());
                         pstmt.setString(2, text2.getText());
                         pstmt.setString(3, text1.getText());
                         pstmt.executeUpdate();
@@ -7845,9 +7925,15 @@ class TeacherSalaryStructureUpdate extends PlaceholderTextField implements Actio
     // text1 allows the user to enter Teacher ID,
     // text2 allows the user to enter Teacher Name,
     // text3 allows the user to enter Teacher's Salary,
-    // text4 allows the user to enter Month,
     // text5 allows the user to enter Year
-    JTextField text1, text2, text3, text4, text5;
+    JTextField text1, text2, text3, text5;
+
+    // ch4 allows user to select month,
+    JComboBox<String> ch4;
+
+    // Options for months
+    String[] Month = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October",
+            "November", "December" };
 
     // Database to Store the database name
     // DBPassword to store the mysql password
@@ -7930,9 +8016,10 @@ class TeacherSalaryStructureUpdate extends PlaceholderTextField implements Actio
         text3.setFont(new Font("Serif", Font.PLAIN, 25));
         text3.setBounds(450, 245, 300, 30);
 
-        text4 = new PlaceholderTextField("eg : January");
-        text4.setFont(new Font("Serif", Font.PLAIN, 25));
-        text4.setBounds(450, 285, 300, 30);
+        ch4 = new JComboBox<>(Month);
+        ch4.setBounds(450, 285, 300, 30);
+        ch4.setMaximumRowCount(5);
+        ch4.setSelectedIndex(-1);
 
         text5 = new JTextField();
         text5.setFont(new Font("Serif", Font.PLAIN, 25));
@@ -7952,11 +8039,11 @@ class TeacherSalaryStructureUpdate extends PlaceholderTextField implements Actio
         back = new JButton("Back");
         back.setBounds(30, 30, 100, 30);
 
-        // here add textfields to frame
+        // here add textfields and JCombobox to frame
         frame.add(text1);
         frame.add(text2);
         frame.add(text3);
-        frame.add(text4);
+        frame.add(ch4);
         frame.add(text5);
 
         // here add buttons to frame
@@ -7991,7 +8078,7 @@ class TeacherSalaryStructureUpdate extends PlaceholderTextField implements Actio
             text1.setText(null);
             text2.setText(null);
             text3.setText(null);
-            text4.setText(null);
+            ch4.setSelectedIndex(-1);
             text5.setText(null);
 
         }
@@ -8068,7 +8155,7 @@ class TeacherSalaryStructureUpdate extends PlaceholderTextField implements Actio
                 }
 
                 // Subjects
-                if (text4.getText() != null && !text4.getText().trim().isEmpty()) {
+                if (ch4.getSelectedIndex() != -1) {
 
                     String selectQuery = "SELECT count(*) FROM Teacher_Salary_Structure WHERE Teacher_Id = ? and Serial_No =?";
                     PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
@@ -8085,7 +8172,7 @@ class TeacherSalaryStructureUpdate extends PlaceholderTextField implements Actio
                     } else if (count > 0) {
                         String query = "UPDATE Teacher_Salary_Structure SET Month = ? WHERE Teacher_Id = ? and Serial_No =?";
                         PreparedStatement pstmt = connection.prepareStatement(query);
-                        pstmt.setString(1, text4.getText());
+                        pstmt.setString(1, (String) ch4.getSelectedItem());
                         pstmt.setString(2, text2.getText());
                         pstmt.setString(3, text1.getText());
                         pstmt.executeUpdate();
@@ -8157,9 +8244,15 @@ class TeacherSalaryUpdate extends PlaceholderTextField implements ActionListener
     // text1 allows the user to enter Teacher ID,
     // text2 allows the user to enter Teacher Name,
     // text3 allows the user to enter Teacher's Salary,
-    // text4 allows the user to enter Month,
     // text5 allows the user to enter Year
-    JTextField text1, text2, text3, text4, text5;
+    JTextField text1, text2, text3, text5;
+
+    // ch4 allows user to select month,
+    JComboBox<String> ch4;
+
+    // Options for months
+    String[] Month = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October",
+            "November", "December" };
 
     // Database to Store the database name
     // DBPassword to store the mysql password
@@ -8242,9 +8335,10 @@ class TeacherSalaryUpdate extends PlaceholderTextField implements ActionListener
         text3.setFont(new Font("Serif", Font.PLAIN, 25));
         text3.setBounds(450, 245, 300, 30);
 
-        text4 = new PlaceholderTextField("eg : January");
-        text4.setFont(new Font("Serif", Font.PLAIN, 25));
-        text4.setBounds(450, 285, 300, 30);
+        ch4 = new JComboBox<>(Month);
+        ch4.setBounds(450, 285, 300, 30);
+        ch4.setMaximumRowCount(5);
+        ch4.setSelectedIndex(-1);
 
         text5 = new JTextField();
         text5.setFont(new Font("Serif", Font.PLAIN, 25));
@@ -8268,7 +8362,7 @@ class TeacherSalaryUpdate extends PlaceholderTextField implements ActionListener
         frame.add(text1);
         frame.add(text2);
         frame.add(text3);
-        frame.add(text4);
+        frame.add(ch4);
         frame.add(text5);
 
         // here add buttons to frame
@@ -8302,7 +8396,7 @@ class TeacherSalaryUpdate extends PlaceholderTextField implements ActionListener
             text1.setText(null);
             text2.setText(null);
             text3.setText(null);
-            text4.setText(null);
+            ch4.setSelectedIndex(-1);
             text5.setText(null);
 
         }
@@ -8378,7 +8472,7 @@ class TeacherSalaryUpdate extends PlaceholderTextField implements ActionListener
                 }
 
                 // Subjects
-                if (text4.getText() != null && !text4.getText().trim().isEmpty()) {
+                if (ch4.getSelectedIndex() != -1) {
 
                     String selectQuery = "SELECT count(*) FROM Teacher_Salary_Details WHERE Teacher_Id = ? and Serial_No =?";
                     PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
@@ -8396,7 +8490,7 @@ class TeacherSalaryUpdate extends PlaceholderTextField implements ActionListener
 
                         String query = "UPDATE Teacher_Salary_Details SET Month = ? WHERE Teacher_Id = ? and Serial_No =?";
                         PreparedStatement pstmt = connection.prepareStatement(query);
-                        pstmt.setString(1, text4.getText());
+                        pstmt.setString(1, (String) ch4.getSelectedItem());
                         pstmt.setString(2, text2.getText());
                         pstmt.setString(3, text1.getText());
                         pstmt.executeUpdate();
@@ -8577,9 +8671,15 @@ class EmployeeSalaryStructureUpdate extends PlaceholderTextField implements Acti
     // text1 allows the user to enter Employee ID,
     // text2 allows the user to enter Employee Name,
     // text3 allows the user to enter Employee's Salary,
-    // text4 allows the user to enter Month,
     // text5 allows the user to enter Year
-    JTextField text1, text2, text3, text4, text5;
+    JTextField text1, text2, text3, text5;
+
+    // ch4 allows user to select month,
+    JComboBox<String> ch4;
+
+    // Options for months
+    String[] Month = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October",
+            "November", "December" };
 
     // Database to Store the database name
     // DBPassword to store the mysql password
@@ -8662,9 +8762,10 @@ class EmployeeSalaryStructureUpdate extends PlaceholderTextField implements Acti
         text3.setFont(new Font("Serif", Font.PLAIN, 25));
         text3.setBounds(450, 245, 300, 30);
 
-        text4 = new PlaceholderTextField("eg : January");
-        text4.setFont(new Font("Serif", Font.PLAIN, 25));
-        text4.setBounds(450, 285, 300, 30);
+        ch4 = new JComboBox<>(Month);
+        ch4.setBounds(450, 285, 300, 30);
+        ch4.setMaximumRowCount(5);
+        ch4.setSelectedIndex(-1);
 
         text5 = new JTextField();
         text5.setFont(new Font("Serif", Font.PLAIN, 25));
@@ -8688,7 +8789,7 @@ class EmployeeSalaryStructureUpdate extends PlaceholderTextField implements Acti
         frame.add(text1);
         frame.add(text2);
         frame.add(text3);
-        frame.add(text4);
+        frame.add(ch4);
         frame.add(text5);
 
         // here add buttons to frame
@@ -8722,7 +8823,7 @@ class EmployeeSalaryStructureUpdate extends PlaceholderTextField implements Acti
             text1.setText(null);
             text2.setText(null);
             text3.setText(null);
-            text4.setText(null);
+            ch4.setSelectedIndex(-1);
             text5.setText(null);
 
         }
@@ -8799,7 +8900,7 @@ class EmployeeSalaryStructureUpdate extends PlaceholderTextField implements Acti
                 }
 
                 // Subjects
-                if (text4.getText() != null && !text4.getText().trim().isEmpty()) {
+                if (ch4.getSelectedIndex() != -1) {
 
                     String selectQuery = "SELECT count(*) FROM Employee_Salary_Structure WHERE Employee_Id = ? and Serial_No =?";
                     PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
@@ -8816,7 +8917,7 @@ class EmployeeSalaryStructureUpdate extends PlaceholderTextField implements Acti
                     } else if (count > 0) {
                         String query = "UPDATE Employee_Salary_Structure SET Month = ? WHERE Employee_Id = ? and Serial_No =?";
                         PreparedStatement pstmt = connection.prepareStatement(query);
-                        pstmt.setString(1, text4.getText());
+                        pstmt.setString(1, (String) ch4.getSelectedItem());
                         pstmt.setString(2, text2.getText());
                         pstmt.setString(3, text1.getText());
                         pstmt.executeUpdate();
@@ -8888,9 +8989,15 @@ class EmployeeSalaryUpdate extends PlaceholderTextField implements ActionListene
     // text1 allows the user to enter Employee ID,
     // text2 allows the user to enter Employee Name,
     // text3 allows the user to enter Employee's Salary,
-    // text4 allows the user to enter Month,
     // text5 allows the user to enter Year
-    JTextField text1, text2, text3, text4, text5;
+    JTextField text1, text2, text3, text5;
+
+    // ch4 allows user to select month,
+    JComboBox<String> ch4;
+
+    // Options for months
+    String[] Month = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October",
+            "November", "December" };
 
     // Database to Store the database name
     // DBPassword to store the mysql password
@@ -8973,9 +9080,9 @@ class EmployeeSalaryUpdate extends PlaceholderTextField implements ActionListene
         text3.setFont(new Font("Serif", Font.PLAIN, 25));
         text3.setBounds(450, 245, 300, 30);
 
-        text4 = new PlaceholderTextField("eg : January");
-        text4.setFont(new Font("Serif", Font.PLAIN, 25));
-        text4.setBounds(450, 285, 300, 30);
+        ch4 = new JComboBox<>(Month);
+        ch4.setBounds(450, 285, 300, 30);
+        ch4.setSelectedIndex(-1);
 
         text5 = new JTextField();
         text5.setFont(new Font("Serif", Font.PLAIN, 25));
@@ -8999,7 +9106,7 @@ class EmployeeSalaryUpdate extends PlaceholderTextField implements ActionListene
         frame.add(text1);
         frame.add(text2);
         frame.add(text3);
-        frame.add(text4);
+        frame.add(ch4);
         frame.add(text5);
 
         // here add buttons to frame
@@ -9034,7 +9141,7 @@ class EmployeeSalaryUpdate extends PlaceholderTextField implements ActionListene
             text1.setText(null);
             text2.setText(null);
             text3.setText(null);
-            text4.setText(null);
+            ch4.setSelectedIndex(-1);
             text5.setText(null);
 
         }
@@ -9110,7 +9217,7 @@ class EmployeeSalaryUpdate extends PlaceholderTextField implements ActionListene
                 }
 
                 // Subjects
-                if (text4.getText() != null && !text4.getText().trim().isEmpty()) {
+                if (ch4.getSelectedIndex() != -1) {
 
                     String selectQuery = "SELECT count(*) FROM Employee_Salary_Details WHERE Employee_Id = ? and Serial_No =?";
                     PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
@@ -9128,7 +9235,7 @@ class EmployeeSalaryUpdate extends PlaceholderTextField implements ActionListene
 
                         String query = "UPDATE Employee_Salary_Details SET Month = ? WHERE Employee_Id = ? and Serial_No =?";
                         PreparedStatement pstmt = connection.prepareStatement(query);
-                        pstmt.setString(1, text4.getText());
+                        pstmt.setString(1, (String) ch4.getSelectedItem());
                         pstmt.setString(2, text2.getText());
                         pstmt.setString(3, text1.getText());
                         pstmt.executeUpdate();
@@ -9897,6 +10004,395 @@ class EmployeeUpdate extends PlaceholderTextField implements ActionListener {
 }
 
 /*
+ * This class provides an user interface that allows user to insert School's
+ * Fee Structure into the database.
+ * This class extends PlaceholderTextField to fill the background of textfield
+ * This class extends ActionListener for event handling.
+ */
+class SchoolFeeStructure extends PlaceholderTextField implements ActionListener {
+    // Buttons :
+    // sub to insert the School Feee details into the database,
+    // update for update the information that are filled,
+    // back for redirect the user to Home window of App
+    // Delete for delete the information,
+    JButton back, sub, update,Delete;
+
+    // Textfields:
+    // text allows to enter Serial_No which is only for updation and deletion
+    // text1 allows user to enter fee,
+    // text2 allows user to enter session,
+
+    JTextField text,text1, text2;
+
+    // options for classes
+    String[] Class = { "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th" };
+    // ch4 allows user to select Student Class.
+    JComboBox<String> ch1;
+    // Database to Store the database name
+    // DBPassword to store the mysql password
+    // School_Name to store the School name
+    // placeholder for background text of textfield
+    String placeholder, Database, DBPassword, School_Name;
+
+    JFrame frame; // frame in which all other components are added
+
+    private JTable tableData; // Table to show Fee Structure
+
+    private DefaultTableModel model; // This a default table model
+
+    boolean message = false; // message that shows whether the data is updated or not.
+
+    // constructor
+    SchoolFeeStructure(String placeholder, String database, String Password, String School) {
+        super(placeholder);
+        Database = database;
+        DBPassword = Password;
+        School_Name = School;
+    }
+
+    public void view(){
+        try{
+        // create a frame
+        frame = new JFrame();
+
+        // create labels and set their properties
+        JLabel label = new JLabel();
+        label.setHorizontalAlignment(JLabel.CENTER);
+        label.setSize(1250, 100);
+        label.setText("SCHOOl  FEE  STRUCTURE");
+        label.setFont(new Font("Serif", Font.BOLD, 50));
+
+        JLabel lab1 = new JLabel("Serial_No :");
+        lab1.setFont(new Font("Serif", Font.PLAIN, 25));
+        lab1.setBounds(50, 160, 150, 30);
+
+        JLabel lab2 = new JLabel("Class :");
+        lab2.setFont(new Font("Serif", Font.PLAIN, 25));
+        lab2.setBounds(50, 200, 150, 30);
+
+        JLabel lab4 = new JLabel("Fee :");
+        lab4.setFont(new Font("Serif", Font.PLAIN, 25));
+        lab4.setBounds(50, 240, 150, 30);
+
+        JLabel lab5 = new JLabel("Seession :");
+        lab5.setFont(new Font("Serif", Font.PLAIN, 25));
+        lab5.setBounds(50, 280, 150, 30);
+
+        // Here add labels in frame
+        frame.add(label);
+        frame.add(lab1);
+        frame.add(lab2);
+        frame.add(lab4);
+        frame.add(lab5);
+
+        // create TextFields and Jcombobox and  set their properties
+
+        text = new PlaceholderTextField("For Updation or Deltion");
+        text.setFont(new Font("Serif", Font.PLAIN, 25));
+        text.setBounds(210, 165, 230, 30);
+
+
+
+
+        ch1 = new JComboBox<>(Class);
+        ch1.setBounds(210, 205, 230, 30);
+        ch1.setMaximumRowCount(5);
+        ch1.setSelectedIndex(-1);
+
+
+        text1 = new JTextField();
+        text1.setFont(new Font("Serif", Font.PLAIN, 25));
+        text1.setBounds(210, 245, 230, 30);
+
+        text2 = new JTextField();
+        text2.setFont(new Font("Serif", Font.PLAIN, 25));
+        text2.setBounds(210, 285, 230, 30);
+
+
+
+        // create Buttons and set their properties
+        sub = new JButton(" SUBMIT ");
+        sub.setBounds(100, 350, 100, 30);
+
+        update = new JButton(" UPDATE ");
+        update.setBounds(230, 350, 100, 30);
+
+        Delete = new JButton(" Delete ");
+        Delete.setBounds(360, 350, 100, 30);
+
+        back = new JButton("Home");
+        back.setBounds(30, 30, 100, 30);
+
+        // here add textfields and JCombobox to frame
+        frame.add(text);
+        frame.add(text1);
+        frame.add(text2);
+        frame.add(ch1);
+
+        // here add buttons to frame
+        frame.add(sub);
+        frame.add(update);
+        frame.add(back);
+        frame.add(Delete);
+    
+
+
+
+
+
+         // connect app to mysql to fetch the Fee structure
+         String url = "jdbc:mysql://localhost:3306/" + Database;
+         String user = "root";
+
+         Connection connection = DriverManager.getConnection(url, user, DBPassword);
+         Statement statement = connection.createStatement();
+         ResultSet resultSet = statement.executeQuery(
+                 "select * from School_Fee_Structure;");
+         ResultSetMetaData rsmd = resultSet.getMetaData();
+
+         // create a default table model
+         model = new DefaultTableModel() {
+             @Override
+             public boolean isCellEditable(int row, int column) {
+                 return false; // All cells are non-editable
+             }
+         };
+
+         // store the column name into an array named colname
+         int columns = rsmd.getColumnCount(); // count the no of columns in a table of mysql database
+         final String[] colname = new String[columns];
+         for (int i = 0; i < columns; i++) {
+             colname[i] = rsmd.getColumnName(i + 1);
+         }
+
+         // set the column name to the model
+         model.setColumnIdentifiers(colname);
+
+         // store the rows to an array named row
+         while (resultSet.next()) {
+             String[] row = new String[columns];
+             for (int i = 0; i < columns; i++) {
+                 row[i] = resultSet.getString(i + 1);
+             }
+             // add rows to default table model
+             model.addRow(row);
+         }
+
+         // Create table using default table model
+         tableData = new JTable(model);
+
+         // set the column width of table
+         int[] columnWidths = { 100, 150, 150,200};
+         for (int i = 0; i < columns; i++) {
+             TableColumn column = tableData.getColumnModel().getColumn(i);
+             column.setPreferredWidth(columnWidths[i]);
+         }
+
+         tableData.setAutoResizeMode(JTable.AUTO_RESIZE_OFF); // change the auto resize properties of table .
+
+         // create Scrollpane and add table to it set its properties;
+
+         JScrollPane sp = new JScrollPane(tableData);
+         sp.setBounds(500, 150, 600, 500);
+
+         sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+         sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
+         // add scrollpane to frame
+         frame.add(sp);
+
+         statement.close();
+         connection.close();
+
+    
+
+        // set the properties of frame
+        frame.setSize(500, 500);
+        frame.setLayout(null);
+        frame.getContentPane().setBackground(Color.YELLOW);
+        frame.setVisible(true);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+
+        // Register the buttons with the event Listener
+        back.addActionListener(this);
+        sub.addActionListener(this);
+        update.addActionListener(this);
+        Delete.addActionListener(this);
+
+        }catch(Exception e){
+            System.out.println(e);
+        }
+    }
+
+    // All logics for this class are inside this method.
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == back) {
+
+            new First(Database, DBPassword, School_Name);
+            frame.dispose();
+        } else if (e.getSource() == sub) {
+            try {
+                // connect app to mysql to insert Enrollment details into database.
+                String url = "jdbc:mysql://localhost:3306/" + Database;
+                String user = "root";
+
+                Connection connection = DriverManager.getConnection(url, user, DBPassword);
+                Statement statement = connection.createStatement();
+                statement.execute("insert into School_Fee_Structure(Class,Fee,Session) values("
+                        + "\"" + ch1.getSelectedItem() +"\"," + text1.getText()
+                        + ", \"" + text2.getText() + "\");");
+                statement.close();
+                connection.close();
+                JOptionPane.showMessageDialog(this, "Saved Into Database Successfully.");
+
+            } catch (Exception a) {
+                System.out.println(a);
+                JOptionPane.showMessageDialog(this, "Something is missing or Incorrect enteries");
+            }
+        } else if(e.getSource() == update){
+
+            try {
+                // connect app to mysql to update Student Academic details into the database.
+                String url = "jdbc:mysql://localhost:3306/" + Database;
+                String user = "root";
+
+                Connection connection = DriverManager.getConnection(url, user, DBPassword);
+
+                // Class
+                if (ch1.getSelectedIndex() != -1) {
+
+                    String selectQuery = "SELECT count(*) FROM  School_Fee_Structure WHERE Serial_No = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist .");
+                    } else if (count > 0) {
+                        String query = "UPDATE  School_Fee_Structure  SET Class  = ? WHERE Serial_No =?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, (String) ch1.getSelectedItem());
+                        pstmt.setString(2, text.getText());
+                       
+                        pstmt.executeUpdate();
+
+                        message = true;
+                    }
+                }
+                // Fee
+                if (text1.getText() != null && !text1.getText().trim().isEmpty()) {
+
+                    String selectQuery = "SELECT count(*) FROM School_Fee_Structure WHERE Serial_No = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    
+
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist.");
+                    } else if (count > 0) {
+                        String query = "UPDATE School_Fee_Structure SET Fee = ? WHERE  Serial_No = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text1.getText());
+                        pstmt.setString(2, text.getText());
+                        
+                        pstmt.executeUpdate();
+                        message = true;
+                    }
+                }
+
+                // Session
+                if (text2.getText() != null && !text2.getText().trim().isEmpty()) {
+
+                    String selectQuery = "SELECT count(*) FROM School_Fee_Structure WHERE Serial_No = ?";
+                    PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                    selectStmt.setString(1, text.getText());
+                    
+
+                    ResultSet resultSet = selectStmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt(1);
+
+                    if (count == 0) {
+                        JOptionPane.showMessageDialog(this, "Data does not exist.");
+                    } else if (count > 0) {
+                        String query = "UPDATE School_Fee_Structure SET Session = ? WHERE  Serial_No = ?";
+                        PreparedStatement pstmt = connection.prepareStatement(query);
+                        pstmt.setString(1, text2.getText());
+                        pstmt.setString(2, text.getText());
+                        
+                        pstmt.executeUpdate();
+                        message = true;
+                    }
+                }
+
+               
+                if (message == true) {
+                    JOptionPane.showMessageDialog(this, "Fee Structure Updated.");
+                }
+                
+                else if (message == false) {
+                    JOptionPane.showMessageDialog(this, "Nothing is Updated.");
+                }
+
+                connection.close();
+
+            } catch (Exception a) {
+                System.out.println(a);
+                JOptionPane.showMessageDialog(this, "Something is missing or Incorrect enteries");
+            }
+        }
+
+        else if(e.getSource()== Delete){
+            try {
+                // connect app to mysql to delete fee details from the database.
+
+                String url = "jdbc:mysql://localhost:3306/" + Database;
+                String user = "root";
+
+                Connection connection = DriverManager.getConnection(url, user, DBPassword);
+
+                String selectQuery = "SELECT count(*) FROM School_Fee_Structure WHERE Serial_No = ?";
+                PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+                selectStmt.setString(1, text.getText());               
+
+                ResultSet resultSet = selectStmt.executeQuery();
+
+                resultSet.next();
+                int count = resultSet.getInt(1);
+
+                if (count == 0) {
+                    JOptionPane.showMessageDialog(this, "Data does not exist.");
+                } else if (count > 0) {
+
+                    PreparedStatement pstmt = connection
+                            .prepareStatement("delete from School_Fee_Structure where Serial_No = ? ");
+                            pstmt.setString(1, text.getText());               
+                    
+                    pstmt.executeUpdate();
+                    JOptionPane.showMessageDialog(this, "Data Deleted Successfully.");
+                    connection.close();
+                }
+            } catch (Exception b) {
+
+                JOptionPane.showMessageDialog(this, "No Data Deleted.");
+            }
+        }
+        
+    }
+}
+
+/*
  * This is the main class of application
  */
 public class App {
@@ -9904,8 +10400,8 @@ public class App {
     // main method
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-        new Login(null, null, null, null, null, null);
-       });
+            new Login(null, null, null, null, null, null);
+        });
     }
 
 }
